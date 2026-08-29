@@ -1,4 +1,4 @@
-name: Build RemoControl iOS
+name: Build RemoControl iOS Unsigned
 
 on:
   workflow_dispatch:
@@ -24,24 +24,37 @@ jobs:
           dotnet restore RemoControlMobile/RemoControlMobile.csproj \
             -p:TargetFrameworks=net10.0-ios
 
-      - name: Compilar iPhone
+      - name: Compilar iOS sin firma
         run: |
-          dotnet publish RemoControlMobile/RemoControlMobile.csproj \
+          dotnet build RemoControlMobile/RemoControlMobile.csproj \
             -f net10.0-ios \
             -c Release \
             -r ios-arm64 \
             -p:TargetFrameworks=net10.0-ios \
-            -p:ArchiveOnBuild=true \
-            -p:BuildIpa=true
+            -p:CodesignKey="" \
+            -p:CodesignProvision="" \
+            -p:EnableCodeSigning=false
 
-      - name: Buscar IPA
-        if: always()
-        run: find . -type f -name "*.ipa" -print
+      - name: Buscar APP
+        run: |
+          find RemoControlMobile/bin/Release -type d -name "*.app" -print
+
+      - name: Crear IPA sin firmar
+        run: |
+          APP_PATH=$(find RemoControlMobile/bin/Release -type d -name "*.app" | head -n 1)
+
+          if [ -z "$APP_PATH" ]; then
+            echo "No se encontró ningún .app"
+            exit 1
+          fi
+
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+
+          zip -r RemoControlMobile-unsigned.ipa Payload
 
       - name: Guardar IPA
-        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: RemoControlMobile-IPA
-          path: "**/*.ipa"
-          if-no-files-found: warn
+          name: RemoControlMobile-Unsigned-IPA
+          path: RemoControlMobile-unsigned.ipa
