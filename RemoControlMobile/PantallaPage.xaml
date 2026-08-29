@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.PantallaPage"
+    BackgroundColor="Black"
+    Title="Pantalla remota">
+
+    <Grid RowDefinitions="Auto,Auto,*">
+
+        <!-- ENCABEZADO -->
+
+        <Grid
+            x:Name="panelEncabezado"
+            Grid.Row="0"
+            Padding="12"
+            ColumnDefinitions="Auto,*,Auto"
+            BackgroundColor="#101720">
+
+            <Button
+                Text="←"
+                WidthRequest="45"
+                HeightRequest="43"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="BtnVolver_Clicked" />
+
+            <Label
+                Grid.Column="1"
+                Text="Pantalla remota"
+                Margin="12,0"
+                VerticalTextAlignment="Center"
+                FontSize="18"
+                FontAttributes="Bold"
+                TextColor="White" />
+
+            <Button
+                Grid.Column="2"
+                Text="⛶"
+                WidthRequest="45"
+                HeightRequest="43"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="BtnPantallaCompleta_Clicked" />
+
+        </Grid>
+
+
+        <!-- CONTROLES -->
+
+        <Grid
+            x:Name="panelControles"
+            Grid.Row="1"
+            Padding="10"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="10"
+            BackgroundColor="#151B23">
+
+            <Picker
+                x:Name="pickerCalidad"
+                Grid.Column="0"
+                Title="Calidad"
+                SelectedIndexChanged="PickerCalidad_SelectedIndexChanged"
+                BackgroundColor="#1E2631"
+                TextColor="White">
+
+                <Picker.Items>
+
+                    <x:String>Rápida</x:String>
+                    <x:String>Normal</x:String>
+                    <x:String>Alta</x:String>
+                    <x:String>Máxima</x:String>
+
+                </Picker.Items>
+
+            </Picker>
+
+            <Button
+                Grid.Column="1"
+                Text="📸 Captura"
+                BackgroundColor="#087BDB"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="BtnCaptura_Clicked" />
+
+        </Grid>
+
+
+        <!-- PANTALLA -->
+
+        <Grid
+            Grid.Row="2"
+            BackgroundColor="Black">
+
+            <Image
+                x:Name="imgPantalla"
+                Aspect="AspectFit"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+
+                <Image.GestureRecognizers>
+
+                    <TapGestureRecognizer
+                        NumberOfTapsRequired="1"
+                        Tapped="Pantalla_Tapped" />
+
+                    <TapGestureRecognizer
+                        NumberOfTapsRequired="2"
+                        Tapped="Pantalla_DoubleTapped" />
+
+                    <PanGestureRecognizer
+                        PanUpdated="Pantalla_PanUpdated" />
+
+                </Image.GestureRecognizers>
+
+            </Image>
+
+
+            <Grid
+                x:Name="panelCargando"
+                BackgroundColor="#66000000">
+
+                <ActivityIndicator
+                    x:Name="cargandoPantalla"
+                    IsRunning="True"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Color="#3096FF" />
+
+            </Grid>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

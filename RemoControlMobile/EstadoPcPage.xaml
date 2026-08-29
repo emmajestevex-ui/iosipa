@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.EstadoPcPage"
+    BackgroundColor="#161C25"
+    Title="Estado de la PC">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Estado de la PC"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Información del sistema en tiempo real"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+        <!-- CONTENIDO -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <!-- ESTADO GENERAL -->
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="ESTADO GENERAL"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text="Consultando..."
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            x:Name="lblPc"
+                            Text="PC: --"
+                            TextColor="White"
+                            FontSize="14" />
+
+                        <Label
+                            x:Name="lblUsuario"
+                            Text="Usuario: --"
+                            TextColor="#AEB8C5"
+                            FontSize="13" />
+
+                        <Label
+                            x:Name="lblWindows"
+                            Text="Windows: --"
+                            TextColor="#AEB8C5"
+                            FontSize="13" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- CPU / RAM -->
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="12">
+
+                    <Border
+                        Grid.Column="0"
+                        Padding="16"
+                        BackgroundColor="#1E2631"
+                        Stroke="#293545">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="6">
+
+                            <Label
+                                Text="CPU"
+                                FontSize="11"
+                                TextColor="#8794A5" />
+
+                            <Label
+                                x:Name="lblCpu"
+                                Text="-- %"
+                                FontSize="22"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <Border
+                        Grid.Column="1"
+                        Padding="16"
+                        BackgroundColor="#1E2631"
+                        Stroke="#293545">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="6">
+
+                            <Label
+                                Text="RAM"
+                                FontSize="11"
+                                TextColor="#8794A5" />
+
+                            <Label
+                                x:Name="lblRam"
+                                Text="--"
+                                FontSize="22"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </Grid>
+
+                <!-- BATERIA -->
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="BATERÍA"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblBateria"
+                            Text="--"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblEstadoBateria"
+                            Text="Estado: --"
+                            FontSize="13"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- RED -->
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="RED"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblIp"
+                            Text="IP: --"
+                            FontSize="14"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblConexion"
+                            Text="Conexión: --"
+                            FontSize="13"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- TIEMPO ENCENDIDA -->
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="TIEMPO ENCENDIDA"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblTiempo"
+                            Text="--"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- DISCOS -->
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="DISCOS"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblDiscos"
+                            Text="Consultando..."
+                            FontSize="13"
+                            TextColor="White"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <!-- ACTUALIZAR -->
+        <Button
+            Grid.Row="2"
+            Text="↻ Actualizar"
+            Margin="20,10,20,20"
+            HeightRequest="55"
+            BackgroundColor="#087BDB"
+            TextColor="White"
+            FontAttributes="Bold"
+            CornerRadius="14"
+            Clicked="BtnActualizar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

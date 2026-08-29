@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.ArchivosPage"
+    BackgroundColor="#161C25"
+    Title="Archivos">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto">
+
+        <!-- ===================================================== -->
+        <!-- ENCABEZADO -->
+        <!-- ===================================================== -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="18"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="48"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="14,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Archivos"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Explorador remoto de la PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- ===================================================== -->
+        <!-- RUTA ACTUAL -->
+        <!-- ===================================================== -->
+
+        <Grid
+            Grid.Row="1"
+            Padding="18,5,18,10"
+            ColumnDefinitions="Auto,*,Auto"
+            ColumnSpacing="8">
+
+            <Button
+                Grid.Column="0"
+                Text="↑"
+                WidthRequest="45"
+                HeightRequest="42"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="BtnAtrasCarpeta_Clicked" />
+
+            <Border
+                Grid.Column="1"
+                Padding="12"
+                BackgroundColor="#151B23"
+                Stroke="#293545">
+
+                <Border.StrokeShape>
+                    <RoundRectangle
+                        CornerRadius="10" />
+                </Border.StrokeShape>
+
+                <Label
+                    x:Name="lblRuta"
+                    Text="Este equipo"
+                    FontSize="12"
+                    TextColor="White"
+                    LineBreakMode="TailTruncation"
+                    VerticalTextAlignment="Center" />
+
+            </Border>
+
+            <Button
+                Grid.Column="2"
+                Text="↻"
+                WidthRequest="45"
+                HeightRequest="42"
+                BackgroundColor="#087BDB"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="BtnActualizar_Clicked" />
+
+        </Grid>
+
+
+        <!-- ===================================================== -->
+        <!-- LISTA DE ARCHIVOS -->
+        <!-- ===================================================== -->
+
+        <RefreshView
+            x:Name="refreshArchivos"
+            Grid.Row="2"
+            Refreshing="RefreshArchivos_Refreshing">
+
+            <Grid>
+
+                <CollectionView
+                    x:Name="listaArchivos"
+                    SelectionMode="Single"
+                    SelectionChanged="ListaArchivos_SelectionChanged">
+
+                    <CollectionView.EmptyView>
+
+                        <VerticalStackLayout
+                            Padding="20"
+                            Spacing="10"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+
+                            <Label
+                                Text="📂"
+                                FontSize="45"
+                                HorizontalTextAlignment="Center" />
+
+                            <Label
+                                Text="Esta carpeta está vacía"
+                                TextColor="#8794A5"
+                                HorizontalTextAlignment="Center" />
+
+                        </VerticalStackLayout>
+
+                    </CollectionView.EmptyView>
+
+
+                    <CollectionView.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Border
+                                Margin="15,4"
+                                Padding="14"
+                                BackgroundColor="#1E2631"
+                                Stroke="#293545">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle
+                                        CornerRadius="14" />
+                                </Border.StrokeShape>
+
+                                <Grid
+                                    ColumnDefinitions="45,*,Auto"
+                                    ColumnSpacing="8">
+
+                                    <Label
+                                        Grid.Column="0"
+                                        Text="{Binding Icono}"
+                                        FontSize="25"
+                                        HorizontalTextAlignment="Center"
+                                        VerticalTextAlignment="Center" />
+
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Spacing="3"
+                                        VerticalOptions="Center">
+
+                                        <Label
+                                            Text="{Binding name}"
+                                            FontSize="15"
+                                            FontAttributes="Bold"
+                                            TextColor="White"
+                                            LineBreakMode="TailTruncation" />
+
+                                        <Label
+                                            Text="{Binding Detalle}"
+                                            FontSize="11"
+                                            TextColor="#8794A5"
+                                            LineBreakMode="TailTruncation" />
+
+                                    </VerticalStackLayout>
+
+                                    <Label
+                                        Grid.Column="2"
+                                        Text="{Binding Indicador}"
+                                        FontSize="24"
+                                        TextColor="#657181"
+                                        VerticalTextAlignment="Center" />
+
+                                </Grid>
+
+                            </Border>
+
+                        </DataTemplate>
+
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+
+
+                <!-- CARGANDO -->
+
+                <Grid
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+
+                    <ActivityIndicator
+                        x:Name="cargando"
+                        IsRunning="False"
+                        Color="#3096FF"
+                        WidthRequest="45"
+                        HeightRequest="45" />
+
+                </Grid>
+
+            </Grid>
+
+        </RefreshView>
+
+
+        <!-- ===================================================== -->
+        <!-- TRANSFERENCIA -->
+        <!-- ===================================================== -->
+
+        <Border
+            x:Name="panelTransferencia"
+            Grid.Row="3"
+            Margin="18,5"
+            Padding="14"
+            BackgroundColor="#1E2631"
+            Stroke="#293545"
+            IsVisible="False">
+
+            <Border.StrokeShape>
+                <RoundRectangle
+                    CornerRadius="14" />
+            </Border.StrokeShape>
+
+            <VerticalStackLayout
+                Spacing="8">
+
+                <Label
+                    x:Name="lblTransferencia"
+                    Text="Preparando..."
+                    FontSize="13"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    LineBreakMode="TailTruncation" />
+
+                <ProgressBar
+                    x:Name="barraTransferencia"
+                    Progress="0"
+                    HeightRequest="8" />
+
+                <Label
+                    x:Name="lblPorcentaje"
+                    Text="0 %"
+                    FontSize="12"
+                    TextColor="#8794A5"
+                    HorizontalTextAlignment="Center" />
+
+                <Button
+                    Text="Cancelar transferencia"
+                    HeightRequest="42"
+                    BackgroundColor="#3A2730"
+                    TextColor="#FFAAAA"
+                    CornerRadius="10"
+                    Clicked="BtnCancelarTransferencia_Clicked" />
+
+            </VerticalStackLayout>
+
+        </Border>
+
+
+        <!-- ===================================================== -->
+        <!-- ACCIONES -->
+        <!-- ===================================================== -->
+
+        <ScrollView
+            Grid.Row="4"
+            Orientation="Horizontal"
+            HorizontalScrollBarVisibility="Never">
+
+            <HorizontalStackLayout
+                Padding="18,8,18,18"
+                Spacing="8">
+
+                <!-- ARCHIVO -->
+
+                <Button
+                    Text="📤 Archivo"
+                    HeightRequest="52"
+                    MinimumWidthRequest="110"
+                    BackgroundColor="#087BDB"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="13"
+                    Clicked="BtnSubirArchivo_Clicked" />
+
+
+                <!-- FOTO -->
+
+                <Button
+                    Text="🖼 Foto"
+                    HeightRequest="52"
+                    MinimumWidthRequest="100"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="13"
+                    Clicked="BtnSubirFoto_Clicked" />
+
+
+                <!-- VIDEO -->
+
+                <Button
+                    Text="🎬 Video"
+                    HeightRequest="52"
+                    MinimumWidthRequest="100"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="13"
+                    Clicked="BtnSubirVideo_Clicked" />
+
+
+                <!-- TXT -->
+
+                <Button
+                    Text="📝 Nota"
+                    HeightRequest="52"
+                    MinimumWidthRequest="100"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="13"
+                    Clicked="BtnCrearTexto_Clicked" />
+
+            </HorizontalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

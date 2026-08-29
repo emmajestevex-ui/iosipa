@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.UbicacionPage"
+    BackgroundColor="#0D141D"
+    Title="Ubicación de la PC">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ENCABEZADO -->
+        <Grid
+            Grid.Row="0"
+            Padding="16,14"
+            ColumnDefinitions="Auto,*"
+            BackgroundColor="#101720">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="46"
+                HeightRequest="46"
+                BackgroundColor="#1E2834"
+                TextColor="White"
+                CornerRadius="10"
+                Clicked="BtnVolver_Clicked" />
+
+            <Label
+                Grid.Column="1"
+                Text="Ubicación de la PC"
+                Margin="14,0,0,0"
+                VerticalOptions="Center"
+                FontSize="20"
+                FontAttributes="Bold"
+                TextColor="White" />
+
+        </Grid>
+
+        <!-- CONTENIDO -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="18"
+                Spacing="14">
+
+                <!-- INFORMACIÓN -->
+                <Border
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545"
+                    Padding="18">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+                            Text="UBICACIÓN ACTUAL"
+                            FontSize="12"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text="Buscando ubicación..."
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            x:Name="lblLatitud"
+                            Text="Latitud: --"
+                            FontSize="14"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblLongitud"
+                            Text="Longitud: --"
+                            FontSize="14"
+                            TextColor="White" />
+
+                        <!-- PRECISIÓN -->
+                        <Label
+                            x:Name="lblPrecision"
+                            Text="Precisión: --"
+                            FontSize="14"
+                            TextColor="#AEB8C5" />
+
+                        <!-- ÚLTIMA ACTUALIZACIÓN -->
+                        <Label
+                            x:Name="lblUltimaActualizacion"
+                            Text="Última actualización: --"
+                            FontSize="14"
+                            TextColor="#AEB8C5" />
+
+                        <Button
+                            Text="Actualizar ubicación"
+                            Margin="0,8,0,0"
+                            HeightRequest="48"
+                            BackgroundColor="#087BDB"
+                            TextColor="White"
+                            CornerRadius="12"
+                            Clicked="BtnActualizar_Clicked" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- MAPA -->
+                <Border
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545"
+                    Padding="0"
+                    HeightRequest="450">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+
+                    <WebView
+                        x:Name="mapaPc"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        BackgroundColor="White" />
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>

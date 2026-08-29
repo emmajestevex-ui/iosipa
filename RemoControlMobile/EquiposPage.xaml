@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.EquiposPage"
+    BackgroundColor="#161C25"
+    Title="Mis PCs">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                Clicked="BtnVolver_Clicked" />
+
+            <Label
+                Grid.Column="1"
+                Text="Mis computadoras"
+                Margin="15,0"
+                FontSize="25"
+                FontAttributes="Bold"
+                TextColor="White" />
+
+        </Grid>
+
+        <CollectionView
+            x:Name="lista"
+            Grid.Row="1"
+            Margin="20"
+            SelectionMode="Single"
+            SelectionChanged="Lista_SelectionChanged">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Margin="0,5"
+                        Padding="16"
+                        BackgroundColor="#1E2631"
+                        Stroke="#293545">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout>
+
+                            <Label
+                                Text="{Binding Nombre}"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                            <Label
+                                Text="{Binding Servidor}"
+                                FontSize="12"
+                                TextColor="#8794A5" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+
+        <Button
+            Grid.Row="2"
+            Text="+ Guardar PC actual"
+            Margin="20"
+            HeightRequest="55"
+            BackgroundColor="#087BDB"
+            TextColor="White"
+            Clicked="BtnAgregar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

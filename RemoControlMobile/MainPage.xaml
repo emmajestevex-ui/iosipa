@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.MainPage"
+    BackgroundColor="#161C25"
+    Title="RemoControl">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+
+        <VerticalStackLayout
+            Grid.Row="0"
+            Padding="25,30,25,15">
+
+            <Label
+                Text="RemoControl"
+                FontSize="30"
+                FontAttributes="Bold"
+                TextColor="#3096FF" />
+
+            <Label
+                Text="Control remoto personal"
+                FontSize="14"
+                TextColor="#9CA8B8" />
+
+        </VerticalStackLayout>
+
+
+        <!-- CONTENIDO -->
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="22"
+                Spacing="18">
+
+                <!-- PC -->
+
+                <Border
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545"
+                    Padding="20">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="MI COMPUTADORA"
+                            FontSize="12"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblPc"
+                            Text="Buscando..."
+                            FontSize="24"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text="● Conectando..."
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            x:Name="lblUsuario"
+                            FontSize="13"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            x:Name="lblWindows"
+                            FontSize="12"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblServidor"
+                            Text=""
+                            FontSize="11"
+                            TextColor="#657181"
+                            LineBreakMode="CharacterWrap" />
+
+                        <Grid
+                            Margin="0,12,0,0"
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="10">
+
+                            <Button
+                                Grid.Column="0"
+                                Text="↻ Reintentar"
+                                HeightRequest="48"
+                                BackgroundColor="#087BDB"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                Clicked="BtnActualizar_Clicked" />
+
+                            <Button
+                                Grid.Column="1"
+                                Text="⚙ Configurar"
+                                HeightRequest="48"
+                                BackgroundColor="#293545"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="12"
+                                Clicked="BtnConfigurarConexion_Clicked" />
+
+                        </Grid>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- CONTROL -->
+
+                <Label
+                    Text="Control"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+
+                <Button
+                    Text="🖥   Pantalla remota"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnPantalla_Clicked" />
+
+
+                <Button
+                    Text="⭐   Acciones rápidas"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnFavoritos_Clicked" />
+
+
+                <Button
+                    Text="🔥   Rendimiento / Turbo"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnRendimiento_Clicked" />
+
+
+                <Button
+                    Text="🖱   Touchpad"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnTouchpad_Clicked" />
+
+
+                <Button
+                    Text="⌨️   Teclado remoto"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnTeclado_Clicked" />
+
+
+                <Button
+                    Text="💻   Mis PCs"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnEquipos_Clicked" />
+
+
+                <Button
+                    Text="🚀   Aplicaciones"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnAplicaciones_Clicked" />
+
+
+                <Button
+                    Text="📁   Archivos"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnArchivos_Clicked" />
+
+
+                <Button
+                    Text="📋   Portapapeles"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnPortapapeles_Clicked" />
+
+
+                <Button
+                    Text="🔊   Multimedia"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnMultimedia_Clicked" />
+
+
+                <Button
+                    Text="⚡   Acciones"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnAcciones_Clicked" />
+
+
+                <!-- MONITOREO -->
+
+                <Label
+                    Text="Monitoreo"
+                    Margin="0,8,0,0"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+
+                <Button
+                    Text="📊   Estado de la PC"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnEstadoPc_Clicked" />
+
+
+                <Button
+                    Text="📍   Ubicación de la PC"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnUbicacion_Clicked" />
+
+
+                <Button
+                    Text="📋   Actividad"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnActividad_Clicked" />
+
+
+                <Button
+                    Text="🔐   Acceso remoto"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnAccesoRemoto_Clicked" />
+
+
+                <Button
+                    Text="🛡   Seguridad"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnSeguridad_Clicked" />
+
+
+                <Button
+                    Text="🌐   Diagnóstico de conexión"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnDiagnostico_Clicked" />
+
+
+                <!-- REMOCONTROL -->
+
+                <Label
+                    Text="RemoControl"
+                    Margin="0,8,0,0"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+
+                <Button
+                    Text="❓   Ayuda para conectarse"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnAyuda_Clicked" />
+
+
+                <Button
+                    Text="⬆   Actualizaciones"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnActualizaciones_Clicked" />
+
+
+                <Button
+                    Text="⚙   Configuración"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnConfiguracion_Clicked" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- PIE -->
+
+        <Label
+            Grid.Row="2"
+            Text="RemoControl Mobile"
+            HorizontalTextAlignment="Center"
+            FontSize="11"
+            TextColor="#657181"
+            Padding="0,10,0,18" />
+
+    </Grid>
+
+</ContentPage>

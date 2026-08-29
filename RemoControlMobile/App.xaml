@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Application
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.App">
+
+    <Application.Resources>
+
+        <ResourceDictionary>
+
+            <Color x:Key="Fondo">
+                #161C25
+            </Color>
+
+            <Color x:Key="Panel">
+                #1E2631
+            </Color>
+
+            <Color x:Key="Azul">
+                #087BDB
+            </Color>
+
+        </ResourceDictionary>
+
+    </Application.Resources>
+
+</Application>

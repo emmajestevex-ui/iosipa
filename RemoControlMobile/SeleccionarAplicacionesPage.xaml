@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.SeleccionarAplicacionesPage"
+    BackgroundColor="#161C25"
+    Title="Agregar aplicaciones">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+
+        <!-- CABECERA -->
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0">
+
+                <Label
+                    Text="Agregar aplicaciones"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Elige las aplicaciones instaladas en esta PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- BUSCADOR -->
+        <Border
+            Grid.Row="1"
+            Margin="20,0,20,12"
+            Padding="6"
+            BackgroundColor="#151B23"
+            Stroke="#293545">
+
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="14" />
+            </Border.StrokeShape>
+
+            <Entry
+                x:Name="txtBuscar"
+                Placeholder="Buscar aplicación..."
+                PlaceholderColor="#657181"
+                TextColor="White"
+                BackgroundColor="Transparent"
+                TextChanged="TxtBuscar_TextChanged" />
+
+        </Border>
+
+
+        <!-- LISTA -->
+        <CollectionView
+            x:Name="listaDisponibles"
+            Grid.Row="2"
+            Margin="15"
+            SelectionMode="None">
+
+            <CollectionView.EmptyView>
+
+                <VerticalStackLayout
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Spacing="10">
+
+                    <Label
+                        Text="🔍"
+                        FontSize="48"
+                        HorizontalTextAlignment="Center" />
+
+                    <Label
+                        Text="No se encontraron aplicaciones"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="White"
+                        HorizontalTextAlignment="Center" />
+
+                </VerticalStackLayout>
+
+            </CollectionView.EmptyView>
+
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate>
+
+                    <Border
+                        Margin="4"
+                        Padding="14"
+                        BackgroundColor="#1E2631"
+                        Stroke="#293545">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15" />
+                        </Border.StrokeShape>
+
+                        <Grid
+                            ColumnDefinitions="55,*,Auto"
+                            ColumnSpacing="12">
+
+                            <Border
+                                Grid.Column="0"
+                                WidthRequest="46"
+                                HeightRequest="46"
+                                BackgroundColor="#151B23"
+                                StrokeThickness="0">
+
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+
+                                <Image
+                                    Source="{Binding IconImage}"
+                                    WidthRequest="34"
+                                    HeightRequest="34"
+                                    Aspect="AspectFit"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center" />
+
+                            </Border>
+
+
+                            <VerticalStackLayout
+                                Grid.Column="1"
+                                VerticalOptions="Center"
+                                Spacing="2">
+
+                                <Label
+                                    Text="{Binding name}"
+                                    FontSize="15"
+                                    FontAttributes="Bold"
+                                    TextColor="White"
+                                    LineBreakMode="TailTruncation" />
+
+                                <Label
+                                    Text="Disponible en esta PC"
+                                    FontSize="11"
+                                    TextColor="#8794A5" />
+
+                            </VerticalStackLayout>
+
+
+                            <CheckBox
+                                Grid.Column="2"
+                                IsChecked="{Binding selected}"
+                                Color="#087BDB"
+                                VerticalOptions="Center"
+                                CheckedChanged="CheckApp_CheckedChanged" />
+
+                        </Grid>
+
+                    </Border>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+
+        <!-- PIE -->
+        <Grid
+            Grid.Row="3"
+            Padding="20,10,20,18"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="12">
+
+            <Label
+                x:Name="lblSeleccionadas"
+                Text="0 seleccionadas"
+                TextColor="#8794A5"
+                VerticalTextAlignment="Center"
+                FontSize="12" />
+
+            <Button
+                Grid.Column="1"
+                x:Name="btnAgregar"
+                Text="Agregar"
+                BackgroundColor="#087BDB"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="12"
+                Padding="24,12"
+                Clicked="BtnAgregar_Clicked" />
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

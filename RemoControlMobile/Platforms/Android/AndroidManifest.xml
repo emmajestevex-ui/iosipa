@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- INTERNET -->
+
+  <uses-permission
+      android:name="android.permission.INTERNET" />
+
+  <uses-permission
+      android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
+  <!-- UBICACIÓN -->
+
+  <uses-permission
+      android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+  <uses-permission
+      android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+  <!-- NOTIFICACIONES -->
+
+  <uses-permission
+      android:name="android.permission.POST_NOTIFICATIONS" />
+
+
+  <!-- INSTALACIÓN DE ACTUALIZACIONES -->
+
+  <uses-permission
+      android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/appicon"
+      android:roundIcon="@mipmap/appicon_round"
+      android:supportsRtl="true"
+      android:usesCleartextTraffic="true">
+
+    <!-- MAPAS -->
+
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AQUI_VA_TU_GOOGLE_MAPS_API_KEY" />
+
+
+    <!-- FILE PROVIDER PARA APK -->
+
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.fileprovider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+
+      <meta-data
+          android:name="android.support.FILE_PROVIDER_PATHS"
+          android:resource="@xml/file_paths" />
+
+    </provider>
+
+  </application>
+
+</manifest>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.ActividadPage"
+    BackgroundColor="#161C25"
+    Title="Actividad">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Actividad"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Historial de RemoControl"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- CONTENIDO -->
+
+        <ScrollView
+            Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="15">
+
+                <!-- ESTADO -->
+
+                <Border
+                    Padding="16"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <Grid
+                        ColumnDefinitions="*,Auto">
+
+                        <VerticalStackLayout
+                            Grid.Column="0"
+                            Spacing="3">
+
+                            <Label
+                                Text="Registro de actividad"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                            <Label
+                                x:Name="lblEstado"
+                                Text="Preparando..."
+                                FontSize="12"
+                                TextColor="#8794A5" />
+
+                        </VerticalStackLayout>
+
+                        <ActivityIndicator
+                            x:Name="cargando"
+                            Grid.Column="1"
+                            IsVisible="False"
+                            IsRunning="False"
+                            VerticalOptions="Center"
+                            Color="#087BDB" />
+
+                    </Grid>
+
+                </Border>
+
+
+                <!-- HISTORIAL -->
+
+                <Border
+                    Padding="16"
+                    BackgroundColor="#151B23"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <Label
+                        x:Name="lblHistorial"
+                        Text="Pulsa Actualizar para consultar la actividad."
+                        TextColor="#D8DEE7"
+                        FontSize="13"
+                        LineBreakMode="WordWrap" />
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- BOTONES -->
+
+        <Grid
+            Grid.Row="2"
+            Padding="20,10,20,20"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="10">
+
+            <Button
+                Grid.Column="0"
+                Text="↻ Actualizar"
+                HeightRequest="52"
+                BackgroundColor="#087BDB"
+                TextColor="White"
+                FontAttributes="Bold"
+                CornerRadius="14"
+                Clicked="BtnActualizar_Clicked" />
+
+            <Button
+                Grid.Column="1"
+                Text="Limpiar vista"
+                HeightRequest="52"
+                BackgroundColor="#3A2730"
+                TextColor="#FF9999"
+                CornerRadius="14"
+                Clicked="BtnLimpiar_Clicked" />
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

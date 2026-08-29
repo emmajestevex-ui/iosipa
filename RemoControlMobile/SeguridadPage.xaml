@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.SeguridadPage"
+    BackgroundColor="#161C25"
+    Title="Seguridad">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- =============================================== -->
+        <!-- ENCABEZADO -->
+        <!-- =============================================== -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Seguridad"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Estado de conexión y protección"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- =============================================== -->
+        <!-- CONTENIDO -->
+        <!-- =============================================== -->
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="18">
+
+
+                <!-- ESTADO -->
+
+                <Label
+                    Text="Estado"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="12">
+
+                        <Label
+                            Text="CONEXIÓN CON LA PC"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text="● Comprobando..."
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- SERVIDOR -->
+
+                <Label
+                    Text="Servidor"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="8">
+
+                        <Label
+                            Text="SERVIDOR ACTIVO"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblServidor"
+                            Text="--"
+                            FontSize="15"
+                            TextColor="White"
+                            LineBreakMode="CharacterWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- TOKEN -->
+
+                <Label
+                    Text="Autenticación"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="10">
+
+                        <Label
+                            Text="TOKEN DE SEGURIDAD"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblToken"
+                            Text="Comprobando..."
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="El token se utiliza para autorizar las solicitudes enviadas desde el teléfono a RemoControl."
+                            FontSize="12"
+                            TextColor="#657181" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- INFORMACIÓN -->
+
+                <Label
+                    Text="Protección"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="12">
+
+                        <Label
+                            Text="🔐  Autenticación por token"
+                            TextColor="White"
+                            FontSize="14" />
+
+                        <Label
+                            Text="🌐  Conexión local o Tailscale"
+                            TextColor="White"
+                            FontSize="14" />
+
+                        <Label
+                            Text="📱  Acceso desde RemoControl Mobile"
+                            TextColor="White"
+                            FontSize="14" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- PROBAR -->
+
+                <Button
+                    Text="🔄  Comprobar conexión"
+                    HeightRequest="55"
+                    BackgroundColor="#087BDB"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="14"
+                    Clicked="BtnProbar_Clicked" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- =============================================== -->
+        <!-- PIE -->
+        <!-- =============================================== -->
+
+        <Label
+            Grid.Row="2"
+            Text="RemoControl Security"
+            HorizontalTextAlignment="Center"
+            FontSize="11"
+            TextColor="#657181"
+            Padding="0,10,0,18" />
+
+    </Grid>
+
+</ContentPage>

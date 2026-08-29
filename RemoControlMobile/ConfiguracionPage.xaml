@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.ConfiguracionPage"
+    BackgroundColor="#161C25"
+    Title="Configuración">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Configuración"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Conecta el teléfono con tu PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- CONTENIDO -->
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="18">
+
+
+                <!-- PRIMERA CONEXIÓN -->
+
+                <Label
+                    Text="Primera conexión"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Cómo conectar este teléfono"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            TextColor="#4DB8FF" />
+
+                        <Label
+                            Text="1. Conecta este teléfono y la computadora al mismo Wi-Fi."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="2. Abre RemoControl en la computadora y mantenlo abierto."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="3. En RemoControl de la computadora entra en Configuración."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="4. Busca DIRECCIÓN PARA EL TELÉFONO."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="5. Copia esa dirección y escríbela abajo en Servidor / IP."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="6. En la computadora busca TOKEN DE SEGURIDAD y cópialo en Token de seguridad."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="7. Pulsa Probar conexión."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+                        <Label
+                            Text="8. Cuando aparezca ● Conexión correcta, pulsa Guardar cambios."
+                            FontSize="13"
+                            TextColor="#D5DCE5" />
+
+
+                        <!-- AVISO -->
+
+                        <Border
+                            Margin="0,8,0,0"
+                            Padding="12"
+                            BackgroundColor="#2A2418"
+                            Stroke="#5A4826">
+
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+
+                            <Label
+                                Text="⚠ IMPORTANTE: No copies una IP de ejemplo ni la IP de otra computadora. Usa exactamente la DIRECCIÓN PARA EL TELÉFONO que muestra RemoControl en la PC que quieres controlar."
+                                FontSize="12"
+                                TextColor="#FFCB72" />
+
+                        </Border>
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- CONEXIÓN ACTUAL -->
+
+                <Label
+                    Text="Conexión actual"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+                            Text="TIPO DE CONEXIÓN"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblTipoConexion"
+                            Text="Detectando..."
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            Text="SERVIDOR GUARDADO"
+                            Margin="0,6,0,0"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblServidorActivo"
+                            Text="--"
+                            FontSize="14"
+                            TextColor="White"
+                            LineBreakMode="CharacterWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- DATOS DE CONEXIÓN -->
+
+                <Label
+                    Text="Datos de conexión"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Servidor / IP"
+                            TextColor="#AEB8C5"
+                            FontSize="13"
+                            FontAttributes="Bold" />
+
+                        <Entry
+                            x:Name="txtServidor"
+                            Placeholder="Ejemplo: http://192.168.1.25:5050"
+                            BackgroundColor="#151B23"
+                            TextColor="White"
+                            PlaceholderColor="#657181" />
+
+                        <Label
+                            Text="¿Qué pongo aquí?"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#4DB8FF" />
+
+                        <Label
+                            Text="Escribe exactamente la DIRECCIÓN PARA EL TELÉFONO que aparece en RemoControl de la computadora."
+                            FontSize="12"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            Text="Ejemplo solamente: http://192.168.1.25:5050"
+                            FontSize="11"
+                            TextColor="#657181" />
+
+                        <Label
+                            Text="No uses el ejemplo. Cada computadora puede tener una IP diferente."
+                            FontSize="11"
+                            TextColor="#FFB45B" />
+
+
+                        <!-- TOKEN -->
+
+                        <Label
+                            Text="Token de seguridad"
+                            TextColor="#AEB8C5"
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            Margin="0,8,0,0" />
+
+                        <Grid ColumnDefinitions="*,Auto">
+
+                            <Entry
+                                Grid.Column="0"
+                                x:Name="txtToken"
+                                Placeholder="Escribe el token de la PC"
+                                IsPassword="True"
+                                BackgroundColor="#151B23"
+                                TextColor="White"
+                                PlaceholderColor="#657181" />
+
+                            <Button
+                                Grid.Column="1"
+                                x:Name="btnMostrarToken"
+                                Text="Ver"
+                                Margin="8,0,0,0"
+                                BackgroundColor="#293545"
+                                TextColor="White"
+                                CornerRadius="10"
+                                Clicked="BtnMostrarToken_Clicked" />
+
+                        </Grid>
+
+                        <Label
+                            Text="¿Dónde encuentro el token?"
+                            FontSize="12"
+                            FontAttributes="Bold"
+                            TextColor="#4DB8FF" />
+
+                        <Label
+                            Text="En la computadora abre RemoControl → Configuración → TOKEN DE SEGURIDAD. Copia exactamente ese código aquí."
+                            FontSize="12"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            Text="El token funciona como una contraseña para autorizar este teléfono."
+                            FontSize="11"
+                            TextColor="#657181" />
+
+
+                        <!-- PROBAR -->
+
+                        <Button
+                            x:Name="btnProbar"
+                            Text="Probar conexión"
+                            HeightRequest="50"
+                            Margin="0,8,0,0"
+                            BackgroundColor="#1A73C9"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            Clicked="BtnProbar_Clicked" />
+
+                        <Label
+                            x:Name="lblPrueba"
+                            Text="● Sin comprobar"
+                            TextColor="Orange"
+                            FontSize="13"
+                            FontAttributes="Bold" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- OTRA RED -->
+
+                <Label
+                    Text="Conectarse desde otra red"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+                            Text="Primero prueba RemoControl estando en el mismo Wi-Fi."
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="#FFB45B" />
+
+                        <Label
+                            Text="Después, para controlar la PC desde otra casa o usando datos móviles:"
+                            FontSize="13"
+                            TextColor="White" />
+
+                        <Label
+                            Text="1. Instala Tailscale en la computadora."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="2. Instala Tailscale en el teléfono."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="3. Inicia sesión y conecta ambos dispositivos a la misma red de Tailscale."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="4. Busca en la PC la dirección de Tailscale, que normalmente empieza por 100."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="5. Utiliza esa dirección con el puerto 5050 en Servidor / IP."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="6. Mantén el mismo token de seguridad y pulsa Probar conexión."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- PANTALLA REMOTA -->
+
+                <Label
+                    Text="Pantalla remota"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Velocidad de actualización"
+                            TextColor="#AEB8C5"
+                            FontAttributes="Bold" />
+
+                        <Picker
+                            x:Name="pickerVelocidad"
+                            Title="Velocidad"
+                            TextColor="White"
+                            BackgroundColor="#151B23">
+
+                            <Picker.Items>
+                                <x:String>Alta</x:String>
+                                <x:String>Normal</x:String>
+                                <x:String>Ahorro de datos</x:String>
+                            </Picker.Items>
+
+                        </Picker>
+
+                        <Label
+                            Text="Alta: más fluida, usa más datos."
+                            FontSize="11"
+                            TextColor="#657181" />
+
+                        <Label
+                            Text="Normal: recomendada para la mayoría de conexiones."
+                            FontSize="11"
+                            TextColor="#657181" />
+
+                        <Label
+                            Text="Ahorro de datos: actualiza más lento, pero consume menos."
+                            FontSize="11"
+                            TextColor="#657181" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- PROBLEMAS -->
+
+                <Label
+                    Text="¿No conecta?"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="9">
+
+                        <Label
+                            Text="Comprueba lo siguiente:"
+                            FontAttributes="Bold"
+                            TextColor="#FFB45B" />
+
+                        <Label
+                            Text="• La PC está encendida."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• RemoControl está abierto en la PC."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• El teléfono y la PC están conectados al mismo Wi-Fi."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• Utilizaste la dirección que muestra ESA computadora."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• La dirección termina en :5050."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• El token es exactamente igual al mostrado en la PC."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• Si estás fuera de casa, Tailscale está conectado en ambos dispositivos."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="• El Firewall de Windows permite RemoControl."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- INFORMACIÓN -->
+
+                <Label
+                    Text="Información"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="RemoControl Mobile"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblVersion"
+                            Text="Versión"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            Text="La conexión está protegida mediante token."
+                            TextColor="#8794A5"
+                            FontSize="12" />
+
+                        <Label
+                            Text="Para conexiones externas recomendamos utilizar una red privada como Tailscale."
+                            TextColor="#8794A5"
+                            FontSize="12" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- RESTAURAR -->
+
+                <Button
+                    Text="Restaurar configuración"
+                    HeightRequest="50"
+                    BackgroundColor="#3A2730"
+                    TextColor="#FF9999"
+                    CornerRadius="12"
+                    Clicked="BtnRestaurar_Clicked" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- GUARDAR -->
+
+        <Button
+            Grid.Row="2"
+            Text="Guardar cambios"
+            Margin="20,10,20,20"
+            HeightRequest="55"
+            BackgroundColor="#087BDB"
+            TextColor="White"
+            FontAttributes="Bold"
+            CornerRadius="14"
+            Clicked="BtnGuardar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

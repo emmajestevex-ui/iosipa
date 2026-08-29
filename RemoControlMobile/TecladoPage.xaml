@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.TecladoPage"
+    BackgroundColor="#161C25"
+    Title="Teclado">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Teclado remoto"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Escribe y controla el teclado de la PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- CONTENIDO -->
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <!-- TEXTO -->
+
+                <Label
+                    Text="Enviar texto"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="15"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="12">
+
+                        <Editor
+                            x:Name="txtTexto"
+                            HeightRequest="130"
+                            Placeholder="Escribe aquí..."
+                            PlaceholderColor="#657181"
+                            BackgroundColor="#151B23"
+                            TextColor="White"
+                            AutoSize="TextChanges" />
+
+                        <Button
+                            Text="⌨  Enviar texto"
+                            HeightRequest="52"
+                            BackgroundColor="#087BDB"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            Clicked="BtnEnviarTexto_Clicked" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- TECLAS -->
+
+                <Label
+                    Text="Teclas"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    RowDefinitions="Auto,Auto,Auto"
+                    ColumnSpacing="8"
+                    RowSpacing="8">
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Text="Esc"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnEsc_Clicked" />
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Text="↑"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnArriba_Clicked" />
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Text="Delete"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnDelete_Clicked" />
+
+
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Text="←"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnIzquierda_Clicked" />
+
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="Enter"
+                        HeightRequest="55"
+                        BackgroundColor="#087BDB"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnEnter_Clicked" />
+
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Text="→"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnDerecha_Clicked" />
+
+
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Text="Tab"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnTab_Clicked" />
+
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Text="↓"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnAbajo_Clicked" />
+
+                    <Button
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Text="⌫"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnBackspace_Clicked" />
+
+                </Grid>
+
+
+                <!-- ATAJOS -->
+
+                <Label
+                    Text="Atajos"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    RowDefinitions="Auto,Auto"
+                    ColumnSpacing="8"
+                    RowSpacing="8">
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Text="Ctrl+C"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnCopiar_Clicked" />
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Text="Ctrl+V"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnPegar_Clicked" />
+
+                    <Button
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Text="Ctrl+A"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnSeleccionarTodo_Clicked" />
+
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Text="Ctrl+X"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnCortar_Clicked" />
+
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="Ctrl+Z"
+                        HeightRequest="55"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="12"
+                        Clicked="BtnDeshacer_Clicked" />
+
+                </Grid>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- ESTADO -->
+
+        <Label
+            Grid.Row="2"
+            x:Name="lblEstado"
+            Text="● Listo"
+            HorizontalTextAlignment="Center"
+            FontSize="12"
+            TextColor="#8794A5"
+            Padding="0,10,0,18" />
+
+    </Grid>
+
+</ContentPage>

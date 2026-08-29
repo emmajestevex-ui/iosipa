@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.RendimientoPage"
+    BackgroundColor="#161C25"
+    Title="Rendimiento">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0">
+
+                <Label
+                    Text="Rendimiento"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Perfil de energía de la PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <!-- ACTUAL -->
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="MODO ACTUAL"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblModo"
+                            Text="Consultando..."
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            x:Name="lblDetalle"
+                            Text=""
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- AHORRO -->
+
+                <Button
+                    Text="🌿   Ahorro de energía"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnAhorro_Clicked" />
+
+
+                <!-- EQUILIBRADO -->
+
+                <Button
+                    Text="⚖️   Equilibrado"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnEquilibrado_Clicked" />
+
+
+                <!-- ALTO RENDIMIENTO -->
+
+                <Button
+                    Text="🚀   Alto rendimiento"
+                    HeightRequest="65"
+                    FontSize="17"
+                    BackgroundColor="#1A4568"
+                    TextColor="White"
+                    CornerRadius="15"
+                    Clicked="BtnAlto_Clicked" />
+
+
+                <!-- TURBO -->
+
+                <Button
+                    Text="🔥   TURBO"
+                    HeightRequest="72"
+                    FontSize="20"
+                    FontAttributes="Bold"
+                    BackgroundColor="#75331D"
+                    TextColor="White"
+                    CornerRadius="16"
+                    Clicked="BtnTurbo_Clicked" />
+
+
+                <Border
+                    Padding="16"
+                    BackgroundColor="#151B23"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+
+                    <Label
+                        Text="Turbo usa el plan de máximo rendimiento disponible en Windows. No modifica BIOS, voltajes ni realiza overclock."
+                        FontSize="12"
+                        TextColor="#8794A5"
+                        LineBreakMode="WordWrap" />
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <Button
+            Grid.Row="2"
+            Text="↻ Actualizar"
+            Margin="20,10,20,20"
+            HeightRequest="55"
+            BackgroundColor="#087BDB"
+            TextColor="White"
+            CornerRadius="14"
+            Clicked="BtnActualizar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

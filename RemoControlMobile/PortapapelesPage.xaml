@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.PortapapelesPage"
+    BackgroundColor="#161C25"
+    Title="Portapapeles">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Portapapeles"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Enviar texto entre el teléfono y la PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+        <!-- CONTENIDO -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="TEXTO"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Editor
+                            x:Name="txtContenido"
+                            AutoSize="TextChanges"
+                            HeightRequest="220"
+                            BackgroundColor="#151B23"
+                            TextColor="White"
+                            Placeholder="Escribe o pega texto aquí..."
+                            PlaceholderColor="#657181" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <Button
+                    Text="📥 Leer portapapeles de la PC"
+                    HeightRequest="55"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnLeerPc_Clicked" />
+
+                <Button
+                    Text="📤 Enviar texto a la PC"
+                    HeightRequest="55"
+                    BackgroundColor="#087BDB"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="14"
+                    Clicked="BtnEnviarPc_Clicked" />
+                <Button
+    Text="📌 Pegar en la ventana activa"
+    HeightRequest="55"
+    BackgroundColor="#087BDB"
+    TextColor="White"
+    FontAttributes="Bold"
+    CornerRadius="14"
+    Clicked="BtnPegarPc_Clicked" />
+
+                <Button
+                    Text="📋 Copiar al portapapeles del teléfono"
+                    HeightRequest="55"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnCopiarTelefono_Clicked" />
+
+                <Label
+                    x:Name="lblEstado"
+                    Text="Listo"
+                    HorizontalTextAlignment="Center"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+        <Label
+            Grid.Row="2"
+            Text="RemoControl Mobile"
+            HorizontalTextAlignment="Center"
+            FontSize="11"
+            TextColor="#657181"
+            Padding="0,10,0,18" />
+
+    </Grid>
+
+</ContentPage>

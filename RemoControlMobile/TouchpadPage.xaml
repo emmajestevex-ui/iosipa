@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.TouchpadPage"
+    BackgroundColor="#161C25"
+    Title="Touchpad">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0">
+
+                <Label
+                    Text="Touchpad"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Controla el mouse de la PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            Padding="20"
+            Spacing="12">
+
+            <Border
+                x:Name="zonaTouchpad"
+                HeightRequest="390"
+                BackgroundColor="#1E2631"
+                Stroke="#293545">
+
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+
+                <Grid>
+
+                    <Label
+                        Text="Mueve el dedo aquí"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        TextColor="#657181"
+                        FontSize="16" />
+
+                    <Grid.GestureRecognizers>
+
+                        <PanGestureRecognizer
+                            PanUpdated="Touchpad_PanUpdated" />
+
+                        <TapGestureRecognizer
+                            NumberOfTapsRequired="1"
+                            Tapped="Touchpad_Tapped" />
+
+                        <TapGestureRecognizer
+                            NumberOfTapsRequired="2"
+                            Tapped="Touchpad_DoubleTapped" />
+
+                    </Grid.GestureRecognizers>
+
+                </Grid>
+
+            </Border>
+
+
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10">
+
+                <Button
+                    Grid.Column="0"
+                    Text="Clic izquierdo"
+                    HeightRequest="60"
+                    BackgroundColor="#087BDB"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnIzquierdo_Clicked" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="Clic derecho"
+                    HeightRequest="60"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnDerecho_Clicked" />
+
+            </Grid>
+
+
+            <Grid
+                ColumnDefinitions="*,*"
+                ColumnSpacing="10">
+
+                <Button
+                    Grid.Column="0"
+                    Text="▲ Scroll"
+                    HeightRequest="55"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnScrollArriba_Clicked" />
+
+                <Button
+                    Grid.Column="1"
+                    Text="▼ Scroll"
+                    HeightRequest="55"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnScrollAbajo_Clicked" />
+
+            </Grid>
+
+            <Label
+                x:Name="lblEstado"
+                Text="Listo"
+                HorizontalTextAlignment="Center"
+                TextColor="#8794A5" />
+
+        </VerticalStackLayout>
+
+
+        <Label
+            Grid.Row="2"
+            Text="RemoControl Touchpad"
+            HorizontalTextAlignment="Center"
+            FontSize="11"
+            TextColor="#657181"
+            Padding="0,10,0,18" />
+
+    </Grid>
+
+</ContentPage>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.DiagnosticoPage"
+    BackgroundColor="#161C25"
+    Title="Diagnóstico">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Diagnóstico"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Conexión entre teléfono y PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="SERVIDOR"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblServidor"
+                            Text="--"
+                            FontSize="14"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblTipo"
+                            Text="Conexión: --"
+                            FontSize="13"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <Grid
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="12">
+
+                    <Border
+                        Grid.Column="0"
+                        Padding="16"
+                        BackgroundColor="#1E2631"
+                        Stroke="#293545">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="LATENCIA"
+                                FontSize="11"
+                                TextColor="#8794A5" />
+
+                            <Label
+                                x:Name="lblLatencia"
+                                Text="-- ms"
+                                FontSize="22"
+                                FontAttributes="Bold"
+                                TextColor="White" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                    <Border
+                        Grid.Column="1"
+                        Padding="16"
+                        BackgroundColor="#1E2631"
+                        Stroke="#293545">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+
+                        <VerticalStackLayout Spacing="5">
+
+                            <Label
+                                Text="ESTADO"
+                                FontSize="11"
+                                TextColor="#8794A5" />
+
+                            <Label
+                                x:Name="lblEstado"
+                                Text="--"
+                                FontSize="18"
+                                FontAttributes="Bold"
+                                TextColor="Orange" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </Grid>
+
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#151B23"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="RESULTADO"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblResultado"
+                            Text="Pulsa Ejecutar diagnóstico."
+                            FontSize="13"
+                            TextColor="#D8DEE7"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <Button
+            Grid.Row="2"
+            Text="🌐 Ejecutar diagnóstico"
+            Margin="20,10,20,20"
+            HeightRequest="55"
+            BackgroundColor="#087BDB"
+            TextColor="White"
+            FontAttributes="Bold"
+            CornerRadius="14"
+            Clicked="BtnDiagnosticar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

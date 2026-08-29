@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.ActualizacionesPage"
+    BackgroundColor="#161C25"
+    Title="Actualizaciones">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Actualizaciones"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="RemoControl Mobile"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- CONTENIDO -->
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <!-- VERSIÓN ACTUAL -->
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="VERSIÓN INSTALADA"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblVersionActual"
+                            Text="--"
+                            FontSize="22"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <Label
+                            x:Name="lblBuildActual"
+                            Text="Build --"
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- VERSIÓN DISPONIBLE -->
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="7">
+
+                        <Label
+                            Text="ÚLTIMA VERSIÓN"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblVersionNueva"
+                            Text="Consultando..."
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text=""
+                            FontSize="13"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- NOVEDADES -->
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#151B23"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="NOVEDADES"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblNotas"
+                            Text="--"
+                            FontSize="13"
+                            TextColor="#D8DEE7"
+                            LineBreakMode="WordWrap" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- DESCARGA -->
+
+                <Border
+                    x:Name="panelDescarga"
+                    Padding="16"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545"
+                    IsVisible="False">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="9">
+
+                        <Label
+                            x:Name="lblDescarga"
+                            Text="Descargando..."
+                            FontSize="13"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                        <ProgressBar
+                            x:Name="barraDescarga"
+                            Progress="0"
+                            HeightRequest="8" />
+
+                        <Label
+                            x:Name="lblProgreso"
+                            Text="0 %"
+                            HorizontalTextAlignment="Center"
+                            FontSize="12"
+                            TextColor="#8794A5" />
+
+                        <Button
+                            Text="Cancelar descarga"
+                            HeightRequest="45"
+                            BackgroundColor="#3A2730"
+                            TextColor="#FFAAAA"
+                            CornerRadius="11"
+                            Clicked="BtnCancelarDescarga_Clicked" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- ACTUALIZAR -->
+
+                <Button
+                    x:Name="btnActualizar"
+                    Text="⬆ Actualizar ahora"
+                    HeightRequest="58"
+                    BackgroundColor="#087BDB"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="14"
+                    IsVisible="False"
+                    Clicked="BtnActualizarAhora_Clicked" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- BUSCAR -->
+
+        <Button
+            Grid.Row="2"
+            Text="↻ Buscar actualizaciones"
+            Margin="20,10,20,20"
+            HeightRequest="55"
+            BackgroundColor="#1E2631"
+            TextColor="White"
+            CornerRadius="14"
+            Clicked="BtnBuscar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

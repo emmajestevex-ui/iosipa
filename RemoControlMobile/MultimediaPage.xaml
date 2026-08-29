@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.MultimediaPage"
+    BackgroundColor="#161C25"
+    Title="Multimedia">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ENCABEZADO -->
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Grid.Column="0"
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0,0,0"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Multimedia"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Control multimedia de la PC"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- CONTENIDO -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="18">
+
+                <!-- ESTADO -->
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="6">
+
+                        <Label
+                            Text="CONTROL MULTIMEDIA"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text="Listo"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            TextColor="White" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <!-- REPRODUCCIÓN -->
+                <Label
+                    Text="Reproducción"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    ColumnSpacing="10">
+
+                    <Button
+                        Grid.Column="0"
+                        Text="⏮"
+                        HeightRequest="75"
+                        FontSize="28"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="16"
+                        Clicked="BtnAnterior_Clicked" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="⏯"
+                        HeightRequest="75"
+                        FontSize="30"
+                        BackgroundColor="#087BDB"
+                        TextColor="White"
+                        CornerRadius="16"
+                        Clicked="BtnPlayPause_Clicked" />
+
+                    <Button
+                        Grid.Column="2"
+                        Text="⏭"
+                        HeightRequest="75"
+                        FontSize="28"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="16"
+                        Clicked="BtnSiguiente_Clicked" />
+
+                </Grid>
+
+
+                <Button
+                    Text="⏹   Detener"
+                    HeightRequest="55"
+                    FontSize="16"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnDetener_Clicked" />
+
+
+                <!-- VOLUMEN -->
+                <Label
+                    Text="Volumen"
+                    Margin="0,8,0,0"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Grid
+                    ColumnDefinitions="*,*,*"
+                    ColumnSpacing="10">
+
+                    <Button
+                        Grid.Column="0"
+                        Text="🔉  −"
+                        HeightRequest="65"
+                        FontSize="18"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="15"
+                        Clicked="BtnVolumenMenos_Clicked" />
+
+                    <Button
+                        Grid.Column="1"
+                        Text="🔇"
+                        HeightRequest="65"
+                        FontSize="22"
+                        BackgroundColor="#3A2730"
+                        TextColor="#FFAAAA"
+                        CornerRadius="15"
+                        Clicked="BtnMute_Clicked" />
+
+                    <Button
+                        Grid.Column="2"
+                        Text="🔊  +"
+                        HeightRequest="65"
+                        FontSize="18"
+                        BackgroundColor="#1E2631"
+                        TextColor="White"
+                        CornerRadius="15"
+                        Clicked="BtnVolumenMas_Clicked" />
+
+                </Grid>
+
+
+                <!-- INFORMACIÓN -->
+                <Border
+                    Margin="0,8,0,0"
+                    Padding="16"
+                    BackgroundColor="#151B23"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <Label
+                        Text="Estos controles funcionan con Spotify, YouTube, reproductores de Windows y otras aplicaciones compatibles con las teclas multimedia."
+                        FontSize="12"
+                        TextColor="#8794A5"
+                        LineBreakMode="WordWrap" />
+
+                </Border>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- PIE -->
+        <Label
+            Grid.Row="2"
+            Text="RemoControl Mobile"
+            HorizontalTextAlignment="Center"
+            FontSize="11"
+            TextColor="#657181"
+            Padding="0,10,0,18" />
+
+    </Grid>
+
+</ContentPage>

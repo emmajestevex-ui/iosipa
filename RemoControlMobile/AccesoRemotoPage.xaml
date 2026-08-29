@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.AccesoRemotoPage"
+    BackgroundColor="#161C25"
+    Title="Acceso remoto">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <Grid
+            Grid.Row="0"
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0">
+
+                <Label
+                    Text="Acceso remoto"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Autorización mediante código"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="16">
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="8">
+
+                        <Label
+                            Text="ESTADO"
+                            FontSize="11"
+                            TextColor="#8794A5" />
+
+                        <Label
+                            x:Name="lblEstado"
+                            Text="Consultando..."
+                            FontSize="21"
+                            FontAttributes="Bold"
+                            TextColor="Orange" />
+
+                        <Label
+                            x:Name="lblExpiracion"
+                            Text=""
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <Button
+                    Text="📧 Solicitar código"
+                    HeightRequest="58"
+                    BackgroundColor="#087BDB"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="14"
+                    Clicked="BtnSolicitar_Clicked" />
+
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                            Text="Código recibido"
+                            TextColor="White"
+                            FontSize="14" />
+
+                        <Entry
+                            x:Name="txtCodigo"
+                            Placeholder="000000"
+                            Keyboard="Numeric"
+                            MaxLength="6"
+                            BackgroundColor="#151B23"
+                            TextColor="White"
+                            PlaceholderColor="#657181" />
+
+                        <Label
+                            Text="Duración"
+                            TextColor="White"
+                            FontSize="14" />
+
+                        <Picker
+                            x:Name="pickerDuracion"
+                            BackgroundColor="#151B23"
+                            TextColor="White"
+                            SelectedIndex="1">
+
+                            <Picker.Items>
+                                <x:String>30 minutos</x:String>
+                                <x:String>1 hora</x:String>
+                                <x:String>4 horas</x:String>
+                                <x:String>8 horas</x:String>
+                            </Picker.Items>
+
+                        </Picker>
+
+                        <Button
+                            Text="✅ Validar y autorizar"
+                            HeightRequest="55"
+                            BackgroundColor="#22603B"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="13"
+                            Clicked="BtnValidar_Clicked" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
+                <Button
+                    Text="⛔ Revocar autorización"
+                    HeightRequest="55"
+                    BackgroundColor="#3A2730"
+                    TextColor="#FFAAAA"
+                    CornerRadius="14"
+                    Clicked="BtnRevocar_Clicked" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <Button
+            Grid.Row="2"
+            Text="↻ Actualizar"
+            Margin="20"
+            HeightRequest="52"
+            BackgroundColor="#1E2631"
+            TextColor="White"
+            CornerRadius="13"
+            Clicked="BtnActualizar_Clicked" />
+
+    </Grid>
+
+</ContentPage>

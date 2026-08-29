@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.FavoritosPage"
+    BackgroundColor="#161C25"
+    Title="Favoritos">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid
+            Padding="20"
+            ColumnDefinitions="Auto,*">
+
+            <Button
+                Text="←"
+                WidthRequest="50"
+                HeightRequest="45"
+                BackgroundColor="#1E2631"
+                TextColor="White"
+                CornerRadius="12"
+                Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="15,0">
+
+                <Label
+                    Text="Acciones rápidas"
+                    FontSize="25"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Label
+                    Text="Tus funciones más usadas"
+                    FontSize="12"
+                    TextColor="#8794A5" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="20"
+                Spacing="12">
+
+                <Button
+                    Text="🖥 Pantalla remota"
+                    HeightRequest="60"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnPantalla_Clicked" />
+
+                <Button
+                    Text="📋 Portapapeles"
+                    HeightRequest="60"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnPortapapeles_Clicked" />
+
+                <Button
+                    Text="🔊 Multimedia"
+                    HeightRequest="60"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnMultimedia_Clicked" />
+
+                <Button
+                    Text="📊 Estado de la PC"
+                    HeightRequest="60"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnEstado_Clicked" />
+
+                <Button
+                    Text="📁 Archivos"
+                    HeightRequest="60"
+                    BackgroundColor="#1E2631"
+                    TextColor="White"
+                    CornerRadius="14"
+                    Clicked="BtnArchivos_Clicked" />
+
+                <Button
+                    Text="🔒 Bloquear PC"
+                    HeightRequest="60"
+                    BackgroundColor="#3A2730"
+                    TextColor="#FFAAAA"
+                    CornerRadius="14"
+                    Clicked="BtnBloquear_Clicked" />
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>
