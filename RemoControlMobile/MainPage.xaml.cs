@@ -89,7 +89,7 @@ public partial class MainPage : ContentPage
         }
         else
         {
-            imgBrandLogo.Source = "default_brand.svg";
+            imgBrandLogo.Source = "msi_shield.png";
         }
 
         try
@@ -647,6 +647,98 @@ public partial class MainPage : ContentPage
     private async void BtnHerramientas_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new HerramientasProPage());
+    }
+
+
+    // ============================================================
+    // TARJETAS Y NAVEGACIÓN INFERIOR
+    // ============================================================
+
+    private void NavInicio_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+    }
+
+
+    private async void CardPantalla_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new PantallaPage());
+    }
+
+
+    private async void CardTouchpad_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new TouchpadPage());
+    }
+
+
+    private async void CardTeclado_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new TecladoPage());
+    }
+
+
+    private async void CardIntercom_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new IntercomPage());
+    }
+
+
+    private async void CardAplicaciones_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new AplicacionesPage());
+    }
+
+
+    private async void CardEstadoPc_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new EstadoPcPage());
+    }
+
+
+    private async void NavArchivos_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new ArchivosPage());
+    }
+
+
+    private async void NavHerramientas_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new HerramientasProPage());
+    }
+
+
+    private async void NavAjustes_Tapped(
+        object? sender,
+        TappedEventArgs e)
+    {
+        await Navigation.PushAsync(
+            new ConfiguracionPage());
     }
 
 }

@@ -95,7 +95,7 @@
                     Grid.Column="0"
                     Text="Clic izquierdo"
                     HeightRequest="60"
-                    BackgroundColor="#087BDB"
+                    BackgroundColor="#E31B2F"
                     TextColor="White"
                     CornerRadius="14"
                     Clicked="BtnIzquierdo_Clicked" />

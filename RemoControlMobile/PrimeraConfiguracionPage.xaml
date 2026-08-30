@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -225,7 +225,7 @@
                 x:Name="btnFinalizar"
                 Text="Guardar y comenzar"
                 HeightRequest="56"
-                BackgroundColor="#087BDB"
+                BackgroundColor="#E31B2F"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="14"

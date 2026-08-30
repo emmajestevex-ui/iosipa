@@ -1,4 +1,4 @@
-name: Validate RemoControl iOS
+name: Validate MSI Center iOS
 
 on:
   workflow_dispatch:
@@ -29,7 +29,10 @@ jobs:
         run: dotnet workload install maui-ios
 
       - name: Restaurar
-        run: dotnet restore RemoControlMobile/RemoControlMobile.csproj
+        run: >-
+          dotnet restore RemoControlMobile/RemoControlMobile.csproj
+          -p:TargetFrameworks=net10.0-ios
+          -p:RuntimeIdentifier=iossimulator-arm64
 
       - name: Compilar para simulador iOS
         run: >-

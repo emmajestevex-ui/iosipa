@@ -81,7 +81,7 @@
             Text="+ Guardar PC actual"
             Margin="20"
             HeightRequest="55"
-            BackgroundColor="#087BDB"
+            BackgroundColor="#E31B2F"
             TextColor="White"
             Clicked="BtnAgregar_Clicked" />
 

@@ -95,7 +95,7 @@
                 Text="↻"
                 WidthRequest="45"
                 HeightRequest="42"
-                BackgroundColor="#087BDB"
+                BackgroundColor="#E31B2F"
                 TextColor="White"
                 CornerRadius="10"
                 Clicked="BtnActualizar_Clicked" />
@@ -299,7 +299,7 @@
                     Text="📤 Archivo"
                     HeightRequest="52"
                     MinimumWidthRequest="110"
-                    BackgroundColor="#087BDB"
+                    BackgroundColor="#E31B2F"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="13"

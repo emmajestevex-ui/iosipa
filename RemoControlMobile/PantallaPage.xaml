@@ -81,7 +81,7 @@
             <Button
                 Grid.Column="1"
                 Text="📸 Captura"
-                BackgroundColor="#087BDB"
+                BackgroundColor="#E31B2F"
                 TextColor="White"
                 CornerRadius="10"
                 Clicked="BtnCaptura_Clicked" />

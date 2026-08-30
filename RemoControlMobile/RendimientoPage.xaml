@@ -163,7 +163,7 @@
             Text="↻ Actualizar"
             Margin="20,10,20,20"
             HeightRequest="55"
-            BackgroundColor="#087BDB"
+            BackgroundColor="#E31B2F"
             TextColor="White"
             CornerRadius="14"
             Clicked="BtnActualizar_Clicked" />

@@ -86,7 +86,7 @@
                 <Button
                     Text="📧 Solicitar código"
                     HeightRequest="58"
-                    BackgroundColor="#087BDB"
+                    BackgroundColor="#E31B2F"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="14"

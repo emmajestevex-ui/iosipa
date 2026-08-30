@@ -20,7 +20,7 @@
                     <VerticalStackLayout Spacing="11">
                         <Label Text="Continuar en PC" FontSize="18" FontAttributes="Bold" TextColor="White"/>
                         <Entry x:Name="txtUrl" Placeholder="https://..." TextColor="White" PlaceholderColor="#6E7D90"/>
-                        <Button Text="Abrir enlace en la PC" BackgroundColor="#2388F2" TextColor="White" Clicked="BtnContinuar_Clicked"/>
+                        <Button Text="Abrir enlace en la PC" BackgroundColor="#E31B2F" TextColor="White" Clicked="BtnContinuar_Clicked"/>
                     </VerticalStackLayout>
                 </Border>
 
@@ -114,3 +114,4 @@
         </ScrollView>
     </Grid>
 </ContentPage>
+

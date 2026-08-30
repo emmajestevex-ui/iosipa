@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -590,7 +590,7 @@
                     <VerticalStackLayout Spacing="8">
 
                         <Label
-                            Text="RemoControl Mobile"
+                            Text="MSI Center"
                             FontAttributes="Bold"
                             TextColor="White" />
 
@@ -629,7 +629,7 @@
                     <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
                     <VerticalStackLayout Spacing="12">
                         <Label Text="Nombre personalizado" TextColor="#AEB8C5"/>
-                        <Entry x:Name="txtNombreApp" Placeholder="RemoControl" TextColor="White"/>
+                        <Entry x:Name="txtNombreApp" Placeholder="MSI Center" TextColor="White"/>
 
                         <Label Text="Logo" TextColor="#AEB8C5"/>
                         <Button Text="Elegir logo personal" Clicked="BtnElegirLogo_Clicked"/>
@@ -670,7 +670,7 @@
             Text="Guardar cambios"
             Margin="20,10,20,20"
             HeightRequest="55"
-            BackgroundColor="#087BDB"
+            BackgroundColor="#E31B2F"
             TextColor="White"
             FontAttributes="Bold"
             CornerRadius="14"

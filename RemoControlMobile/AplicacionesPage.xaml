@@ -74,7 +74,7 @@
             <Button
                 Grid.Column="1"
                 Text="+ Agregar"
-                BackgroundColor="#087BDB"
+                BackgroundColor="#E31B2F"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="12"

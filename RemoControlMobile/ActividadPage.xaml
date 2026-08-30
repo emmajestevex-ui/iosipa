@@ -95,7 +95,7 @@
                             IsVisible="False"
                             IsRunning="False"
                             VerticalOptions="Center"
-                            Color="#087BDB" />
+                            Color="#E31B2F" />
 
                     </Grid>
 
@@ -140,7 +140,7 @@
                 Grid.Column="0"
                 Text="↻ Actualizar"
                 HeightRequest="52"
-                BackgroundColor="#087BDB"
+                BackgroundColor="#E31B2F"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="14"

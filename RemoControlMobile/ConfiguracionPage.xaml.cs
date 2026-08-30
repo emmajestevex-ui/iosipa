@@ -497,7 +497,7 @@ public partial class ConfiguracionPage : ContentPage
 
 
         await DisplayAlertAsync(
-            "RemoControl",
+            "MSI Center",
             "Configuración guardada correctamente.\n\nYa puedes controlar esta PC desde el teléfono.",
             "Aceptar");
 
@@ -607,7 +607,7 @@ public partial class ConfiguracionPage : ContentPage
     }
     private async void BtnGuardarPersonalizacion_Clicked(object sender, EventArgs e)
     {
-        AppConfig.NombrePersonalizado = txtNombreApp.Text ?? "RemoControl";
+        AppConfig.NombrePersonalizado = txtNombreApp.Text ?? "MSI Center";
         AppConfig.BloqueoApp = swBloqueo.IsToggled;
         AppConfig.ColorFondo = string.IsNullOrWhiteSpace(txtColorFondo.Text) ? "#0B1119" : txtColorFondo.Text.Trim();
         int[] hablar = { 2, 4, 6, 10, 15 };

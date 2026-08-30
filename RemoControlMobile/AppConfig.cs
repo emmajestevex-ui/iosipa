@@ -1,4 +1,4 @@
-﻿namespace RemoControlMobile;
+namespace RemoControlMobile;
 
 public static class AppConfig
 {
@@ -16,6 +16,35 @@ public static class AppConfig
             Preferences.Default.Remove("equipo_activo");
             Preferences.Default.Set("PrimeraConfiguracionCompletada", false);
             Preferences.Default.Set(migrationKey, true);
+        }
+
+        const string brandingKey = "branding_msi_center_v1";
+
+        if (!Preferences.Default.Get(brandingKey, false))
+        {
+            string nombreActual =
+                Preferences.Default.Get("brand_name", "");
+
+            if (
+                string.IsNullOrWhiteSpace(nombreActual) ||
+                nombreActual.Equals("RemoControl", StringComparison.OrdinalIgnoreCase) ||
+                nombreActual.Equals("Msi Control", StringComparison.OrdinalIgnoreCase))
+            {
+                Preferences.Default.Set("brand_name", "MSI Center");
+            }
+
+            string colorActual =
+                Preferences.Default.Get("brand_background", "");
+
+            if (
+                string.IsNullOrWhiteSpace(colorActual) ||
+                colorActual.Equals("#087BDB", StringComparison.OrdinalIgnoreCase) ||
+                colorActual.Equals("#E31B2F", StringComparison.OrdinalIgnoreCase))
+            {
+                Preferences.Default.Set("brand_background", "#0B1119");
+            }
+
+            Preferences.Default.Set(brandingKey, true);
         }
     }
 
@@ -58,8 +87,8 @@ public static class AppConfig
 
     public static string NombrePersonalizado
     {
-        get => Preferences.Default.Get("brand_name", "RemoControl");
-        set => Preferences.Default.Set("brand_name", string.IsNullOrWhiteSpace(value) ? "RemoControl" : value.Trim());
+        get => Preferences.Default.Get("brand_name", "MSI Center");
+        set => Preferences.Default.Set("brand_name", string.IsNullOrWhiteSpace(value) ? "MSI Center" : value.Trim());
     }
 
     public static string LogoPersonalizado
@@ -196,3 +225,4 @@ public static class AppConfig
             false);
     }
 }
+

@@ -88,7 +88,7 @@
                         <Button
                             Text="⌨  Enviar texto"
                             HeightRequest="52"
-                            BackgroundColor="#087BDB"
+                            BackgroundColor="#E31B2F"
                             TextColor="White"
                             FontAttributes="Bold"
                             CornerRadius="12"
@@ -159,7 +159,7 @@
                         Grid.Column="1"
                         Text="Enter"
                         HeightRequest="55"
-                        BackgroundColor="#087BDB"
+                        BackgroundColor="#E31B2F"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnEnter_Clicked" />

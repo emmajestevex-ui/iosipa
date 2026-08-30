@@ -1,6 +1,7 @@
-RemoControl Mobile V5
+MSI Center V5
 
 Cambios principales:
+- Marca visual MSI Center: nombre visible, escudo MSI en la cabecera, icono iOS oscuro con acento rojo y pantalla principal modernizada.
 - La V5 borra una sola vez cualquier PC/token/equipo guardado de versiones anteriores. Cada instalación debe configurar su propia PC.
 - Herramientas ya no muestra JSON crudo: Wi-Fi, impresoras, Bluetooth y archivos recientes se presentan como controles utilizables.
 - Wi-Fi: permite pedir a Windows conexión a un perfil conocido.
