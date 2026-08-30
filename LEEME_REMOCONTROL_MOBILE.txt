@@ -1,0 +1,38 @@
+REMOCONTROL MOBILE - VERSION GENERAL
+====================================
+
+CAMBIOS IMPORTANTES
+- Ya no contiene las IPs del desarrollador.
+- Ya no contiene un token predeterminado compartido.
+- Cada usuario debe copiar la dirección y el token de SU propia PC.
+- La configuración antigua se limpia una sola vez al actualizar a esta versión.
+- Los errores distinguen mejor entre PC inaccesible y token incorrecto.
+- La guía explica dónde encontrar los datos en RemoControl PC.
+- La sección Configuración explica que Telegram se configura en la aplicación de PC.
+
+PRIMER USO
+1. Instala y abre RemoControl Mobile.
+2. En la PC abre RemoControl > Configuración.
+3. Copia DIRECCIÓN PARA EL TELÉFONO.
+4. Copia TOKEN DE SEGURIDAD.
+5. Pégalos en el teléfono.
+6. Pulsa Probar conexión.
+7. Si dice Conexión correcta, pulsa Guardar y comenzar.
+
+MISMO WIFI
+- PC y teléfono deben estar en la misma red.
+- La dirección normalmente será algo como http://192.168.x.x:5050.
+- Usa la que muestra TU PC; no copies una dirección de ejemplo.
+
+OTRA RED
+- Primero prueba en la misma Wi-Fi.
+- Después puedes usar Tailscale en la PC y el teléfono.
+
+TELEGRAM
+- Se configura en RemoControl PC > Configuración > NOTIFICACIONES POR TELEGRAM.
+- La app de PC incluye los pasos para BotFather, detección de Chat ID y prueba de notificación.
+
+GENERAR APK
+- Abre RemoControlMobile.slnx en Visual Studio.
+- Recompila Release.
+- Genera/publica el APK firmado correspondiente a esta versión.

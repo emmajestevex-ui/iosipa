@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,6 +12,12 @@ public partial class ConfiguracionPage : ContentPage
     public ConfiguracionPage()
     {
         InitializeComponent();
+        txtNombreApp.Text = AppConfig.NombrePersonalizado;
+        swBloqueo.IsToggled = AppConfig.BloqueoApp;
+        lblLogo.Text = string.IsNullOrWhiteSpace(AppConfig.LogoPersonalizado) ? "Logo predeterminado" : Path.GetFileName(AppConfig.LogoPersonalizado);
+        txtColorFondo.Text = AppConfig.ColorFondo;
+        pickerHablar.SelectedIndex = AppConfig.DuracionHablarSegundos switch { 2 => 0, 4 => 1, 6 => 2, 10 => 3, _ => 4 };
+        pickerAudioLive.SelectedIndex = Math.Clamp(AppConfig.AudioLiveSegundos - 1, 0, 2);
 
         CargarConfiguracion();
 
@@ -563,4 +569,71 @@ public partial class ConfiguracionPage : ContentPage
     {
         await Navigation.PopAsync();
     }
+    private async void BtnElegirLogo_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            FileResult? archivo = await FilePicker.Default.PickAsync(
+                new PickOptions
+                {
+                    PickerTitle = "Selecciona tu logo",
+                    FileTypes = FilePickerFileType.Images
+                });
+
+            if (archivo == null)
+            {
+                return;
+            }
+
+            string extension = Path.GetExtension(archivo.FileName);
+            string destino = Path.Combine(
+                FileSystem.AppDataDirectory,
+                "brand_logo" + (string.IsNullOrWhiteSpace(extension) ? ".png" : extension));
+
+            await using Stream origen = await archivo.OpenReadAsync();
+            await using FileStream salida = File.Create(destino);
+            await origen.CopyToAsync(salida);
+
+            AppConfig.LogoPersonalizado = destino;
+            lblLogo.Text = archivo.FileName;
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync(
+                "Logo",
+                "No se pudo guardar el logo.\n\n" + ex.Message,
+                "Aceptar");
+        }
+    }
+    private async void BtnGuardarPersonalizacion_Clicked(object sender, EventArgs e)
+    {
+        AppConfig.NombrePersonalizado = txtNombreApp.Text ?? "RemoControl";
+        AppConfig.BloqueoApp = swBloqueo.IsToggled;
+        AppConfig.ColorFondo = string.IsNullOrWhiteSpace(txtColorFondo.Text) ? "#0B1119" : txtColorFondo.Text.Trim();
+        int[] hablar = { 2, 4, 6, 10, 15 };
+        AppConfig.DuracionHablarSegundos = hablar[Math.Clamp(pickerHablar.SelectedIndex, 0, hablar.Length - 1)];
+        AppConfig.AudioLiveSegundos = Math.Clamp(pickerAudioLive.SelectedIndex + 1, 1, 3);
+        await DisplayAlertAsync("Guardado","Personalización y tiempos del intercomunicador guardados.","Aceptar");
+    }
+
+    private async void BtnCrearAcceso_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            bool ok = await LauncherBranding.CrearAccesoPersonalizadoAsync(
+                AppConfig.NombrePersonalizado,
+                AppConfig.LogoPersonalizado,
+                AppConfig.ColorFondo);
+
+            await DisplayAlertAsync(
+                "Acceso personalizado",
+                ok ? "Se solicitó crear el acceso personalizado. Confirma la ventana de tu launcher si aparece." : "Este dispositivo o launcher no permite crear accesos personalizados automáticamente.",
+                "Aceptar");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Acceso personalizado", ex.Message, "Aceptar");
+        }
+    }
+
 }

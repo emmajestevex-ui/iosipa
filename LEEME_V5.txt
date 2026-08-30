@@ -1,0 +1,15 @@
+RemoControl Mobile V5
+
+Cambios principales:
+- La V5 borra una sola vez cualquier PC/token/equipo guardado de versiones anteriores. Cada instalación debe configurar su propia PC.
+- Herramientas ya no muestra JSON crudo: Wi-Fi, impresoras, Bluetooth y archivos recientes se presentan como controles utilizables.
+- Wi-Fi: permite pedir a Windows conexión a un perfil conocido.
+- Impresoras: muestra estado y permite Pausar/Reanudar/Cancelar todos los trabajos cuando Windows lo admite.
+- Bluetooth: muestra dispositivos y permite intentar habilitar/deshabilitar cuando Windows lo admite; también abre la configuración Bluetooth de la PC.
+- Timbre: el texto escrito se pronuncia en el teléfono y también hace sonar/muestra el mensaje en la PC.
+- Intercomunicador: duración configurable para hablar a la PC y audio en vivo de 1, 2 o 3 s por bloque. 1 s da la menor latencia con el protocolo HTTP actual.
+- Archivos: la raíz muestra Descargas, Documentos, Imágenes, Escritorio, Música, Vídeos y discos. Las descargas se guardan en Descargas/RemoControl en Android moderno.
+- Personalización: nombre, logo y color de fondo dentro de la app. En Android 8+ se puede solicitar un acceso directo personalizado con nombre/logo/color en la pantalla de inicio.
+
+Limitación del sistema:
+Android/iOS no permiten que una app instalada cambie dinámicamente su icono/nombre ORIGINAL del launcher como si se recompilara. V5 usa un acceso directo personalizado cuando el launcher de Android lo permite.

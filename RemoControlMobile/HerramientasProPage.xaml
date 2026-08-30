@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RemoControlMobile.HerramientasProPage"
+             BackgroundColor="#0B1119"
+             Shell.NavBarIsVisible="False">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Padding="20,18" ColumnDefinitions="Auto,*" BackgroundColor="#0F1722">
+            <Button Text="←" WidthRequest="44" HeightRequest="44" CornerRadius="12" BackgroundColor="#182535" TextColor="White" Clicked="BtnVolver_Clicked"/>
+            <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" VerticalOptions="Center">
+                <Label Text="Herramientas" FontSize="23" FontAttributes="Bold" TextColor="White"/>
+                <Label Text="PC, periféricos y automatización" FontSize="12" TextColor="#7F90A5"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="16">
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="11">
+                        <Label Text="Continuar en PC" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                        <Entry x:Name="txtUrl" Placeholder="https://..." TextColor="White" PlaceholderColor="#6E7D90"/>
+                        <Button Text="Abrir enlace en la PC" BackgroundColor="#2388F2" TextColor="White" Clicked="BtnContinuar_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="11">
+                        <Label Text="Acciones programadas" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                        <Entry x:Name="txtMinutos" Placeholder="Minutos" Keyboard="Numeric" TextColor="White"/>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <Button Text="Apagar" BackgroundColor="#8B3038" TextColor="White" Clicked="BtnApagar_Clicked"/>
+                            <Button Grid.Column="1" Text="Suspender" BackgroundColor="#6B5421" TextColor="White" Clicked="BtnSuspender_Clicked"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="11">
+                        <Label Text="Presentaciones" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                            <Button Text="Anterior" Clicked="BtnPrev_Clicked"/>
+                            <Button Grid.Column="1" Text="Iniciar" Clicked="BtnStart_Clicked"/>
+                            <Button Grid.Column="2" Text="Siguiente" Clicked="BtnNext_Clicked"/>
+                        </Grid>
+                        <Button Text="Salir de presentación" Clicked="BtnExit_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Timbre" FontSize="18" FontAttributes="Bold" TextColor="White"/>
+                        <Label Text="El mensaje se pronuncia en este teléfono y también hace sonar la PC." FontSize="11" TextColor="#8191A5"/>
+                        <Entry x:Name="txtMensaje" Placeholder="Escribe el mensaje" TextColor="White"/>
+                        <Button Text="Reproducir y hacer sonar PC" BackgroundColor="#6A3DE8" TextColor="White" Clicked="BtnRing_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label Text="PC y periféricos" FontSize="21" FontAttributes="Bold" TextColor="White" Margin="0,8,0,0"/>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Archivos recientes" FontSize="17" FontAttributes="Bold" TextColor="White"/>
+                            <Button Grid.Column="1" Text="Actualizar" FontSize="11" Clicked="BtnRecientes_Clicked"/>
+                        </Grid>
+                        <VerticalStackLayout x:Name="listaRecientes" Spacing="8"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Wi‑Fi conocidos" FontSize="17" FontAttributes="Bold" TextColor="White"/>
+                            <Button Grid.Column="1" Text="Actualizar" FontSize="11" Clicked="BtnWifi_Clicked"/>
+                        </Grid>
+                        <Label Text="Toca una red para pedirle a Windows que se conecte." FontSize="11" TextColor="#8191A5"/>
+                        <VerticalStackLayout x:Name="listaWifi" Spacing="8"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Impresoras" FontSize="17" FontAttributes="Bold" TextColor="White"/>
+                            <Button Grid.Column="1" Text="Abrir en PC" FontSize="11" Clicked="BtnAbrirImpresoras_Clicked"/>
+                        </Grid>
+                        <VerticalStackLayout x:Name="listaImpresoras" Spacing="8"/>
+                        <Button Text="Actualizar impresoras" Clicked="BtnPrinters_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#121B27" Stroke="#223247" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Bluetooth" FontSize="17" FontAttributes="Bold" TextColor="White"/>
+                            <Button Grid.Column="1" Text="Abrir en PC" FontSize="11" Clicked="BtnAbrirBluetooth_Clicked"/>
+                        </Grid>
+                        <VerticalStackLayout x:Name="listaBluetooth" Spacing="8"/>
+                        <Button Text="Actualizar Bluetooth" Clicked="BtnBluetooth_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label x:Name="lblEstado" Text="" TextColor="#8191A5" FontSize="12" HorizontalTextAlignment="Center"/>
+                <BoxView HeightRequest="18" Opacity="0"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

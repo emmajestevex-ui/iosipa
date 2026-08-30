@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -54,22 +54,22 @@
                         FontSize="13" />
 
                     <Label
-                        Text="2. Abre RemoControl Server en la PC."
+                        Text="2. Abre RemoControl en la PC y entra a Configuración."
                         TextColor="#D5DCE5"
                         FontSize="13" />
 
                     <Label
-                        Text="3. Pulsa Iniciar servidor."
+                        Text="3. Busca DIRECCIÓN PARA EL TELÉFONO y TOKEN DE SEGURIDAD."
                         TextColor="#D5DCE5"
                         FontSize="13" />
 
                     <Label
-                        Text="4. Busca la dirección del servidor y el token."
+                        Text="4. Si Windows pide permiso, acéptalo. Si aparece Acceso denegado, pulsa Reparar acceso de Windows en la PC."
                         TextColor="#D5DCE5"
                         FontSize="13" />
 
                     <Label
-                        Text="5. Escribe esos datos aquí abajo."
+                        Text="5. Copia exactamente esos dos datos aquí abajo."
                         TextColor="#D5DCE5"
                         FontSize="13" />
 
@@ -97,13 +97,13 @@
 
                     <Entry
                         x:Name="txtServidor"
-                        Placeholder="Ejemplo: http://100.x.x.x:5050"
+                        Placeholder="Ejemplo: http://192.168.1.25:5050"
                         BackgroundColor="#151B23"
                         TextColor="White"
                         PlaceholderColor="#657181" />
 
                     <Label
-                        Text="Escribe exactamente la dirección que aparece en RemoControl Server."
+                        Text="Escribe exactamente la DIRECCIÓN PARA EL TELÉFONO que aparece en RemoControl de tu PC."
                         FontSize="11"
                         TextColor="#8794A5" />
 
@@ -212,7 +212,7 @@
                         TextColor="#FFB45B" />
 
                     <Label
-                        Text="Instala Tailscale en la PC y en el teléfono, conecta ambos y utiliza en RemoControl la dirección que empieza normalmente por 100."
+                        Text="Primero conecta y prueba por el mismo Wi-Fi. Para usar RemoControl desde otra red, instala Tailscale en la PC y el teléfono y usa la dirección de Tailscale de esa PC."
                         FontSize="12"
                         TextColor="#AEB8C5" />
 

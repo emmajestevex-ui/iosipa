@@ -246,170 +246,85 @@ public partial class ArchivosPage : ContentPage
     private async Task DescargarArchivo(
         ArchivoRemoto archivo)
     {
-        if (string.IsNullOrWhiteSpace(
-            archivo.path))
-        {
+        if (string.IsNullOrWhiteSpace(archivo.path))
             return;
-        }
+
+        string? rutaTemporal = null;
 
         try
         {
             PrepararTransferencia();
+            CancellationToken token = cancelacionTransferencia!.Token;
 
-            CancellationToken token =
-                cancelacionTransferencia!
-                    .Token;
+            panelTransferencia.IsVisible = true;
+            barraTransferencia.Progress = 0;
+            lblPorcentaje.Text = "0 %";
 
-            panelTransferencia.IsVisible =
-                true;
+            string nombre = archivo.name ?? "archivo";
+            lblTransferencia.Text = "Descargando " + nombre;
 
-            barraTransferencia.Progress =
-                0;
+            string url = AppConfig.Servidor +
+                         "/download?path=" +
+                         Uri.EscapeDataString(archivo.path);
 
-            lblPorcentaje.Text =
-                "0 %";
-
-            lblTransferencia.Text =
-                "Descargando " +
-                (
-                    archivo.name ??
-                    "archivo"
-                );
-
-            string url =
-                AppConfig.Servidor +
-                "/download?path=" +
-                Uri.EscapeDataString(
-                    archivo.path);
-
-            using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    url,
-                    HttpCompletionOption
-                        .ResponseHeadersRead,
-                    token);
+            using HttpResponseMessage respuesta = await cliente.GetAsync(
+                url,
+                HttpCompletionOption.ResponseHeadersRead,
+                token);
 
             if (!respuesta.IsSuccessStatusCode)
             {
-                await DisplayAlertAsync(
-                    "Error",
-                    "No se pudo descargar.",
-                    "Aceptar");
-
+                string error = await respuesta.Content.ReadAsStringAsync(token);
+                await DisplayAlertAsync("Error", string.IsNullOrWhiteSpace(error) ? "No se pudo descargar." : error, "Aceptar");
                 return;
             }
 
-            long total =
-                respuesta.Content
-                    .Headers
-                    .ContentLength ??
-                0;
+            long total = respuesta.Content.Headers.ContentLength ?? 0;
+            rutaTemporal = Path.Combine(FileSystem.CacheDirectory, Guid.NewGuid().ToString("N") + "_" + nombre);
 
-            string nombre =
-                archivo.name ??
-                "archivo";
-
-            string ruta =
-                Path.Combine(
-                    FileSystem
-                        .CacheDirectory,
-                    nombre);
-
-            using Stream entrada =
-                await respuesta.Content
-                    .ReadAsStreamAsync(
-                        token);
-
-            using FileStream salida =
-                new FileStream(
-                    ruta,
-                    FileMode.Create,
-                    FileAccess.Write,
-                    FileShare.None);
-
-            byte[] buffer =
-                new byte[
-                    64 * 1024];
-
-            long recibidos =
-                0;
-
-            int leidos;
-
-            while (
-                (leidos =
-                    await entrada.ReadAsync(
-                        buffer,
-                        token)) > 0)
+            await using Stream entrada = await respuesta.Content.ReadAsStreamAsync(token);
+            await using (FileStream salida = new FileStream(rutaTemporal, FileMode.Create, FileAccess.Write, FileShare.Read))
             {
-                await salida.WriteAsync(
-                    buffer.AsMemory(
-                        0,
-                        leidos),
-                    token);
+                byte[] buffer = new byte[64 * 1024];
+                long recibidos = 0;
+                int leidos;
 
-                recibidos +=
-                    leidos;
-
-                if (total > 0)
+                while ((leidos = await entrada.ReadAsync(buffer, token)) > 0)
                 {
-                    double porcentaje =
-                        (double)recibidos /
-                        total;
-
-                    ActualizarProgreso(
-                        porcentaje);
+                    await salida.WriteAsync(buffer.AsMemory(0, leidos), token);
+                    recibidos += leidos;
+                    if (total > 0)
+                        ActualizarProgreso((double)recibidos / total);
                 }
             }
 
-            ActualizarProgreso(
-                1);
+            lblTransferencia.Text = "Guardando en Descargas...";
+            string destino = await PlatformFileSaver.GuardarEnDescargasAsync(rutaTemporal, nombre, token);
 
-            lblTransferencia.Text =
-                "Descarga completada";
+            ActualizarProgreso(1);
+            lblTransferencia.Text = "Descarga completada";
+            NotificationService.Mostrar("RemoControl", nombre + " guardado en " + destino + ".");
 
-            NotificationService.Mostrar(
-                "RemoControl",
-                nombre +
-                " descargado.");
-
-            bool compartir =
-                await DisplayAlertAsync(
-                    "Descargado",
-                    nombre +
-                    "\n\n¿Quieres abrir o compartir el archivo?",
-                    "Compartir",
-                    "Cerrar");
-
-            if (compartir)
-            {
-                await Share.Default
-                    .RequestAsync(
-                        new ShareFileRequest
-                        {
-                            Title =
-                                nombre,
-
-                            File =
-                                new ShareFile(
-                                    ruta)
-                        });
-            }
+            await DisplayAlertAsync(
+                "Descargado",
+                nombre + "\n\nGuardado en: " + destino,
+                "Aceptar");
         }
         catch (OperationCanceledException)
         {
-            lblTransferencia.Text =
-                "Descarga cancelada";
-
-            lblPorcentaje.Text =
-                "Cancelada";
+            lblTransferencia.Text = "Descarga cancelada";
+            lblPorcentaje.Text = "Cancelada";
         }
         catch (Exception ex)
         {
-            await DisplayAlertAsync(
-                "Error",
-                ex.Message,
-                "Aceptar");
+            await DisplayAlertAsync("Error", ex.Message, "Aceptar");
+        }
+        finally
+        {
+            if (!string.IsNullOrWhiteSpace(rutaTemporal))
+            {
+                try { File.Delete(rutaTemporal); } catch { }
+            }
         }
     }
 

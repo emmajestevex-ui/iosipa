@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RemoControlMobile.IntercomPage"
+             BackgroundColor="#0A111B"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid Padding="20,18" ColumnDefinitions="Auto,*" BackgroundColor="#0E1724">
+            <Button Text="←"
+                    WidthRequest="44"
+                    HeightRequest="44"
+                    CornerRadius="12"
+                    BackgroundColor="#172536"
+                    TextColor="White"
+                    Clicked="BtnVolver_Clicked" />
+
+            <VerticalStackLayout Grid.Column="1"
+                                 Margin="14,0,0,0"
+                                 VerticalOptions="Center">
+                <Label Text="Intercomunicador y cámara"
+                       TextColor="White"
+                       FontSize="22"
+                       FontAttributes="Bold" />
+                <Label Text="Comunicación privada con tu PC autorizada"
+                       TextColor="#8495AA"
+                       FontSize="12" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="16">
+
+                <Border BackgroundColor="#111C2A" Stroke="#22364E" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="7">
+                        <Label Text="Privacidad"
+                               TextColor="#73B9FF"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+                        <Label Text="El dueño de la PC debe habilitar audio y cámara en RemoControl PC > Configuración > Privacidad. Windows muestra avisos visibles mientras estas funciones están activas."
+                               TextColor="#A8B6C7"
+                               FontSize="12" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#111B28" Stroke="#20334A" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Hablar a la PC"
+                               TextColor="White"
+                               FontSize="18"
+                               FontAttributes="Bold" />
+                        <Label Text="Graba un mensaje desde el teléfono y se reproduce por los altavoces de la PC."
+                               TextColor="#8293A8"
+                               FontSize="12" />
+                        <Button x:Name="btnHablar"
+                                Text="Grabar 4 segundos y enviar"
+                                HeightRequest="52"
+                                BackgroundColor="#2B8FF7"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="13"
+                                Clicked="BtnHablar_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#111B28" Stroke="#20334A" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout>
+                                <Label Text="Escuchar PC en vivo"
+                                       TextColor="White"
+                                       FontSize="18"
+                                       FontAttributes="Bold" />
+                                <Label Text="Audio continuo del micrófono de la PC con una pequeña latencia de red."
+                                       TextColor="#8293A8"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                            <Border x:Name="badgeEnVivo"
+                                    Grid.Column="1"
+                                    BackgroundColor="#40252B"
+                                    Stroke="#6B3038"
+                                    Padding="10,5"
+                                    IsVisible="False">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+                                <Label Text="● EN VIVO"
+                                       TextColor="#FF6F7D"
+                                       FontSize="11"
+                                       FontAttributes="Bold" />
+                            </Border>
+                        </Grid>
+
+                        <Button x:Name="btnEscucharVivo"
+                                Text="Iniciar escucha en vivo"
+                                HeightRequest="52"
+                                BackgroundColor="#17283A"
+                                TextColor="#E7F2FF"
+                                FontAttributes="Bold"
+                                CornerRadius="13"
+                                Clicked="BtnEscucharVivo_Clicked" />
+
+                        <Button x:Name="btnEscuchar"
+                                Text="Escuchar solo 5 segundos"
+                                HeightRequest="46"
+                                BackgroundColor="Transparent"
+                                BorderColor="#29415C"
+                                BorderWidth="1"
+                                TextColor="#AFC7E2"
+                                CornerRadius="12"
+                                Clicked="BtnEscuchar_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border BackgroundColor="#111B28" Stroke="#20334A" Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout>
+                                <Label Text="Cámara de la PC"
+                                       TextColor="White"
+                                       FontSize="18"
+                                       FontAttributes="Bold" />
+                                <Label Text="Muestra en el teléfono la cámara autorizada de la computadora."
+                                       TextColor="#8293A8"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                            <Border x:Name="badgeCamara"
+                                    Grid.Column="1"
+                                    BackgroundColor="#18342C"
+                                    Stroke="#285B4C"
+                                    Padding="10,5"
+                                    IsVisible="False">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+                                <Label Text="● CÁMARA ACTIVA"
+                                       TextColor="#58DBAA"
+                                       FontSize="10"
+                                       FontAttributes="Bold" />
+                            </Border>
+                        </Grid>
+
+                        <Border BackgroundColor="#07101A"
+                                Stroke="#1D2B3D"
+                                HeightRequest="250">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14" />
+                            </Border.StrokeShape>
+                            <Grid>
+                                <Image x:Name="imgCamara"
+                                       Aspect="AspectFit"
+                                       IsVisible="False" />
+                                <VerticalStackLayout x:Name="camaraPlaceholder"
+                                                     HorizontalOptions="Center"
+                                                     VerticalOptions="Center"
+                                                     Spacing="7">
+                                    <Label Text="CÁMARA REMOTA"
+                                           TextColor="#6F8298"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Pulsa iniciar para ver la cámara de la PC"
+                                           TextColor="#52657B"
+                                           FontSize="11"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+
+                        <Button x:Name="btnCamara"
+                                Text="Iniciar cámara"
+                                HeightRequest="52"
+                                BackgroundColor="#1B6F5A"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                CornerRadius="13"
+                                Clicked="BtnCamara_Clicked" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Label x:Name="lblEstadoAudio"
+                       Text="Listo"
+                       TextColor="#7E90A7"
+                       FontSize="12"
+                       HorizontalTextAlignment="Center" />
+
+                <BoxView HeightRequest="20" Opacity="0" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

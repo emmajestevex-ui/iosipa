@@ -1,0 +1,11 @@
+RemoControl Mobile V3
+
+Cambios principales:
+- Inicio rediseñado con controles profesionales y texto; se eliminaron los botones repetidos de la portada.
+- Personalización: el nombre y logo elegidos en Configuración ahora se reflejan en la cabecera de la app y el logo se copia al almacenamiento interno para que persista.
+- Intercomunicador: hablar desde el teléfono a la PC y solicitar 5 segundos del micrófono de la PC.
+- Privacidad: el audio remoto de la PC debe estar habilitado explícitamente en RemoControl PC. Cada uso del micrófono muestra un aviso visible en Windows.
+- Android: permiso RECORD_AUDIO agregado.
+- iOS: descripción de uso del micrófono agregada.
+
+Nota: Android/iOS no permiten cambiar dinámicamente el nombre e icono del launcher para cada usuario. La personalización funciona dentro de RemoControl. Para cambiar el icono/nombre instalado del sistema hay que generar una compilación personalizada.

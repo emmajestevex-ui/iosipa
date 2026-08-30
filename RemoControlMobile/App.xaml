@@ -1,28 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-
-<Application
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="RemoControlMobile.App">
-
+<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="RemoControlMobile.App">
     <Application.Resources>
-
         <ResourceDictionary>
-
-            <Color x:Key="Fondo">
-                #161C25
-            </Color>
-
-            <Color x:Key="Panel">
-                #1E2631
-            </Color>
-
-            <Color x:Key="Azul">
-                #087BDB
-            </Color>
-
+            <Style TargetType="ContentPage"><Setter Property="BackgroundColor" Value="#0B1119" /></Style>
+            <Style TargetType="Label"><Setter Property="FontFamily" Value="OpenSansRegular" /></Style>
+            <Style TargetType="Button"><Setter Property="FontFamily" Value="OpenSansSemibold" /><Setter Property="FontSize" Value="13" /></Style>
+            <Style TargetType="Border" Class="ToolCard">
+                <Setter Property="BackgroundColor" Value="#111B27" />
+                <Setter Property="Stroke" Value="#203047" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape"><Setter.Value><RoundRectangle CornerRadius="16" /></Setter.Value></Setter>
+            </Style>
+            <Style TargetType="Border" Class="SquareCard">
+                <Setter Property="BackgroundColor" Value="#111B27" />
+                <Setter Property="Stroke" Value="#203047" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="StrokeShape"><Setter.Value><RoundRectangle CornerRadius="16" /></Setter.Value></Setter>
+            </Style>
         </ResourceDictionary>
-
     </Application.Resources>
-
 </Application>

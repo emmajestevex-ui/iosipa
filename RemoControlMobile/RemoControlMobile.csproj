@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>net10.0-android;net10.0-ios;net10.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
 
@@ -20,20 +20,15 @@
 
     <ApplicationId>com.remocontrol.mobile</ApplicationId>
 
-    <ApplicationDisplayVersion>1.2.0</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion>1.5.0</ApplicationDisplayVersion>
 
-    <ApplicationVersion>3</ApplicationVersion>
+    <ApplicationVersion>6</ApplicationVersion>
    
-    <!-- Windows sin MSIX -->
-    <WindowsPackageType>None</WindowsPackageType>
-
     <!-- Android mínimo -->
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 
     <!-- Windows mínimo -->
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 
-    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 
     <!-- Generar solamente APK -->
     <AndroidPackageFormats Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">apk</AndroidPackageFormats>

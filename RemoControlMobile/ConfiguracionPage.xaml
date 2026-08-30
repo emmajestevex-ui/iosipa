@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -515,6 +515,61 @@
                 </Border>
 
 
+                <!-- TELEGRAM -->
+
+                <Label
+                    Text="Notificaciones de Telegram"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="18"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout Spacing="9">
+
+                        <Label
+                            Text="Telegram se configura en la PC"
+                            FontSize="14"
+                            FontAttributes="Bold"
+                            TextColor="#4DB8FF" />
+
+                        <Label
+                            Text="1. Abre RemoControl en la computadora y entra a Configuración."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="2. Busca NOTIFICACIONES POR TELEGRAM."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="3. La app de PC te explica cómo crear tu bot con @BotFather, pegar el token, detectar el Chat ID y probar una notificación."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="4. Cuando quede configurado, podrás recibir avisos y usar comandos como /estado, /captura y /ayuda desde Telegram."
+                            FontSize="12"
+                            TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="Nunca compartas el token que entrega BotFather."
+                            FontSize="11"
+                            TextColor="#FFB45B" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+
                 <!-- INFORMACIÓN -->
 
                 <Label
@@ -569,6 +624,40 @@
                     CornerRadius="12"
                     Clicked="BtnRestaurar_Clicked" />
 
+                <Label Text="Personalización, audio y privacidad" FontSize="18" FontAttributes="Bold" TextColor="White" />
+                <Border Padding="18" BackgroundColor="#1E2631" Stroke="#293545">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Nombre personalizado" TextColor="#AEB8C5"/>
+                        <Entry x:Name="txtNombreApp" Placeholder="RemoControl" TextColor="White"/>
+
+                        <Label Text="Logo" TextColor="#AEB8C5"/>
+                        <Button Text="Elegir logo personal" Clicked="BtnElegirLogo_Clicked"/>
+                        <Label x:Name="lblLogo" Text="Logo predeterminado" TextColor="#8794A5"/>
+
+                        <Label Text="Color de fondo" TextColor="#AEB8C5"/>
+                        <Entry x:Name="txtColorFondo" Placeholder="#0B1119" TextColor="White"/>
+
+                        <Label Text="Duración al hablar a la PC" TextColor="#AEB8C5"/>
+                        <Picker x:Name="pickerHablar" TextColor="White" Title="Duración">
+                            <Picker.Items><x:String>2 segundos</x:String><x:String>4 segundos</x:String><x:String>6 segundos</x:String><x:String>10 segundos</x:String><x:String>15 segundos</x:String></Picker.Items>
+                        </Picker>
+
+                        <Label Text="Audio en vivo (menor valor = menor latencia)" TextColor="#AEB8C5"/>
+                        <Picker x:Name="pickerAudioLive" TextColor="White" Title="Latencia">
+                            <Picker.Items><x:String>1 segundo</x:String><x:String>2 segundos</x:String><x:String>3 segundos</x:String></Picker.Items>
+                        </Picker>
+
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="Bloquear app al abrir" TextColor="White" VerticalOptions="Center"/>
+                            <Switch x:Name="swBloqueo"/>
+                        </HorizontalStackLayout>
+
+                        <Label Text="Android no permite que una app cambie su icono/nombre original del launcher en tiempo real. RemoControl puede crear un acceso personalizado en la pantalla de inicio con tu nombre y logo cuando el launcher lo permita." FontSize="11" TextColor="#8794A5"/>
+                        <Button Text="Crear acceso personalizado en Inicio" Clicked="BtnCrearAcceso_Clicked"/>
+                        <Button Text="Guardar personalización" Clicked="BtnGuardarPersonalizacion_Clicked"/>
+                    </VerticalStackLayout>
+                </Border>
             </VerticalStackLayout>
 
         </ScrollView>

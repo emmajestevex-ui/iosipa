@@ -45,6 +45,8 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
+        AplicarPersonalizacion();
+
         if (comprobandoPrimeraConfiguracion)
         {
             return;
@@ -67,6 +69,36 @@ public partial class MainPage : ContentPage
 
             comprobandoPrimeraConfiguracion =
                 false;
+        }
+    }
+
+
+    // ============================================================
+    // PERSONALIZACIÓN LOCAL
+    // ============================================================
+
+    private void AplicarPersonalizacion()
+    {
+        lblBrandName.Text = AppConfig.NombrePersonalizado;
+
+        string logo = AppConfig.LogoPersonalizado;
+
+        if (!string.IsNullOrWhiteSpace(logo) && File.Exists(logo))
+        {
+            imgBrandLogo.Source = ImageSource.FromFile(logo);
+        }
+        else
+        {
+            imgBrandLogo.Source = "default_brand.svg";
+        }
+
+        try
+        {
+            paginaPrincipal.BackgroundColor = Color.FromArgb(AppConfig.ColorFondo);
+        }
+        catch
+        {
+            paginaPrincipal.BackgroundColor = Color.FromArgb("#0B1119");
         }
     }
 
@@ -108,222 +140,119 @@ public partial class MainPage : ContentPage
             return;
         }
 
-
-        comprobandoConexion =
-            true;
-
+        comprobandoConexion = true;
 
         try
         {
-            lblEstado.Text =
-                "● Buscando PC...";
-
-            lblEstado.TextColor =
-                Colors.Orange;
-
-            lblPc.Text =
-                "Buscando...";
-
-            lblUsuario.Text =
-                "";
-
-            lblWindows.Text =
-                "";
-
-
-            bool encontrado =
-                await AppConfig
-                    .DetectarServidor();
-
-
             ActualizarServidorMostrado();
 
-
-            if (!encontrado)
+            if (!AppConfig.HayConfiguracion)
             {
-                lblPc.Text =
-                    "PC no encontrada";
-
-                lblEstado.Text =
-                    "● Sin conexión";
-
-                lblEstado.TextColor =
-                    Colors.Red;
-
+                lblPc.Text = "Sin configurar";
+                lblEstado.Text = "● Configura tu PC";
+                lblEstado.TextColor = Colors.Orange;
                 lblUsuario.Text =
-                    "No se encontró la PC por Wi-Fi ni Tailscale.";
-
-                lblWindows.Text =
-                    "";
-
+                    "Abre Configuración y copia la dirección y el token que muestra RemoControl en tu propia PC.";
+                lblWindows.Text = "";
                 return;
             }
 
+            lblEstado.Text = "● Conectando...";
+            lblEstado.TextColor = Colors.Orange;
+            lblPc.Text = "Buscando tu PC...";
+            lblUsuario.Text = "";
+            lblWindows.Text = "";
 
             using HttpClient cliente =
-                AppConfig.CrearCliente(
-                    8);
-
+                AppConfig.CrearCliente(8);
 
             using HttpResponseMessage respuesta =
                 await cliente.GetAsync(
-                    AppConfig.Servidor +
+                    AppConfig.Servidor.TrimEnd('/') +
                     "/info");
 
-
             if (
-                respuesta.StatusCode ==
-                HttpStatusCode.Unauthorized
-                ||
-                respuesta.StatusCode ==
-                HttpStatusCode.Forbidden)
+                respuesta.StatusCode == HttpStatusCode.Unauthorized ||
+                respuesta.StatusCode == HttpStatusCode.Forbidden)
             {
-                lblPc.Text =
-                    "PC encontrada";
-
-                lblEstado.Text =
-                    "● Token incorrecto";
-
-                lblEstado.TextColor =
-                    Colors.Red;
-
+                lblPc.Text = "PC encontrada";
+                lblEstado.Text = "● Token incorrecto";
+                lblEstado.TextColor = Colors.Red;
                 lblUsuario.Text =
-                    "La PC respondió, pero rechazó el token.";
-
-                lblWindows.Text =
-                    "";
-
+                    "La PC respondió, pero el token no coincide. Copia de nuevo el TOKEN DE SEGURIDAD que muestra esa PC.";
+                lblWindows.Text = "";
                 return;
             }
-
 
             if (!respuesta.IsSuccessStatusCode)
             {
-                lblPc.Text =
-                    "PC encontrada";
-
-                lblEstado.Text =
-                    "● Error del servidor";
-
-                lblEstado.TextColor =
-                    Colors.Red;
-
+                lblPc.Text = "PC encontrada";
+                lblEstado.Text = "● Error del servidor";
+                lblEstado.TextColor = Colors.Red;
                 lblUsuario.Text =
-                    "RemoControl Server respondió con un error.";
-
-                lblWindows.Text =
-                    "";
-
+                    "RemoControl en la PC respondió con un error. Revisa Configuración en la PC.";
+                lblWindows.Text = "";
                 return;
             }
-
 
             InfoPc? info =
                 await respuesta.Content
-                    .ReadFromJsonAsync
-                    <InfoPc>();
-
+                    .ReadFromJsonAsync<InfoPc>();
 
             if (info == null)
             {
-                lblPc.Text =
-                    "PC encontrada";
-
-                lblEstado.Text =
-                    "● Respuesta inválida";
-
-                lblEstado.TextColor =
-                    Colors.Red;
-
+                lblPc.Text = "PC encontrada";
+                lblEstado.Text = "● Respuesta inválida";
+                lblEstado.TextColor = Colors.Red;
                 lblUsuario.Text =
                     "La respuesta del servidor no es válida.";
-
-                lblWindows.Text =
-                    "";
-
+                lblWindows.Text = "";
                 return;
             }
 
-
             lblPc.Text =
-                info.pc ??
-                "PC";
-
+                info.pc ?? "PC";
 
             lblUsuario.Text =
-                string.IsNullOrWhiteSpace(
-                    info.user)
+                string.IsNullOrWhiteSpace(info.user)
                     ? ""
-                    : "Usuario: " +
-                      info.user;
-
+                    : "Usuario: " + info.user;
 
             lblWindows.Text =
-                info.windows ??
-                "";
+                info.windows ?? "";
 
-
-            lblEstado.Text =
-                "● En línea";
-
-            lblEstado.TextColor =
-                Colors.LimeGreen;
+            lblEstado.Text = "● En línea";
+            lblEstado.TextColor = Colors.LimeGreen;
         }
         catch (TaskCanceledException)
         {
-            lblPc.Text =
-                "PC sin respuesta";
-
-            lblEstado.Text =
-                "● Tiempo agotado";
-
-            lblEstado.TextColor =
-                Colors.Red;
-
+            lblPc.Text = "PC sin respuesta";
+            lblEstado.Text = "● Tiempo agotado";
+            lblEstado.TextColor = Colors.Red;
             lblUsuario.Text =
-                "Comprueba RemoControl Server y Tailscale.";
-
-            lblWindows.Text =
-                "";
+                "Revisa que la dirección sea la de TU PC, que RemoControl esté abierto y que ambos estén en la misma red.";
+            lblWindows.Text = "";
         }
         catch (HttpRequestException)
         {
-            lblPc.Text =
-                "PC no encontrada";
-
-            lblEstado.Text =
-                "● Sin conexión";
-
-            lblEstado.TextColor =
-                Colors.Red;
-
+            lblPc.Text = "PC no encontrada";
+            lblEstado.Text = "● Sin conexión";
+            lblEstado.TextColor = Colors.Red;
             lblUsuario.Text =
-                "No se pudo alcanzar RemoControl Server.";
-
-            lblWindows.Text =
-                "";
+                "No se pudo alcanzar esa dirección. Revisa la IP, el puerto 5050 y el permiso de Windows en RemoControl PC.";
+            lblWindows.Text = "";
         }
-        catch
+        catch (Exception ex)
         {
-            lblPc.Text =
-                "PC no encontrada";
-
-            lblUsuario.Text =
-                "No se pudo conectar con RemoControl.";
-
-            lblWindows.Text =
-                "";
-
-            lblEstado.Text =
-                "● Sin conexión";
-
-            lblEstado.TextColor =
-                Colors.Red;
+            lblPc.Text = "PC no encontrada";
+            lblEstado.Text = "● Sin conexión";
+            lblEstado.TextColor = Colors.Red;
+            lblUsuario.Text = ex.Message;
+            lblWindows.Text = "";
         }
         finally
         {
-            comprobandoConexion =
-                false;
+            comprobandoConexion = false;
         }
     }
 
@@ -363,27 +292,14 @@ public partial class MainPage : ContentPage
     {
         await DisplayAlertAsync(
             "Cómo conectar RemoControl",
-            "1. Enciende la computadora.\n\n" +
-
-            "2. Abre RemoControl Server en la PC.\n\n" +
-
-            "3. Pulsa Iniciar servidor.\n\n" +
-
-            "4. Si el teléfono y la PC están en la misma Wi-Fi, usa la dirección local que muestra el servidor.\n\n" +
-
-            "5. Si estás en otra red, conecta Tailscale en la PC y en el teléfono.\n\n" +
-
-            "6. Abre Configuración en RemoControl Mobile.\n\n" +
-
-            "7. Copia la dirección del servidor exactamente como aparece en la PC.\n\n" +
-
-            "8. Copia también el token de seguridad.\n\n" +
-
-            "9. Pulsa Probar conexión.\n\n" +
-
-            "10. Cuando aparezca Conexión correcta, guarda los cambios.\n\n" +
-
-            "Si no conecta, comprueba que RemoControl Server esté iniciado, que el token sea correcto y que Tailscale esté conectado cuando uses acceso remoto.",
+            "1. Conecta el teléfono y la computadora al mismo Wi-Fi.\n\n" +
+            "2. Abre RemoControl en la PC y entra a Configuración.\n\n" +
+            "3. En la PC busca DIRECCIÓN PARA EL TELÉFONO y TOKEN DE SEGURIDAD.\n\n" +
+            "4. Si la PC muestra un problema de acceso de Windows, pulsa Reparar acceso de Windows y acepta el permiso una sola vez.\n\n" +
+            "5. En el teléfono abre Configuración y copia exactamente esos dos datos.\n\n" +
+            "6. Pulsa Probar conexión y después Guardar cambios.\n\n" +
+            "7. Si vas a usar RemoControl desde otra red, configura primero la conexión local y luego usa Tailscale en ambos dispositivos.\n\n" +
+            "Telegram se configura desde RemoControl PC > Configuración. La app de PC explica paso a paso cómo crear el bot con BotFather y probar una notificación.",
             "Entendido");
     }
 
@@ -714,6 +630,25 @@ public partial class MainPage : ContentPage
             // si falla la comprobación.
         }
     }
+
+
+    // ============================================================
+    // INTERCOMUNICADOR
+    // ============================================================
+
+    private async void BtnIntercom_Clicked(
+        object sender,
+        EventArgs e)
+    {
+        await Navigation.PushAsync(
+            new IntercomPage());
+    }
+
+    private async void BtnHerramientas_Clicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new HerramientasProPage());
+    }
+
 }
 
 

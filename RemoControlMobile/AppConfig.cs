@@ -2,15 +2,22 @@
 
 public static class AppConfig
 {
-    private const string ServidorLocal =
-        "http://192.168.0.159:5050";
+    static AppConfig()
+    {
+        const string migrationKey = "config_general_v5";
 
-    private const string ServidorTailscale =
-        "http://100.82.40.107:5050";
-
-    private const string TokenDefault =
-        "REMO-123456-CAMBIA-ESTA-CLAVE";
-
+        if (!Preferences.Default.Get(migrationKey, false))
+        {
+            // Una sola vez: elimina configuraciones antiguas de desarrollo
+            // para que cada instalación use los datos de SU propia PC.
+            Preferences.Default.Remove("servidor_activo");
+            Preferences.Default.Remove("token");
+            Preferences.Default.Remove("equipos_guardados");
+            Preferences.Default.Remove("equipo_activo");
+            Preferences.Default.Set("PrimeraConfiguracionCompletada", false);
+            Preferences.Default.Set(migrationKey, true);
+        }
+    }
 
     public static string Servidor
     {
@@ -18,14 +25,14 @@ public static class AppConfig
         {
             return Preferences.Default.Get(
                 "servidor_activo",
-                ServidorTailscale);
+                "");
         }
 
         set
         {
             Preferences.Default.Set(
                 "servidor_activo",
-                value);
+                value?.Trim() ?? "");
         }
     }
 
@@ -36,17 +43,55 @@ public static class AppConfig
         {
             return Preferences.Default.Get(
                 "token",
-                TokenDefault);
+                "");
         }
 
         set
         {
             Preferences.Default.Set(
                 "token",
-                value);
+                value?.Trim() ?? "");
         }
     }
 
+
+
+    public static string NombrePersonalizado
+    {
+        get => Preferences.Default.Get("brand_name", "RemoControl");
+        set => Preferences.Default.Set("brand_name", string.IsNullOrWhiteSpace(value) ? "RemoControl" : value.Trim());
+    }
+
+    public static string LogoPersonalizado
+    {
+        get => Preferences.Default.Get("brand_logo", "");
+        set => Preferences.Default.Set("brand_logo", value ?? "");
+    }
+
+    public static bool BloqueoApp
+    {
+        get => Preferences.Default.Get("app_lock", false);
+        set => Preferences.Default.Set("app_lock", value);
+    }
+
+
+    public static int DuracionHablarSegundos
+    {
+        get => Preferences.Default.Get("intercom_talk_seconds", 4);
+        set => Preferences.Default.Set("intercom_talk_seconds", Math.Clamp(value, 2, 15));
+    }
+
+    public static int AudioLiveSegundos
+    {
+        get => Preferences.Default.Get("intercom_live_seconds", 1);
+        set => Preferences.Default.Set("intercom_live_seconds", Math.Clamp(value, 1, 3));
+    }
+
+    public static string ColorFondo
+    {
+        get => Preferences.Default.Get("brand_background", "#0B1119");
+        set => Preferences.Default.Set("brand_background", string.IsNullOrWhiteSpace(value) ? "#0B1119" : value.Trim());
+    }
 
     public static int IntervaloPantalla
     {
@@ -54,7 +99,7 @@ public static class AppConfig
         {
             return Preferences.Default.Get(
                 "intervalo_pantalla",
-                700);
+                350);
         }
 
         set
@@ -62,6 +107,17 @@ public static class AppConfig
             Preferences.Default.Set(
                 "intervalo_pantalla",
                 value);
+        }
+    }
+
+
+    public static bool HayConfiguracion
+    {
+        get
+        {
+            return
+                !string.IsNullOrWhiteSpace(Servidor) &&
+                !string.IsNullOrWhiteSpace(Token);
         }
     }
 
@@ -76,37 +132,33 @@ public static class AppConfig
             TimeSpan.FromSeconds(
                 timeoutSegundos);
 
-        cliente.DefaultRequestHeaders.Add(
-            "X-Remo-Token",
-            Token);
+        if (!string.IsNullOrWhiteSpace(Token))
+        {
+            cliente.DefaultRequestHeaders.Add(
+                "X-Remo-Token",
+                Token);
+        }
 
         return cliente;
     }
 
 
+    // ============================================================
+    // PROBAR EL SERVIDOR GUARDADO POR ESTE USUARIO
+    // ============================================================
+
     public static async Task<bool> DetectarServidor()
     {
-        // Primero intentamos la red local
-        if (await ProbarServidor(
-            ServidorLocal))
-        {
-            Servidor =
-                ServidorLocal;
+        string servidor =
+            Servidor?.Trim() ?? "";
 
-            return true;
+        if (string.IsNullOrWhiteSpace(servidor))
+        {
+            return false;
         }
 
-        // Si no responde, intentamos Tailscale
-        if (await ProbarServidor(
-            ServidorTailscale))
-        {
-            Servidor =
-                ServidorTailscale;
-
-            return true;
-        }
-
-        return false;
+        return await ProbarServidor(
+            servidor);
     }
 
 
@@ -116,12 +168,12 @@ public static class AppConfig
         try
         {
             using HttpClient cliente =
-                CrearCliente(3);
+                CrearCliente(5);
 
             using HttpResponseMessage respuesta =
                 await cliente.GetAsync(
-                    servidor +
-                    "/info");
+                    servidor.TrimEnd('/') +
+                    "/status");
 
             return respuesta.IsSuccessStatusCode;
         }
@@ -134,13 +186,13 @@ public static class AppConfig
 
     public static void Restaurar()
     {
-        Servidor =
-            ServidorTailscale;
+        Servidor = "";
+        Token = "";
+        IntervaloPantalla = 350;
+        Preferences.Default.Remove("equipos_guardados");
 
-        Token =
-            TokenDefault;
-
-        IntervaloPantalla =
-            700;
+        Preferences.Default.Set(
+            "PrimeraConfiguracionCompletada",
+            false);
     }
 }
