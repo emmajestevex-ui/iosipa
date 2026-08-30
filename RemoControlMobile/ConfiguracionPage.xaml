@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.ConfiguracionPage"
-    BackgroundColor="#161C25"
+    BackgroundColor="#0B1119"
+    Shell.NavBarIsVisible="False"
     Title="Configuración">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -234,7 +235,7 @@
                             TextColor="#4DB8FF" />
 
                         <Label
-                            Text="Escribe exactamente la DIRECCIÓN PARA EL TELÉFONO que aparece en RemoControl de la computadora."
+                            Text="En el mismo Wi-Fi usa DIRECCIÓN PARA EL TELÉFONO. Desde otra red usa DIRECCIÓN TAILSCALE de la PC."
                             FontSize="12"
                             TextColor="#8794A5" />
 
@@ -244,7 +245,7 @@
                             TextColor="#657181" />
 
                         <Label
-                            Text="No uses el ejemplo. Cada computadora puede tener una IP diferente."
+                            Text="No uses la IP del iPhone en Tailscale. Usa la IP de la PC, normalmente empieza por 100."
                             FontSize="11"
                             TextColor="#FFB45B" />
 
@@ -369,12 +370,12 @@
                             TextColor="#AEB8C5" />
 
                         <Label
-                            Text="4. Busca en la PC la dirección de Tailscale, que normalmente empieza por 100."
+                            Text="4. Busca en RemoControl de la PC la DIRECCIÓN TAILSCALE (PARA OTRA RED)."
                             FontSize="12"
                             TextColor="#AEB8C5" />
 
                         <Label
-                            Text="5. Utiliza esa dirección con el puerto 5050 en Servidor / IP."
+                            Text="5. Utiliza esa dirección con el puerto 5050 en Servidor / IP. No copies la IP del iPhone."
                             FontSize="12"
                             TextColor="#AEB8C5" />
 
@@ -382,6 +383,24 @@
                             Text="6. Mantén el mismo token de seguridad y pulsa Probar conexión."
                             FontSize="12"
                             TextColor="#AEB8C5" />
+
+                        <Label
+                            Text="Prueba rápida: abre Safari en el iPhone y entra a http://IP_TAILSCALE_DE_LA_PC:5050/status. Si sale 401 o Unauthorized, Tailscale ya está llegando a la PC."
+                            FontSize="12"
+                            TextColor="#4DB8FF" />
+
+                        <Label
+                            Text="En tu caso la IP Tailscale de la PC es 100.84.101.10. No uses 100.93.173.59 porque esa es la IP del iPhone."
+                            FontSize="12"
+                            TextColor="#FFB45B" />
+
+                        <Button
+                            Text="Ayuda con Tailscale"
+                            HeightRequest="48"
+                            BackgroundColor="#182535"
+                            TextColor="#AFC7E2"
+                            CornerRadius="12"
+                            Clicked="BtnAyudaTailscale_Clicked" />
 
                     </VerticalStackLayout>
 

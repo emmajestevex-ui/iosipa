@@ -41,6 +41,24 @@ Dentro estará:
 
 Ese IPA está empaquetado para que lo firmes después con ESign.
 
+## Conexión con Tailscale
+
+Para usar la app desde otra red, en el iPhone escribe la dirección Tailscale de la PC:
+
+`http://100.84.101.10:5050`
+
+No uses `100.93.173.59`: esa es la IP Tailscale del iPhone.
+
+Antes de probar dentro de MSI Center, abre Safari en el iPhone y entra a:
+
+`http://100.84.101.10:5050/status`
+
+Si Safari muestra `401` o `Unauthorized`, Tailscale sí está llegando a la PC. En ese caso revisa el token de seguridad en la app o instala el IPA nuevo.
+
+Si Safari no abre la página, ejecuta en Windows como administrador:
+
+`REPARAR_TAILSCALE_5050_ADMIN.bat`
+
 ## Identificador de la app
 
 El proyecto conserva el Bundle ID:

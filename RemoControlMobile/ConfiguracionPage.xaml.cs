@@ -12,6 +12,7 @@ public partial class ConfiguracionPage : ContentPage
     public ConfiguracionPage()
     {
         InitializeComponent();
+        Shell.SetNavBarIsVisible(this, false);
         txtNombreApp.Text = AppConfig.NombrePersonalizado;
         swBloqueo.IsToggled = AppConfig.BloqueoApp;
         lblLogo.Text = string.IsNullOrWhiteSpace(AppConfig.LogoPersonalizado) ? "Logo predeterminado" : Path.GetFileName(AppConfig.LogoPersonalizado);
@@ -24,6 +25,20 @@ public partial class ConfiguracionPage : ContentPage
         lblVersion.Text =
             "Versión " +
             AppInfo.Current.VersionString;
+    }
+
+    private async void BtnAyudaTailscale_Clicked(
+        object sender,
+        EventArgs e)
+    {
+        await DisplayAlertAsync(
+            "Tailscale",
+            "Usa la DIRECCIÓN TAILSCALE de la PC, no la IP del iPhone.\n\n" +
+            "En Tailscale ambos deben aparecer conectados.\n\n" +
+            "Prueba rápida: abre Safari en el iPhone y entra a la dirección Tailscale de la PC terminando en /status.\n\n" +
+            "Si Safari muestra 401 o Unauthorized, Tailscale sí llega a la PC y debes revisar el token o instalar el IPA nuevo.\n\n" +
+            "Si Safari no abre la página, ejecuta REPARAR_TAILSCALE_5050_ADMIN.bat como administrador y revisa que Tailscale siga conectado.",
+            "Aceptar");
     }
 
 
@@ -251,7 +266,7 @@ public partial class ConfiguracionPage : ContentPage
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
-            out _))
+            out Uri? uriServidor))
         {
             lblPrueba.Text =
                 "● La dirección no es válida";
@@ -298,7 +313,10 @@ public partial class ConfiguracionPage : ContentPage
 
 
             cliente.Timeout =
-                TimeSpan.FromSeconds(8);
+                TimeSpan.FromSeconds(
+                    EsTailscale(uriServidor)
+                        ? 25
+                        : 8);
 
 
             cliente.DefaultRequestHeaders.Add(
@@ -345,26 +363,42 @@ public partial class ConfiguracionPage : ContentPage
         catch (TaskCanceledException)
         {
             lblPrueba.Text =
-                "● Tiempo agotado. Revisa la IP y la conexión.";
+                EsTailscale(uriServidor)
+                    ? "● Tailscale tardó demasiado"
+                    : "● Tiempo agotado. Revisa la IP y la conexión.";
 
             lblPrueba.TextColor =
                 Colors.Red;
+
+            await MostrarAyudaConexionFallida(
+                servidor,
+                "Tiempo agotado.");
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
             lblPrueba.Text =
-                "● No se encontró la PC";
+                EsTailscale(uriServidor)
+                    ? "● iPhone no llegó a la PC por Tailscale"
+                    : "● No se encontró la PC";
 
             lblPrueba.TextColor =
                 Colors.Red;
+
+            await MostrarAyudaConexionFallida(
+                servidor,
+                ex.Message);
         }
-        catch
+        catch (Exception ex)
         {
             lblPrueba.Text =
                 "● No se pudo conectar";
 
             lblPrueba.TextColor =
                 Colors.Red;
+
+            await MostrarAyudaConexionFallida(
+                servidor,
+                ex.Message);
         }
         finally
         {
@@ -505,6 +539,43 @@ public partial class ConfiguracionPage : ContentPage
         await Navigation.PopAsync();
     }
 
+    private async Task MostrarAyudaConexionFallida(
+        string servidor,
+        string detalle)
+    {
+        if (!Uri.TryCreate(
+                servidor,
+                UriKind.Absolute,
+                out Uri? uri))
+        {
+            return;
+        }
+
+        if (!EsTailscale(uri))
+            return;
+
+        await DisplayAlertAsync(
+            "Tailscale",
+            "No se pudo llegar a la PC por Tailscale.\n\n" +
+            "Revisa esto:\n" +
+            "1. La dirección debe ser la de la PC, no la del iPhone.\n" +
+            "2. Tailscale debe estar conectado en ambos dispositivos.\n" +
+            "3. RemoControl debe estar abierto en Windows.\n" +
+            "4. En Safari del iPhone prueba esta dirección: " + servidor.TrimEnd('/') + "/status\n" +
+            "5. Si Safari muestra 401 o Unauthorized, la conexión funciona y debes revisar el token o instalar el IPA nuevo.\n" +
+            "6. Si Safari no abre, ejecuta REPARAR_TAILSCALE_5050_ADMIN.bat como administrador.\n\n" +
+            "Detalle: " + Recortar(detalle, 220),
+            "Aceptar");
+    }
+
+    private static bool EsTailscale(
+        Uri uri)
+    {
+        return uri.Host.StartsWith(
+            "100.",
+            StringComparison.OrdinalIgnoreCase);
+    }
+
 
     // ============================================================
     // RESTAURAR
@@ -636,4 +707,12 @@ public partial class ConfiguracionPage : ContentPage
         }
     }
 
+    private static string Recortar(string text, int max)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return "Sin detalle.";
+
+        text = text.Trim();
+        return text.Length <= max ? text : text[..max];
+    }
 }

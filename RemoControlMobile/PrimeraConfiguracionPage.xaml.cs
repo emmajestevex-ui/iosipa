@@ -123,7 +123,7 @@ public partial class PrimeraConfiguracionPage : ContentPage
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
-            out _))
+            out Uri? uriServidor))
         {
             lblEstado.Text =
                 "● Dirección no válida";
@@ -151,7 +151,10 @@ public partial class PrimeraConfiguracionPage : ContentPage
                 new HttpClient();
 
             cliente.Timeout =
-                TimeSpan.FromSeconds(8);
+                TimeSpan.FromSeconds(
+                    EsTailscale(uriServidor)
+                        ? 25
+                        : 8);
 
             cliente.DefaultRequestHeaders.Add(
                 "X-Remo-Token",
@@ -197,7 +200,9 @@ public partial class PrimeraConfiguracionPage : ContentPage
         catch (TaskCanceledException)
         {
             lblEstado.Text =
-                "● La PC no respondió a tiempo";
+                EsTailscale(uriServidor)
+                    ? "● Tailscale tardó demasiado"
+                    : "● La PC no respondió a tiempo";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -205,7 +210,9 @@ public partial class PrimeraConfiguracionPage : ContentPage
         catch (HttpRequestException)
         {
             lblEstado.Text =
-                "● No se pudo alcanzar la PC";
+                EsTailscale(uriServidor)
+                    ? "● iPhone no llegó a la PC por Tailscale"
+                    : "● No se pudo alcanzar la PC";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -223,6 +230,14 @@ public partial class PrimeraConfiguracionPage : ContentPage
             btnProbar.IsEnabled =
                 true;
         }
+    }
+
+    private static bool EsTailscale(
+        Uri uri)
+    {
+        return uri.Host.StartsWith(
+            "100.",
+            StringComparison.OrdinalIgnoreCase);
     }
 
 

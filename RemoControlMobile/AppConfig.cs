@@ -196,8 +196,20 @@ public static class AppConfig
     {
         try
         {
+            int timeout =
+                Uri.TryCreate(
+                    servidor,
+                    UriKind.Absolute,
+                    out Uri? uri)
+                &&
+                uri.Host.StartsWith(
+                    "100.",
+                    StringComparison.OrdinalIgnoreCase)
+                    ? 25
+                    : 8;
+
             using HttpClient cliente =
-                CrearCliente(5);
+                CrearCliente(timeout);
 
             using HttpResponseMessage respuesta =
                 await cliente.GetAsync(
