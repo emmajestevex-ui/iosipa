@@ -44,6 +44,14 @@
                         <Label Text="El dueño de la PC debe habilitar audio y cámara en RemoControl PC > Configuración > Privacidad. Windows muestra avisos visibles mientras estas funciones están activas."
                                TextColor="#A8B6C7"
                                FontSize="12" />
+                        <Button Text="Abrir permisos de cámara en la PC"
+                                HeightRequest="44"
+                                BackgroundColor="#182535"
+                                TextColor="#F2B7BF"
+                                BorderColor="#5A222C"
+                                BorderWidth="1"
+                                CornerRadius="12"
+                                Clicked="BtnPermisosCamara_Clicked" />
                     </VerticalStackLayout>
                 </Border>
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
@@ -36,6 +37,14 @@ public partial class SeleccionarAplicacionesPage : ContentPage
             todas);
 
         ActualizarContador();
+    }
+
+    private string U(string path)
+    {
+        if (string.IsNullOrWhiteSpace(AppConfig.Servidor))
+            throw new InvalidOperationException("Primero conecta una PC autorizada.");
+
+        return AppConfig.Servidor.TrimEnd('/') + path;
     }
 
     // ============================================================
@@ -178,34 +187,24 @@ public partial class SeleccionarAplicacionesPage : ContentPage
             {
                 try
                 {
-                    string url =
-                        AppConfig.Servidor +
-                        "/apps/add?id=" +
+                    string id =
                         Uri.EscapeDataString(
-                            app.id ??
-                            "");
+                            app.id ?? "");
 
-                    using HttpResponseMessage respuesta =
-                        await cliente.PostAsync(
-                            url,
-                            null);
+                    await PostFirstAsync(
+                        cliente,
+                        "/apps/add?id=" + id,
+                        "/applications/add?id=" + id,
+                        "/pro/apps/add?id=" + id);
 
-                    if (respuesta.IsSuccessStatusCode)
-                    {
-                        agregadas++;
-                    }
-                    else
-                    {
-                        errores.Add(
-                            app.name ??
-                            "Aplicación");
-                    }
+                    agregadas++;
                 }
-                catch
+                catch (Exception ex)
                 {
                     errores.Add(
-                        app.name ??
-                        "Aplicación");
+                        (app.name ?? "Aplicación") +
+                        ": " +
+                        Recortar(ex.Message, 120));
                 }
             }
 
@@ -236,7 +235,12 @@ public partial class SeleccionarAplicacionesPage : ContentPage
                 "Agregadas: " +
                 agregadas +
                 "\nNo se pudieron agregar: " +
-                errores.Count,
+                errores.Count +
+                (
+                    errores.Count == 0
+                        ? ""
+                        : "\n\n" + string.Join("\n", errores.Take(4))
+                ),
                 "Aceptar");
 
             if (agregadas > 0)
@@ -265,5 +269,80 @@ public partial class SeleccionarAplicacionesPage : ContentPage
         EventArgs e)
     {
         await Navigation.PopAsync();
+    }
+
+    private async Task PostFirstAsync(
+        HttpClient cliente,
+        params string[] rutas)
+    {
+        string ultimoError =
+            "La PC no respondió.";
+
+        foreach (string ruta in rutas.Distinct())
+        {
+            try
+            {
+                using HttpResponseMessage response =
+                    await cliente.PostAsync(
+                        U(ruta),
+                        null);
+
+                string body =
+                    await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return;
+
+                ultimoError =
+                    ExtraerError(body);
+            }
+            catch (Exception ex)
+            {
+                ultimoError =
+                    ex.Message;
+            }
+        }
+
+        throw new InvalidOperationException(
+            ultimoError);
+    }
+
+    private static string ExtraerError(string body)
+    {
+        if (string.IsNullOrWhiteSpace(body))
+            return "La PC no respondió con detalle.";
+
+        try
+        {
+            using JsonDocument doc =
+                JsonDocument.Parse(body);
+
+            if (doc.RootElement.ValueKind == JsonValueKind.Object)
+            {
+                foreach (JsonProperty property in doc.RootElement.EnumerateObject())
+                {
+                    if (property.Name.Equals("error", StringComparison.OrdinalIgnoreCase) ||
+                        property.Name.Equals("message", StringComparison.OrdinalIgnoreCase) ||
+                        property.Name.Equals("detail", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return property.Value.GetString() ?? body;
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return Recortar(body.Trim(), 500);
+    }
+
+    private static string Recortar(string text, int max)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return "Sin detalle.";
+
+        text = text.Trim();
+        return text.Length <= max ? text : text[..max];
     }
 }

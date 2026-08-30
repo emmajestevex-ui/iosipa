@@ -22,6 +22,26 @@ public partial class IntercomPage : ContentPage
     private string Url(string path) =>
         AppConfig.Servidor.TrimEnd('/') + path;
 
+    private async void BtnPermisosCamara_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            using HttpClient http = AppConfig.CrearCliente(8);
+            await PostFirstAsync(
+                http,
+                "/pro/privacy?target=camera",
+                "/pro/settings?target=camera",
+                "/camera/permissions");
+
+            lblEstadoAudio.Text = "Solicitud enviada a la PC.";
+        }
+        catch (Exception ex)
+        {
+            lblEstadoAudio.Text = "No se pudieron abrir los permisos.";
+            await DisplayAlertAsync("Permisos de cámara", ex.Message, "Aceptar");
+        }
+    }
+
     private async void BtnHablar_Clicked(object sender, EventArgs e)
     {
         if (ocupado || audioLiveActivo)
@@ -388,6 +408,34 @@ public partial class IntercomPage : ContentPage
 
         string text = Encoding.UTF8.GetString(data).Trim();
         return text.Length <= 600 ? text : text[..600];
+    }
+
+    private async Task PostFirstAsync(HttpClient http, params string[] rutas)
+    {
+        string ultimoError = "La PC no respondió.";
+
+        foreach (string ruta in rutas.Distinct())
+        {
+            try
+            {
+                using HttpResponseMessage response =
+                    await http.PostAsync(Url(ruta), null);
+
+                string body =
+                    await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                    return;
+
+                ultimoError = ExtraerError(body);
+            }
+            catch (Exception ex)
+            {
+                ultimoError = ex.Message;
+            }
+        }
+
+        throw new InvalidOperationException(ultimoError);
     }
 
     protected override void OnDisappearing()

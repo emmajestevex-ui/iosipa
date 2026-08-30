@@ -45,6 +45,109 @@ public partial class HerramientasProPage : ContentPage
     private async void BtnApagar_Clicked(object s, EventArgs e) => await Schedule("shutdown", "apagar");
     private async void BtnSuspender_Clicked(object s, EventArgs e) => await Schedule("sleep", "suspender");
 
+    private async void BtnApagarAhora_Clicked(object s, EventArgs e)
+    {
+        if (!await DisplayAlertAsync("Apagar laptop", "¿Apagar la laptop ahora?", "Apagar", "Cancelar"))
+            return;
+
+        await Power("shutdown", "apagado");
+    }
+
+    private async void BtnSuspenderAhora_Clicked(object s, EventArgs e)
+    {
+        if (!await DisplayAlertAsync("Suspender laptop", "¿Suspender la laptop ahora?", "Suspender", "Cancelar"))
+            return;
+
+        await Power("sleep", "suspendida");
+    }
+
+    private async void BtnBloquear_Clicked(object s, EventArgs e)
+    {
+        if (!await DisplayAlertAsync("Bloquear laptop", "¿Bloquear la laptop ahora?", "Bloquear", "Cancelar"))
+            return;
+
+        await Power("lock", "bloqueada");
+    }
+
+    private async void BtnDesbloquear_Clicked(object s, EventArgs e)
+    {
+        bool continuar = await DisplayAlertAsync(
+            "Desbloquear laptop",
+            "Por seguridad no se guarda ni se manda tu contraseña. Puedo pedirle a la PC que despierte o muestre la pantalla de inicio de sesión; el PIN, contraseña o Windows Hello se usa en la laptop.",
+            "Preparar",
+            "Cancelar");
+
+        if (!continuar)
+            return;
+
+        await Power("wake", "lista para iniciar sesión");
+    }
+
+    private async Task Power(string accion, string estado)
+    {
+        lblEstado.Text = "Enviando orden a la PC...";
+
+        string[] rutas = accion switch
+        {
+            "shutdown" => new[]
+            {
+                "/pro/power?action=shutdown",
+                "/pro/shutdown",
+                "/pro/schedule?action=shutdown&minutes=0"
+            },
+            "sleep" => new[]
+            {
+                "/pro/power?action=sleep",
+                "/pro/sleep",
+                "/pro/schedule?action=sleep&minutes=0"
+            },
+            "lock" => new[]
+            {
+                "/pro/power?action=lock",
+                "/pro/lock"
+            },
+            "wake" => new[]
+            {
+                "/pro/power?action=wake",
+                "/pro/wake",
+                "/pro/unlock-request"
+            },
+            _ => new[]
+            {
+                "/pro/power?action=" + Uri.EscapeDataString(accion)
+            }
+        };
+
+        if (await CallFirst(rutas))
+            lblEstado.Text = "Laptop " + estado + ".";
+    }
+
+    private async Task<bool> CallFirst(params string[] rutas)
+    {
+        string ultimoError = "";
+
+        foreach (string ruta in rutas)
+        {
+            try
+            {
+                using HttpResponseMessage response = await http.PostAsync(U(ruta), null);
+                string body = await response.Content.ReadAsStringAsync();
+                if (response.IsSuccessStatusCode)
+                    return true;
+
+                ultimoError = ExtraerError(body);
+            }
+            catch (Exception ex)
+            {
+                ultimoError = ex.Message;
+            }
+        }
+
+        lblEstado.Text = "No se pudo completar la orden.";
+        await DisplayAlertAsync("MSI Center", ultimoError, "Aceptar");
+        return false;
+    }
+
     private async Task Schedule(string accion, string nombre)
     {
         if (!int.TryParse(txtMinutos.Text, out int m) || m < 1)

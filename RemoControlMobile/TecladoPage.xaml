@@ -4,7 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.TecladoPage"
-    BackgroundColor="#161C25"
+    BackgroundColor="#0B1119"
+    Shell.NavBarIsVisible="False"
     Title="Teclado">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -93,6 +94,47 @@
                             FontAttributes="Bold"
                             CornerRadius="12"
                             Clicked="BtnEnviarTexto_Clicked" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+                <!-- MACRO JUEGO -->
+
+                <Label
+                    Text="Macro juego"
+                    FontSize="18"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+                <Border
+                    Padding="15"
+                    BackgroundColor="#1E2631"
+                    Stroke="#293545">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle
+                            CornerRadius="16" />
+                    </Border.StrokeShape>
+
+                    <VerticalStackLayout
+                        Spacing="12">
+
+                        <Entry
+                            x:Name="txtMacroJuego"
+                            Placeholder="Texto del macro"
+                            PlaceholderColor="#657181"
+                            BackgroundColor="#151B23"
+                            TextColor="White" />
+
+                        <Button
+                            Text="Enter + texto + Enter"
+                            HeightRequest="52"
+                            BackgroundColor="#E31B2F"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="12"
+                            Clicked="BtnMacroJuego_Clicked" />
 
                     </VerticalStackLayout>
 
