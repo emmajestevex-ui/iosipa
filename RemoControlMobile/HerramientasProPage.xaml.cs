@@ -12,9 +12,16 @@ public partial class HerramientasProPage : ContentPage
     public HerramientasProPage()
     {
         InitializeComponent();
+        Shell.SetNavBarIsVisible(this, false);
     }
 
-    private string U(string p) => AppConfig.Servidor.TrimEnd('/') + p;
+    private string U(string p)
+    {
+        if (string.IsNullOrWhiteSpace(AppConfig.Servidor))
+            throw new InvalidOperationException("Primero conecta una PC autorizada.");
+
+        return AppConfig.Servidor.TrimEnd('/') + p;
+    }
 
     private async Task<bool> Call(string p)
     {
@@ -92,24 +99,38 @@ public partial class HerramientasProPage : ContentPage
             "shutdown" => new[]
             {
                 "/pro/power?action=shutdown",
+                "/power?action=shutdown",
+                "/system/power?action=shutdown",
                 "/pro/shutdown",
-                "/pro/schedule?action=shutdown&minutes=0"
+                "/shutdown",
+                "/pro/schedule?action=shutdown&minutes=1"
             },
             "sleep" => new[]
             {
                 "/pro/power?action=sleep",
+                "/power?action=sleep",
+                "/system/power?action=sleep",
                 "/pro/sleep",
-                "/pro/schedule?action=sleep&minutes=0"
+                "/sleep",
+                "/pro/schedule?action=sleep&minutes=1"
             },
             "lock" => new[]
             {
                 "/pro/power?action=lock",
-                "/pro/lock"
+                "/power?action=lock",
+                "/system/power?action=lock",
+                "/system/lock",
+                "/pro/lock",
+                "/lock"
             },
             "wake" => new[]
             {
                 "/pro/power?action=wake",
+                "/power?action=wake",
+                "/system/power?action=wake",
+                "/system/wake",
                 "/pro/wake",
+                "/wake",
                 "/pro/unlock-request"
             },
             _ => new[]
@@ -119,12 +140,13 @@ public partial class HerramientasProPage : ContentPage
         };
 
         if (await CallFirst(rutas))
-            lblEstado.Text = "Laptop " + estado + ".";
+            lblEstado.Text = "Orden enviada a la PC.";
     }
 
     private async Task<bool> CallFirst(params string[] rutas)
     {
-        string ultimoError = "";
+        string ultimoError = "La PC no respondió.";
+        bool soloRutasNoEncontradas = false;
 
         foreach (string ruta in rutas)
         {
@@ -135,13 +157,26 @@ public partial class HerramientasProPage : ContentPage
                 if (response.IsSuccessStatusCode)
                     return true;
 
-                ultimoError = ExtraerError(body);
+                string error = ExtraerError(body);
+                if (!EsRutaNoEncontrada(error))
+                {
+                    ultimoError = error;
+                    soloRutasNoEncontradas = false;
+                }
+                else if (ultimoError == "La PC no respondió.")
+                {
+                    soloRutasNoEncontradas = true;
+                }
             }
             catch (Exception ex)
             {
                 ultimoError = ex.Message;
+                soloRutasNoEncontradas = false;
             }
         }
+
+        if (soloRutasNoEncontradas)
+            ultimoError = "Ese comando no existe en el programa de PC instalado.";
 
         lblEstado.Text = "No se pudo completar la orden.";
         await DisplayAlertAsync("MSI Center", ultimoError, "Aceptar");
@@ -386,6 +421,8 @@ public partial class HerramientasProPage : ContentPage
 
     private static string ExtraerError(string body)
     {
+        body = LimpiarTexto(body);
+
         if (string.IsNullOrWhiteSpace(body))
             return "La PC no respondió con detalle.";
 
@@ -396,6 +433,23 @@ public partial class HerramientasProPage : ContentPage
         }
         catch { }
         return body;
+    }
+
+    private static bool EsRutaNoEncontrada(string text)
+    {
+        return text.Contains("ruta no encontrada", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
+               text.Contains("404", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string LimpiarTexto(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return "";
+
+        return text
+            .Replace("\0", "")
+            .Trim('\uFEFF', '\u200B', ' ', '\r', '\n', '\t');
     }
 
     private async void BtnVolver_Clicked(object sender, EventArgs e) => await Navigation.PopAsync();

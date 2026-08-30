@@ -23,6 +23,7 @@ public partial class AplicacionesPage : ContentPage
     public AplicacionesPage()
     {
         InitializeComponent();
+        Shell.SetNavBarIsVisible(this, false);
     }
 
     protected override async void OnAppearing()
@@ -129,6 +130,17 @@ public partial class AplicacionesPage : ContentPage
 
         try
         {
+            base64 =
+                base64
+                    .Replace("\0", "")
+                    .Trim();
+
+            int comma =
+                base64.IndexOf(',');
+
+            if (base64.StartsWith("data:image", StringComparison.OrdinalIgnoreCase) && comma >= 0)
+                base64 = base64[(comma + 1)..];
+
             byte[] bytes =
                 Convert.FromBase64String(
                     base64);
@@ -530,7 +542,8 @@ public partial class AplicacionesPage : ContentPage
                         U(ruta));
 
                 string body =
-                    await response.Content.ReadAsStringAsync();
+                    LimpiarJson(
+                        await response.Content.ReadAsStringAsync());
 
                 if (response.IsSuccessStatusCode)
                     return body;
@@ -566,7 +579,8 @@ public partial class AplicacionesPage : ContentPage
                         null);
 
                 string body =
-                    await response.Content.ReadAsStringAsync();
+                    LimpiarJson(
+                        await response.Content.ReadAsStringAsync());
 
                 if (response.IsSuccessStatusCode)
                     return;
@@ -588,6 +602,9 @@ public partial class AplicacionesPage : ContentPage
     private static List<T> LeerItems<T>(
         string json)
     {
+        json =
+            LimpiarJson(json);
+
         using JsonDocument doc =
             JsonDocument.Parse(json);
 
@@ -637,6 +654,9 @@ public partial class AplicacionesPage : ContentPage
     private static string ExtraerError(
         string body)
     {
+        body =
+            LimpiarJson(body);
+
         if (string.IsNullOrWhiteSpace(body))
             return "La PC no respondió con detalle.";
 
@@ -656,6 +676,16 @@ public partial class AplicacionesPage : ContentPage
         }
 
         return Recortar(body.Trim(), 500);
+    }
+
+    private static string LimpiarJson(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return "";
+
+        return text
+            .Replace("\0", "")
+            .Trim('\uFEFF', '\u200B', ' ', '\r', '\n', '\t');
     }
 
     private static string Recortar(string text, int max)

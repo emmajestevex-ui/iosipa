@@ -19,6 +19,7 @@ public partial class SeleccionarAplicacionesPage : ContentPage
         Func<Task> alFinalizar)
     {
         InitializeComponent();
+        Shell.SetNavBarIsVisible(this, false);
 
         this.todas =
             aplicaciones ??
@@ -288,7 +289,8 @@ public partial class SeleccionarAplicacionesPage : ContentPage
                         null);
 
                 string body =
-                    await response.Content.ReadAsStringAsync();
+                    LimpiarTexto(
+                        await response.Content.ReadAsStringAsync());
 
                 if (response.IsSuccessStatusCode)
                     return;
@@ -309,6 +311,9 @@ public partial class SeleccionarAplicacionesPage : ContentPage
 
     private static string ExtraerError(string body)
     {
+        body =
+            LimpiarTexto(body);
+
         if (string.IsNullOrWhiteSpace(body))
             return "La PC no respondió con detalle.";
 
@@ -335,6 +340,16 @@ public partial class SeleccionarAplicacionesPage : ContentPage
         }
 
         return Recortar(body.Trim(), 500);
+    }
+
+    private static string LimpiarTexto(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return "";
+
+        return text
+            .Replace("\0", "")
+            .Trim('\uFEFF', '\u200B', ' ', '\r', '\n', '\t');
     }
 
     private static string Recortar(string text, int max)
