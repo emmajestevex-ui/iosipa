@@ -38,7 +38,7 @@
                     </Border.StrokeShape>
                     <VerticalStackLayout Spacing="7">
                         <Label Text="Privacidad"
-                               TextColor="#73B9FF"
+                               TextColor="#FF4B5F"
                                FontSize="16"
                                FontAttributes="Bold" />
                         <Label Text="El dueño de la PC debe habilitar audio y cámara en RemoControl PC > Configuración > Privacidad. Windows muestra avisos visibles mientras estas funciones están activas."
@@ -62,7 +62,7 @@
                         <Button x:Name="btnHablar"
                                 Text="Grabar 4 segundos y enviar"
                                 HeightRequest="52"
-                                BackgroundColor="#2B8FF7"
+                                BackgroundColor="#E31B2F"
                                 TextColor="White"
                                 FontAttributes="Bold"
                                 CornerRadius="13"
@@ -104,8 +104,8 @@
                         <Button x:Name="btnEscucharVivo"
                                 Text="Iniciar escucha en vivo"
                                 HeightRequest="52"
-                                BackgroundColor="#17283A"
-                                TextColor="#E7F2FF"
+                                BackgroundColor="#E31B2F"
+                                TextColor="White"
                                 FontAttributes="Bold"
                                 CornerRadius="13"
                                 Clicked="BtnEscucharVivo_Clicked" />
@@ -114,9 +114,9 @@
                                 Text="Escuchar solo 5 segundos"
                                 HeightRequest="46"
                                 BackgroundColor="Transparent"
-                                BorderColor="#29415C"
+                                BorderColor="#5A222C"
                                 BorderWidth="1"
-                                TextColor="#AFC7E2"
+                                TextColor="#F2B7BF"
                                 CornerRadius="12"
                                 Clicked="BtnEscuchar_Clicked" />
                     </VerticalStackLayout>
@@ -183,7 +183,7 @@
                         <Button x:Name="btnCamara"
                                 Text="Iniciar cámara"
                                 HeightRequest="52"
-                                BackgroundColor="#1B6F5A"
+                                BackgroundColor="#E31B2F"
                                 TextColor="White"
                                 FontAttributes="Bold"
                                 CornerRadius="13"

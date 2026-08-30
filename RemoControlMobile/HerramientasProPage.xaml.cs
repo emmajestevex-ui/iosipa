@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -22,7 +24,7 @@ public partial class HerramientasProPage : ContentPage
             string t = await r.Content.ReadAsStringAsync();
             if (!r.IsSuccessStatusCode)
             {
-                await DisplayAlertAsync("RemoControl", ExtraerError(t), "Aceptar");
+                await DisplayAlertAsync("MSI Center", ExtraerError(t), "Aceptar");
                 return false;
             }
             return true;
@@ -61,9 +63,61 @@ public partial class HerramientasProPage : ContentPage
 
     private async void BtnRing_Clicked(object s, EventArgs e)
     {
-        string mensaje = string.IsNullOrWhiteSpace(txtMensaje.Text) ? "RemoControl" : txtMensaje.Text.Trim();
-        try { await TextToSpeech.Default.SpeakAsync(mensaje); } catch { }
-        await Call("/pro/ring?message=" + Uri.EscapeDataString(mensaje));
+        string mensaje = string.IsNullOrWhiteSpace(txtMensaje.Text) ? "MSI Center" : txtMensaje.Text.Trim();
+        lblEstado.Text = "Enviando timbre a la PC...";
+
+        if (await RingPcAsync(mensaje))
+        {
+            lblEstado.Text = "Timbre enviado a la PC.";
+            try { await TextToSpeech.Default.SpeakAsync(mensaje); } catch { }
+        }
+    }
+
+    private async Task<bool> RingPcAsync(string mensaje)
+    {
+        string encoded = Uri.EscapeDataString(mensaje);
+        string path = "/pro/ring?message=" + encoded + "&sound=1&speak=1";
+        var payload = new
+        {
+            message = mensaje,
+            mensaje,
+            playSound = true,
+            sound = true,
+            speak = true,
+            readMessage = true
+        };
+
+        try
+        {
+            using JsonContent content = JsonContent.Create(payload);
+            using HttpResponseMessage response = await http.PostAsync(U(path), content);
+            string body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return true;
+
+            if (response.StatusCode is HttpStatusCode.BadRequest or
+                HttpStatusCode.UnsupportedMediaType or
+                HttpStatusCode.MethodNotAllowed)
+            {
+                using HttpResponseMessage fallback =
+                    await http.PostAsync(U("/pro/ring?message=" + encoded), null);
+                string fallbackBody = await fallback.Content.ReadAsStringAsync();
+                if (fallback.IsSuccessStatusCode)
+                    return true;
+
+                body = string.IsNullOrWhiteSpace(fallbackBody) ? body : fallbackBody;
+            }
+
+            lblEstado.Text = "No se pudo enviar el timbre.";
+            await DisplayAlertAsync("Timbre", ExtraerError(body), "Aceptar");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            lblEstado.Text = "Sin conexión con la PC.";
+            await DisplayAlertAsync("Sin conexión", ex.Message, "Aceptar");
+            return false;
+        }
     }
 
     private async Task<string> Get(string p)
@@ -229,6 +283,9 @@ public partial class HerramientasProPage : ContentPage
 
     private static string ExtraerError(string body)
     {
+        if (string.IsNullOrWhiteSpace(body))
+            return "La PC no respondió con detalle.";
+
         try
         {
             using JsonDocument doc = JsonDocument.Parse(body);

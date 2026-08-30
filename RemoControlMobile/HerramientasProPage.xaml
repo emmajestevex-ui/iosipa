@@ -53,9 +53,9 @@
                     <Border.StrokeShape><RoundRectangle CornerRadius="18"/></Border.StrokeShape>
                     <VerticalStackLayout Spacing="10">
                         <Label Text="Timbre" FontSize="18" FontAttributes="Bold" TextColor="White"/>
-                        <Label Text="El mensaje se pronuncia en este teléfono y también hace sonar la PC." FontSize="11" TextColor="#8191A5"/>
+                        <Label Text="La PC reproduce un sonido y lee el mensaje enviado desde el teléfono." FontSize="11" TextColor="#8191A5"/>
                         <Entry x:Name="txtMensaje" Placeholder="Escribe el mensaje" TextColor="White"/>
-                        <Button Text="Reproducir y hacer sonar PC" BackgroundColor="#6A3DE8" TextColor="White" Clicked="BtnRing_Clicked"/>
+                        <Button Text="Tocar timbre en la PC" BackgroundColor="#E31B2F" TextColor="White" Clicked="BtnRing_Clicked"/>
                     </VerticalStackLayout>
                 </Border>
 

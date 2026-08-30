@@ -50,14 +50,37 @@ public static partial class PlatformAudio
 
     public static partial Task PlayWavAsync(byte[] wavData)
     {
+        if (!EsWavValido(wavData))
+            throw new InvalidOperationException("La PC no devolvió audio WAV válido.");
+
         return MainThread.InvokeOnMainThreadAsync(async () =>
         {
-            string path = Path.Combine(FileSystem.CacheDirectory, "remocontrol_rx.wav");
+            AVAudioSession session = AVAudioSession.SharedInstance();
+            session.SetCategory(AVAudioSessionCategory.PlayAndRecord, AVAudioSessionCategoryOptions.DefaultToSpeaker);
+            session.SetActive(true);
+
+            string path = Path.Combine(FileSystem.CacheDirectory, $"remocontrol_rx_{Guid.NewGuid():N}.wav");
             await File.WriteAllBytesAsync(path, wavData);
-            using AVAudioPlayer player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(path));
-            player.Play();
-            while (player.Playing)
-                await Task.Delay(80);
+
+            AVAudioPlayer? player = null;
+            try
+            {
+                player = AVAudioPlayer.FromUrl(NSUrl.FromFilename(path));
+                if (player == null)
+                    throw new InvalidOperationException("No se pudo abrir el audio recibido.");
+
+                player.PrepareToPlay();
+                if (!player.Play())
+                    throw new InvalidOperationException("No se pudo reproducir el audio recibido.");
+
+                while (player.Playing)
+                    await Task.Delay(60);
+            }
+            finally
+            {
+                player?.Dispose();
+                try { File.Delete(path); } catch { }
+            }
         });
     }
 }

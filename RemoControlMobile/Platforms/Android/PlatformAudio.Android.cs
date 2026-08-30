@@ -48,16 +48,29 @@ public static partial class PlatformAudio
 
     public static partial Task PlayWavAsync(byte[] wavData)
     {
-        return Task.Run(() =>
+        if (!EsWavValido(wavData))
+            throw new InvalidOperationException("La PC no devolvió audio WAV válido.");
+
+        return Task.Run(async () =>
         {
-            string file = Path.Combine(FileSystem.CacheDirectory, "remocontrol_rx.wav");
+            string file = Path.Combine(FileSystem.CacheDirectory, $"remocontrol_rx_{Guid.NewGuid():N}.wav");
             File.WriteAllBytes(file, wavData);
-            using MediaPlayer player = new MediaPlayer();
-            player.SetDataSource(file);
-            player.Prepare();
-            player.Start();
-            while (player.IsPlaying)
-                Thread.Sleep(80);
+
+            try
+            {
+                using MediaPlayer player = new MediaPlayer();
+                player.SetAudioStreamType(Android.Media.Stream.Music);
+                player.SetDataSource(file);
+                player.Prepare();
+                player.Start();
+
+                while (player.IsPlaying)
+                    await Task.Delay(60);
+            }
+            finally
+            {
+                try { File.Delete(file); } catch { }
+            }
         });
     }
 }

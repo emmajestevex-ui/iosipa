@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 
 namespace RemoControlMobile;
 
@@ -158,14 +159,58 @@ public partial class IntercomPage : ContentPage
 
         if (!response.IsSuccessStatusCode)
         {
-            string text = Encoding.UTF8.GetString(data);
+            string text = LeerTextoSeguro(data);
             throw new InvalidOperationException(
                 string.IsNullOrWhiteSpace(text)
                     ? "La PC rechazó la solicitud de audio."
                     : ExtraerError(text));
         }
 
+        if (!PlatformAudio.EsWavValido(data))
+        {
+            string text = LeerTextoSeguro(data);
+            string mediaType = response.Content.Headers.ContentType?.MediaType ?? "sin tipo";
+            throw new InvalidOperationException(
+                string.IsNullOrWhiteSpace(text)
+                    ? $"La PC no devolvió audio WAV válido ({mediaType}). Revisa que RemoControl PC tenga permiso de micrófono."
+                    : ExtraerError(text));
+        }
+
         return data;
+    }
+
+    private async Task<byte[]> ObtenerFrameCamaraAsync(HttpClient http, CancellationToken token)
+    {
+        using HttpResponseMessage response = await http.GetAsync(
+            Url("/camera/frame?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()),
+            HttpCompletionOption.ResponseContentRead,
+            token);
+
+        byte[] bytes = await response.Content.ReadAsByteArrayAsync(token);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            string text = LeerTextoSeguro(bytes);
+            throw new InvalidOperationException(
+                string.IsNullOrWhiteSpace(text)
+                    ? "La PC rechazó la cámara remota."
+                    : ExtraerError(text));
+        }
+
+        if (TieneFirmaImagen(bytes))
+            return bytes;
+
+        byte[]? imagenJson = IntentarLeerImagenDesdeJson(bytes);
+        if (imagenJson != null)
+            return imagenJson;
+
+        string detalle = LeerTextoSeguro(bytes);
+        if (!string.IsNullOrWhiteSpace(detalle))
+            throw new InvalidOperationException(ExtraerError(detalle));
+
+        string mediaType = response.Content.Headers.ContentType?.MediaType ?? "sin tipo";
+        throw new InvalidOperationException(
+            $"La PC no devolvió una imagen válida ({mediaType}). Activa la cámara en RemoControl PC y permite el acceso de cámara en Windows.");
     }
 
     private async void BtnCamara_Clicked(object sender, EventArgs e)
@@ -178,38 +223,30 @@ public partial class IntercomPage : ContentPage
 
         cameraActiva = true;
         cameraCts = new CancellationTokenSource();
-        badgeCamara.IsVisible = true;
+        badgeCamara.IsVisible = false;
         btnCamara.Text = "Detener cámara";
-        camaraPlaceholder.IsVisible = false;
-        imgCamara.IsVisible = true;
+        camaraPlaceholder.IsVisible = true;
+        imgCamara.Source = null;
+        imgCamara.IsVisible = false;
         lblEstadoAudio.Text = "Conectando con la cámara de la PC...";
 
         try
         {
             CancellationToken token = cameraCts.Token;
+            using HttpClient http = AppConfig.CrearCliente(10);
 
             while (!token.IsCancellationRequested)
             {
-                using HttpClient http = AppConfig.CrearCliente(10);
-                using HttpResponseMessage response = await http.GetAsync(
-                    Url("/camera/frame?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()),
-                    HttpCompletionOption.ResponseContentRead,
-                    token);
-
-                byte[] bytes = await response.Content.ReadAsByteArrayAsync(token);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    string text = Encoding.UTF8.GetString(bytes);
-                    throw new InvalidOperationException(
-                        string.IsNullOrWhiteSpace(text)
-                            ? "La PC rechazó la cámara remota."
-                            : ExtraerError(text));
-                }
-
-                byte[] frame = bytes;
+                byte[] frame = await ObtenerFrameCamaraAsync(http, token);
                 imgCamara.Source = ImageSource.FromStream(
                     () => new MemoryStream(frame, writable: false));
+
+                if (!imgCamara.IsVisible)
+                {
+                    camaraPlaceholder.IsVisible = false;
+                    imgCamara.IsVisible = true;
+                    badgeCamara.IsVisible = true;
+                }
 
                 lblEstadoAudio.Text = "Cámara de la PC • en vivo";
                 await Task.Delay(550, token);
@@ -258,6 +295,99 @@ public partial class IntercomPage : ContentPage
         btnHablar.IsEnabled = !ocupado && !audioLiveActivo;
         btnEscuchar.IsEnabled = !ocupado && !audioLiveActivo;
         btnEscucharVivo.IsEnabled = !ocupado || audioLiveActivo;
+    }
+
+    private static bool TieneFirmaImagen(byte[] data)
+    {
+        if (data.Length < 4)
+            return false;
+
+        bool jpg = data.Length >= 3 &&
+                   data[0] == 0xFF &&
+                   data[1] == 0xD8 &&
+                   data[2] == 0xFF;
+
+        bool png = data.Length >= 8 &&
+                   data[0] == 0x89 &&
+                   data[1] == 0x50 &&
+                   data[2] == 0x4E &&
+                   data[3] == 0x47 &&
+                   data[4] == 0x0D &&
+                   data[5] == 0x0A &&
+                   data[6] == 0x1A &&
+                   data[7] == 0x0A;
+
+        bool gif = data.Length >= 6 &&
+                   data[0] == (byte)'G' &&
+                   data[1] == (byte)'I' &&
+                   data[2] == (byte)'F';
+
+        bool bmp = data[0] == (byte)'B' &&
+                   data[1] == (byte)'M';
+
+        bool webp = data.Length >= 12 &&
+                    data[0] == (byte)'R' &&
+                    data[1] == (byte)'I' &&
+                    data[2] == (byte)'F' &&
+                    data[3] == (byte)'F' &&
+                    data[8] == (byte)'W' &&
+                    data[9] == (byte)'E' &&
+                    data[10] == (byte)'B' &&
+                    data[11] == (byte)'P';
+
+        return jpg || png || gif || bmp || webp;
+    }
+
+    private static byte[]? IntentarLeerImagenDesdeJson(byte[] data)
+    {
+        try
+        {
+            using JsonDocument doc = JsonDocument.Parse(data);
+            if (doc.RootElement.ValueKind != JsonValueKind.Object)
+                return null;
+
+            foreach (JsonProperty property in doc.RootElement.EnumerateObject())
+            {
+                if (property.Value.ValueKind != JsonValueKind.String ||
+                    !EsCampoImagen(property.Name))
+                {
+                    continue;
+                }
+
+                string value = property.Value.GetString() ?? "";
+                int comma = value.IndexOf(',');
+                if (value.StartsWith("data:image", StringComparison.OrdinalIgnoreCase) && comma >= 0)
+                    value = value[(comma + 1)..];
+
+                byte[] decoded = Convert.FromBase64String(value);
+                if (TieneFirmaImagen(decoded))
+                    return decoded;
+            }
+        }
+        catch
+        {
+        }
+
+        return null;
+    }
+
+    private static bool EsCampoImagen(string name)
+    {
+        return name.Contains("image", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("imagen", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("frame", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("jpeg", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("jpg", StringComparison.OrdinalIgnoreCase) ||
+               name.Contains("png", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string LeerTextoSeguro(byte[] data)
+    {
+        if (data.Length == 0 || PlatformAudio.EsWavValido(data) || TieneFirmaImagen(data))
+            return "";
+
+        string text = Encoding.UTF8.GetString(data).Trim();
+        return text.Length <= 600 ? text : text[..600];
     }
 
     protected override void OnDisappearing()
