@@ -23,20 +23,25 @@ jobs:
       - name: Seleccionar Xcode 26.6
         shell: bash
         run: |
+          set -euo pipefail
           sudo xcode-select -s /Applications/Xcode_26.6.app
           xcodebuild -version
 
       - name: Instalar workload MAUI iOS
         shell: bash
         run: |
+          set -euo pipefail
           dotnet workload install maui-ios
 
-      - name: Restaurar solamente iOS
+      - name: Restaurar iOS ARM64
         shell: bash
         run: |
+          set -euo pipefail
+
           dotnet restore \
             RemoControlMobile/RemoControlMobile.csproj \
-            -p:TargetFrameworks=net10.0-ios
+            -p:TargetFrameworks=net10.0-ios \
+            -p:RuntimeIdentifier=ios-arm64
 
       - name: Compilar aplicación iOS sin firma
         shell: bash
@@ -69,8 +74,9 @@ jobs:
           )
 
           if [ -z "$APP_PATH" ]; then
-            echo "No se encontró el archivo .app"
+            echo "ERROR: no se encontró ningún archivo .app"
 
+            echo "Contenido generado:"
             find RemoControlMobile/bin/Release \
               -maxdepth 8 \
               -print || true
@@ -91,14 +97,18 @@ jobs:
           set -euo pipefail
 
           rm -rf Payload
+          rm -f RemoControlMobile-ESign.ipa
+
           mkdir -p Payload
 
           cp -R "$APP_PATH" Payload/
 
-          zip -qry RemoControlMobile-ESign.ipa Payload
+          zip -qry \
+            RemoControlMobile-ESign.ipa \
+            Payload
 
           if [ ! -f RemoControlMobile-ESign.ipa ]; then
-            echo "No se pudo crear el IPA."
+            echo "ERROR: no se pudo crear el IPA."
             exit 1
           fi
 
