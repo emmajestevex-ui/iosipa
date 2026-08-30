@@ -53,22 +53,22 @@ public partial class ArchivosPage : ContentPage
             cargando.IsRunning =
                 true;
 
-            string url =
-                AppConfig.Servidor +
+            string endpoint =
                 "/files";
 
             if (!string.IsNullOrWhiteSpace(
                 ruta))
             {
-                url +=
+                endpoint +=
                     "?path=" +
                     Uri.EscapeDataString(
                         ruta);
             }
 
             using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    url);
+                await AppConfig.GetAsyncConToken(
+                    cliente,
+                    endpoint);
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -263,12 +263,10 @@ public partial class ArchivosPage : ContentPage
             string nombre = archivo.name ?? "archivo";
             lblTransferencia.Text = "Descargando " + nombre;
 
-            string url = AppConfig.Servidor +
-                         "/download?path=" +
-                         Uri.EscapeDataString(archivo.path);
-
             using HttpResponseMessage respuesta = await cliente.GetAsync(
-                url,
+                AppConfig.UrlConToken(
+                    "/download?path=" +
+                    Uri.EscapeDataString(archivo.path)),
                 HttpCompletionOption.ResponseHeadersRead,
                 token);
 
@@ -431,10 +429,10 @@ public partial class ArchivosPage : ContentPage
                     "application/octet-stream");
 
             string url =
-                AppConfig.Servidor +
+                AppConfig.UrlConToken(
                 "/upload?path=" +
                 Uri.EscapeDataString(
-                    rutaActual);
+                    rutaActual));
 
             using HttpRequestMessage peticion =
                 new HttpRequestMessage(
@@ -718,10 +716,10 @@ public partial class ArchivosPage : ContentPage
                     "application/octet-stream");
 
             string url =
-                AppConfig.Servidor +
+                AppConfig.UrlConToken(
                 "/upload?path=" +
                 Uri.EscapeDataString(
-                    rutaActual);
+                    rutaActual));
 
             using HttpRequestMessage peticion =
                 new HttpRequestMessage(

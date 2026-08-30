@@ -122,13 +122,13 @@
 
                         <Entry
                             x:Name="txtMacroJuego"
-                            Placeholder="Texto del macro"
+                            Placeholder="Emmanuel"
                             PlaceholderColor="#657181"
                             BackgroundColor="#151B23"
                             TextColor="White" />
 
                         <Button
-                            Text="Enter + texto + Enter"
+                            Text="Enter + Emmanuel + Enter"
                             HeightRequest="52"
                             BackgroundColor="#E31B2F"
                             TextColor="White"

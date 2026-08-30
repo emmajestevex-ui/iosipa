@@ -37,7 +37,7 @@ public partial class ConfiguracionPage : ContentPage
             "En Tailscale ambos deben aparecer conectados.\n\n" +
             "Prueba rápida: abre Safari en el iPhone y entra a la dirección Tailscale de la PC terminando en /status.\n\n" +
             "Si Safari muestra 401 o Unauthorized, Tailscale sí llega a la PC y debes revisar el token o instalar el IPA nuevo.\n\n" +
-            "Si Safari no abre la página, ejecuta REPARAR_TAILSCALE_5050_ADMIN.bat como administrador y revisa que Tailscale siga conectado.",
+            "Si Safari no abre la página, ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador y revisa que Tailscale siga conectado.",
             "Aceptar");
     }
 
@@ -223,17 +223,13 @@ public partial class ConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            txtServidor.Text?
-                .Trim()
-            ??
-            "";
+            AppConfig.NormalizarServidor(
+                txtServidor.Text);
 
 
         string token =
-            txtToken.Text?
-                .Trim()
-            ??
-            "";
+            AppConfig.LimpiarToken(
+                txtToken.Text);
 
 
         if (string.IsNullOrWhiteSpace(
@@ -246,20 +242,6 @@ public partial class ConfiguracionPage : ContentPage
                 Colors.Red;
 
             return;
-        }
-
-
-        if (!servidor.StartsWith(
-            "http://",
-            StringComparison.OrdinalIgnoreCase)
-            &&
-            !servidor.StartsWith(
-                "https://",
-                StringComparison.OrdinalIgnoreCase))
-        {
-            servidor =
-                "http://" +
-                servidor;
         }
 
 
@@ -276,6 +258,12 @@ public partial class ConfiguracionPage : ContentPage
 
             return;
         }
+
+        txtServidor.Text =
+            servidor;
+
+        txtToken.Text =
+            token;
 
 
         if (string.IsNullOrWhiteSpace(
@@ -304,10 +292,6 @@ public partial class ConfiguracionPage : ContentPage
                 Colors.Orange;
 
 
-            servidor =
-                servidor.TrimEnd('/');
-
-
             using HttpClient cliente =
                 new HttpClient();
 
@@ -319,45 +303,64 @@ public partial class ConfiguracionPage : ContentPage
                         : 8);
 
 
-            cliente.DefaultRequestHeaders.Add(
-                "X-Remo-Token",
+            AppConfig.AgregarTokenHeaders(
+                cliente,
                 token);
 
 
-            using HttpResponseMessage respuesta =
+            HttpResponseMessage respuesta =
                 await cliente.GetAsync(
                     servidor +
                     "/status");
 
-
-            if (respuesta.IsSuccessStatusCode)
-            {
-                lblPrueba.Text =
-                    "● Conexión correcta";
-
-                lblPrueba.TextColor =
-                    Colors.LimeGreen;
-            }
-            else if (
+            if (
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Unauthorized
                 ||
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Forbidden)
             {
-                lblPrueba.Text =
-                    "● Token incorrecto";
+                respuesta.Dispose();
 
-                lblPrueba.TextColor =
-                    Colors.Red;
+                respuesta =
+                    await cliente.GetAsync(
+                        AppConfig.AnexarTokenAUrl(
+                            servidor +
+                            "/status",
+                            token));
             }
-            else
-            {
-                lblPrueba.Text =
-                    "● La PC respondió, pero rechazó la conexión";
 
-                lblPrueba.TextColor =
-                    Colors.Red;
+            using (respuesta)
+            {
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    lblPrueba.Text =
+                        "● Conexión correcta";
+
+                    lblPrueba.TextColor =
+                        Colors.LimeGreen;
+                }
+                else if (
+                    respuesta.StatusCode ==
+                    System.Net.HttpStatusCode.Unauthorized
+                    ||
+                    respuesta.StatusCode ==
+                    System.Net.HttpStatusCode.Forbidden)
+                {
+                    lblPrueba.Text =
+                        "● Token incorrecto";
+
+                    lblPrueba.TextColor =
+                        Colors.Red;
+                }
+                else
+                {
+                    lblPrueba.Text =
+                        "● La PC respondió, pero rechazó la conexión";
+
+                    lblPrueba.TextColor =
+                        Colors.Red;
+                }
             }
         }
         catch (TaskCanceledException)
@@ -378,7 +381,7 @@ public partial class ConfiguracionPage : ContentPage
         {
             lblPrueba.Text =
                 EsTailscale(uriServidor)
-                    ? "● iPhone no llegó a la PC por Tailscale"
+                    ? "● La app no pudo abrir Tailscale"
                     : "● No se encontró la PC";
 
             lblPrueba.TextColor =
@@ -417,17 +420,13 @@ public partial class ConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            txtServidor.Text?
-                .Trim()
-            ??
-            "";
+            AppConfig.NormalizarServidor(
+                txtServidor.Text);
 
 
         string token =
-            txtToken.Text?
-                .Trim()
-            ??
-            "";
+            AppConfig.LimpiarToken(
+                txtToken.Text);
 
 
         if (string.IsNullOrWhiteSpace(
@@ -439,20 +438,6 @@ public partial class ConfiguracionPage : ContentPage
                 "Aceptar");
 
             return;
-        }
-
-
-        if (!servidor.StartsWith(
-            "http://",
-            StringComparison.OrdinalIgnoreCase)
-            &&
-            !servidor.StartsWith(
-                "https://",
-                StringComparison.OrdinalIgnoreCase))
-        {
-            servidor =
-                "http://" +
-                servidor;
         }
 
 
@@ -469,6 +454,12 @@ public partial class ConfiguracionPage : ContentPage
             return;
         }
 
+        txtServidor.Text =
+            servidor;
+
+        txtToken.Text =
+            token;
+
 
         if (string.IsNullOrWhiteSpace(
             token))
@@ -480,10 +471,6 @@ public partial class ConfiguracionPage : ContentPage
 
             return;
         }
-
-
-        servidor =
-            servidor.TrimEnd('/');
 
 
         AppConfig.Servidor =
@@ -563,7 +550,7 @@ public partial class ConfiguracionPage : ContentPage
             "3. RemoControl debe estar abierto en Windows.\n" +
             "4. En Safari del iPhone prueba esta dirección: " + servidor.TrimEnd('/') + "/status\n" +
             "5. Si Safari muestra 401 o Unauthorized, la conexión funciona y debes revisar el token o instalar el IPA nuevo.\n" +
-            "6. Si Safari no abre, ejecuta REPARAR_TAILSCALE_5050_ADMIN.bat como administrador.\n\n" +
+            "6. Si Safari no abre, ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador.\n\n" +
             "Detalle: " + Recortar(detalle, 220),
             "Aceptar");
     }

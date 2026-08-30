@@ -3,6 +3,8 @@ MSI Center V5
 Cambios principales:
 - Marca visual MSI Center: nombre visible, escudo MSI en la cabecera, icono iOS oscuro con acento rojo y pantalla principal modernizada.
 - La V5 borra una sola vez cualquier PC/token/equipo guardado de versiones anteriores. Cada instalación debe configurar su propia PC.
+- Configuración limpia direcciones pegadas con /status y tokens copiados con espacios o caracteres invisibles.
+- Tailscale: usa siempre la IP de la laptop/PC. Ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador para abrir el puerto 5050 y ver la IP actual.
 - Herramientas ya no muestra JSON crudo: Wi-Fi, impresoras, Bluetooth y archivos recientes se presentan como controles utilizables.
 - Wi-Fi: permite pedir a Windows conexión a un perfil conocido.
 - Impresoras: muestra estado y permite Pausar/Reanudar/Cancelar todos los trabajos cuando Windows lo admite.
@@ -14,3 +16,10 @@ Cambios principales:
 
 Limitación del sistema:
 Android/iOS no permiten que una app instalada cambie dinámicamente su icono/nombre ORIGINAL del launcher como si se recompilara. V5 usa un acceso directo personalizado cuando el launcher de Android lo permite.
+En iOS el nombre e icono externos quedan cambiados al recompilar la IPA desde este proyecto.
+
+Prueba rápida de Tailscale:
+1. En la laptop abre Tailscale y confirma que el dispositivo "msi" aparece conectado.
+2. Ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador.
+3. En el iPhone guarda en MSI Center la dirección que dice "Servidor / IP", sin /status.
+4. Copia el token completo desde RemoControl PC.

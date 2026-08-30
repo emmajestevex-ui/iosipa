@@ -40,8 +40,22 @@
   <key>NSLocalNetworkUsageDescription</key>
   <string>RemoControl necesita acceder a tu red local para encontrar y controlar tu computadora.</string>
 
+  <key>NSBonjourServices</key>
+  <array>
+    <string>_http._tcp</string>
+  </array>
+
   <key>NSMicrophoneUsageDescription</key>
   <string>RemoControl usa el micrófono únicamente cuando eliges hablar a tu PC.</string>
+
+  <key>NSCameraUsageDescription</key>
+  <string>MSI Center puede abrir la cámara del teléfono si eliges enviar una foto a tu PC.</string>
+
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>MSI Center necesita acceso a tus fotos y videos solo cuando eliges subirlos a la PC.</string>
+
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>MSI Center puede guardar capturas o archivos cuando eliges exportarlos desde la app.</string>
 
   <key>NSAppTransportSecurity</key>
   <dict>

@@ -17,17 +17,18 @@ public partial class HerramientasProPage : ContentPage
 
     private string U(string p)
     {
-        if (string.IsNullOrWhiteSpace(AppConfig.Servidor))
-            throw new InvalidOperationException("Primero conecta una PC autorizada.");
-
-        return AppConfig.Servidor.TrimEnd('/') + p;
+        return AppConfig.Url(
+            p);
     }
 
     private async Task<bool> Call(string p)
     {
         try
         {
-            using var r = await http.PostAsync(U(p), null);
+            using var r =
+                await AppConfig.PostAsyncConToken(
+                    http,
+                    p);
             string t = await r.Content.ReadAsStringAsync();
             if (!r.IsSuccessStatusCode)
             {
@@ -152,7 +153,10 @@ public partial class HerramientasProPage : ContentPage
         {
             try
             {
-                using HttpResponseMessage response = await http.PostAsync(U(ruta), null);
+                using HttpResponseMessage response =
+                    await AppConfig.PostAsyncConToken(
+                        http,
+                        ruta);
                 string body = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                     return true;
@@ -228,7 +232,11 @@ public partial class HerramientasProPage : ContentPage
         try
         {
             using JsonContent content = JsonContent.Create(payload);
-            using HttpResponseMessage response = await http.PostAsync(U(path), content);
+            using HttpResponseMessage response =
+                await http.PostAsync(
+                    AppConfig.UrlConToken(
+                        path),
+                    content);
             string body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return true;
@@ -238,7 +246,9 @@ public partial class HerramientasProPage : ContentPage
                 HttpStatusCode.MethodNotAllowed)
             {
                 using HttpResponseMessage fallback =
-                    await http.PostAsync(U("/pro/ring?message=" + encoded), null);
+                    await AppConfig.PostAsyncConToken(
+                        http,
+                        "/pro/ring?message=" + encoded);
                 string fallbackBody = await fallback.Content.ReadAsStringAsync();
                 if (fallback.IsSuccessStatusCode)
                     return true;
@@ -262,7 +272,24 @@ public partial class HerramientasProPage : ContentPage
     {
         try
         {
-            return await http.GetStringAsync(U(p));
+            using HttpResponseMessage response =
+                await AppConfig.GetAsyncConToken(
+                    http,
+                    p);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                string body =
+                    await response.Content.ReadAsStringAsync();
+
+                lblEstado.Text =
+                    ExtraerError(
+                        body);
+
+                return "";
+            }
+
+            return await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)
         {

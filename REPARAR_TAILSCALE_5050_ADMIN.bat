@@ -1,6 +1,11 @@
 @echo off
 setlocal
 
+if exist "%~dp0REPARAR_TODO_REMOCONTROL_ADMIN.bat" (
+    call "%~dp0REPARAR_TODO_REMOCONTROL_ADMIN.bat"
+    exit /b
+)
+
 net session >nul 2>&1
 if not "%errorlevel%"=="0" (
     powershell -NoProfile -ExecutionPolicy Bypass -Command "Start-Process -FilePath '%~f0' -Verb RunAs"

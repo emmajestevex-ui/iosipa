@@ -27,12 +27,18 @@ MISMO WIFI
 OTRA RED
 - Primero prueba en la misma Wi-Fi.
 - Después puedes usar Tailscale en la PC y el teléfono.
+- En la app del iPhone escribe la IP Tailscale de la laptop/PC, no la IP del iPhone.
+- En la PC ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador.
+- Ese archivo muestra la dirección actual, por ejemplo http://100.x.x.x:5050, y deja un reporte en el Escritorio.
+- En Safari puedes probar http://IP_DE_LA_LAPTOP:5050/status. Si sale No autorizado, Tailscale sí llega a la PC y solo falta token/app actualizada.
+- En MSI Center no escribas /status; solo http://IP_DE_LA_LAPTOP:5050.
 
 TELEGRAM
 - Se configura en RemoControl PC > Configuración > NOTIFICACIONES POR TELEGRAM.
 - La app de PC incluye los pasos para BotFather, detección de Chat ID y prueba de notificación.
 
-GENERAR APK
-- Abre RemoControlMobile.slnx en Visual Studio.
-- Recompila Release.
-- Genera/publica el APK firmado correspondiente a esta versión.
+GENERAR IPA PARA ESIGN
+- Sube esta carpeta a GitHub.
+- Ejecuta el workflow Build MSI Center iOS ESign.
+- Descarga el artifact MSICenter-iOS-ESign-IPA.
+- Instala ese IPA nuevo en el iPhone.

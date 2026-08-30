@@ -164,65 +164,94 @@ public partial class MainPage : ContentPage
             lblWindows.Text = "";
 
             using HttpClient cliente =
-                AppConfig.CrearCliente(8);
+                AppConfig.CrearCliente(10);
 
-            using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    AppConfig.Servidor.TrimEnd('/') +
+            bool respuestaEsInfo =
+                true;
+
+            HttpResponseMessage respuesta =
+                await AppConfig.GetAsyncConToken(
+                    cliente,
                     "/info");
 
             if (
-                respuesta.StatusCode == HttpStatusCode.Unauthorized ||
-                respuesta.StatusCode == HttpStatusCode.Forbidden)
+                respuesta.StatusCode == HttpStatusCode.NotFound ||
+                respuesta.StatusCode == HttpStatusCode.MethodNotAllowed)
             {
-                lblPc.Text = "PC encontrada";
-                lblEstado.Text = "● Token incorrecto";
-                lblEstado.TextColor = Colors.Red;
-                lblUsuario.Text =
-                    "La PC respondió, pero el token no coincide. Copia de nuevo el TOKEN DE SEGURIDAD que muestra esa PC.";
-                lblWindows.Text = "";
-                return;
+                respuesta.Dispose();
+                respuestaEsInfo =
+                    false;
+
+                respuesta =
+                    await AppConfig.GetAsyncConToken(
+                        cliente,
+                        "/status");
             }
 
-            if (!respuesta.IsSuccessStatusCode)
+            using (respuesta)
             {
-                lblPc.Text = "PC encontrada";
-                lblEstado.Text = "● Error del servidor";
-                lblEstado.TextColor = Colors.Red;
+                if (
+                    respuesta.StatusCode == HttpStatusCode.Unauthorized ||
+                    respuesta.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    lblPc.Text = "PC encontrada";
+                    lblEstado.Text = "● Token incorrecto";
+                    lblEstado.TextColor = Colors.Red;
+                    lblUsuario.Text =
+                        "La PC respondió, pero el token no coincide. Copia de nuevo el TOKEN DE SEGURIDAD que muestra esa PC.";
+                    lblWindows.Text = "";
+                    return;
+                }
+
+                if (!respuesta.IsSuccessStatusCode)
+                {
+                    lblPc.Text = "PC encontrada";
+                    lblEstado.Text = "● Error del servidor";
+                    lblEstado.TextColor = Colors.Red;
+                    lblUsuario.Text =
+                        "RemoControl en la PC respondió con un error. Revisa Configuración en la PC.";
+                    lblWindows.Text = "";
+                    return;
+                }
+
+                if (!respuestaEsInfo)
+                {
+                    lblPc.Text = "PC";
+                    lblUsuario.Text = "";
+                    lblWindows.Text = "";
+                    lblEstado.Text = "● En línea";
+                    lblEstado.TextColor = Colors.LimeGreen;
+                    return;
+                }
+
+                InfoPc? info =
+                    await respuesta.Content
+                        .ReadFromJsonAsync<InfoPc>();
+
+                if (info == null)
+                {
+                    lblPc.Text = "PC encontrada";
+                    lblEstado.Text = "● En línea";
+                    lblEstado.TextColor = Colors.LimeGreen;
+                    lblUsuario.Text = "";
+                    lblWindows.Text = "";
+                    return;
+                }
+
+                lblPc.Text =
+                    info.pc ?? "PC";
+
                 lblUsuario.Text =
-                    "RemoControl en la PC respondió con un error. Revisa Configuración en la PC.";
-                lblWindows.Text = "";
-                return;
+                    string.IsNullOrWhiteSpace(info.user)
+                        ? ""
+                        : "Usuario: " + info.user;
+
+                lblWindows.Text =
+                    info.windows ?? "";
+
+                lblEstado.Text = "● En línea";
+                lblEstado.TextColor = Colors.LimeGreen;
             }
-
-            InfoPc? info =
-                await respuesta.Content
-                    .ReadFromJsonAsync<InfoPc>();
-
-            if (info == null)
-            {
-                lblPc.Text = "PC encontrada";
-                lblEstado.Text = "● Respuesta inválida";
-                lblEstado.TextColor = Colors.Red;
-                lblUsuario.Text =
-                    "La respuesta del servidor no es válida.";
-                lblWindows.Text = "";
-                return;
-            }
-
-            lblPc.Text =
-                info.pc ?? "PC";
-
-            lblUsuario.Text =
-                string.IsNullOrWhiteSpace(info.user)
-                    ? ""
-                    : "Usuario: " + info.user;
-
-            lblWindows.Text =
-                info.windows ?? "";
-
-            lblEstado.Text = "● En línea";
-            lblEstado.TextColor = Colors.LimeGreen;
         }
         catch (TaskCanceledException)
         {
@@ -230,7 +259,9 @@ public partial class MainPage : ContentPage
             lblEstado.Text = "● Tiempo agotado";
             lblEstado.TextColor = Colors.Red;
             lblUsuario.Text =
-                "Revisa que la dirección sea la de TU PC, que RemoControl esté abierto y que ambos estén en la misma red.";
+                AppConfig.EsServidorTailscale(AppConfig.Servidor)
+                    ? "Tailscale respondió lento. Abre Safari y prueba la dirección terminada en /status; si sale No autorizado, instala el IPA nuevo y revisa el token."
+                    : "Revisa que la dirección sea la de TU PC, que RemoControl esté abierto y que ambos estén en la misma red.";
             lblWindows.Text = "";
         }
         catch (HttpRequestException)
@@ -239,7 +270,9 @@ public partial class MainPage : ContentPage
             lblEstado.Text = "● Sin conexión";
             lblEstado.TextColor = Colors.Red;
             lblUsuario.Text =
-                "No se pudo alcanzar esa dirección. Revisa la IP, el puerto 5050 y el permiso de Windows en RemoControl PC.";
+                AppConfig.EsServidorTailscale(AppConfig.Servidor)
+                    ? "La app no pudo abrir la dirección Tailscale. Usa la IP de la laptop, no la del iPhone, y prueba primero en Safari con /status."
+                    : "No se pudo alcanzar esa dirección. Revisa la IP, el puerto 5050 y el permiso de Windows en RemoControl PC.";
             lblWindows.Text = "";
         }
         catch (Exception ex)

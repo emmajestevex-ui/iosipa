@@ -35,10 +35,8 @@ public partial class AplicacionesPage : ContentPage
 
     private string U(string path)
     {
-        if (string.IsNullOrWhiteSpace(AppConfig.Servidor))
-            throw new InvalidOperationException("Primero conecta una PC autorizada.");
-
-        return AppConfig.Servidor.TrimEnd('/') + path;
+        return AppConfig.Url(
+            path);
     }
 
     // ============================================================
@@ -538,8 +536,9 @@ public partial class AplicacionesPage : ContentPage
             try
             {
                 using HttpResponseMessage response =
-                    await cliente.GetAsync(
-                        U(ruta));
+                    await AppConfig.GetAsyncConToken(
+                        cliente,
+                        ruta);
 
                 string body =
                     LimpiarJson(
@@ -574,9 +573,9 @@ public partial class AplicacionesPage : ContentPage
             try
             {
                 using HttpResponseMessage response =
-                    await cliente.PostAsync(
-                        U(ruta),
-                        null);
+                    await AppConfig.PostAsyncConToken(
+                        cliente,
+                        ruta);
 
                 string body =
                     LimpiarJson(

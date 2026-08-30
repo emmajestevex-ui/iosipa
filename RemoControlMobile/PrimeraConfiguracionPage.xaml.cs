@@ -52,23 +52,8 @@ public partial class PrimeraConfiguracionPage : ContentPage
     private static string NormalizarServidor(
         string servidor)
     {
-        servidor =
-            servidor.Trim();
-
-        if (!servidor.StartsWith(
-            "http://",
-            StringComparison.OrdinalIgnoreCase)
-            &&
-            !servidor.StartsWith(
-            "https://",
-            StringComparison.OrdinalIgnoreCase))
-        {
-            servidor =
-                "http://" +
-                servidor;
-        }
-
-        return servidor.TrimEnd('/');
+        return AppConfig.NormalizarServidor(
+            servidor);
     }
 
 
@@ -81,12 +66,12 @@ public partial class PrimeraConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            txtServidor.Text?.Trim() ??
-            "";
+            AppConfig.NormalizarServidor(
+                txtServidor.Text);
 
         string token =
-            txtToken.Text?.Trim() ??
-            "";
+            AppConfig.LimpiarToken(
+                txtToken.Text);
 
 
         if (string.IsNullOrWhiteSpace(
@@ -115,11 +100,6 @@ public partial class PrimeraConfiguracionPage : ContentPage
         }
 
 
-        servidor =
-            NormalizarServidor(
-                servidor);
-
-
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
@@ -133,6 +113,12 @@ public partial class PrimeraConfiguracionPage : ContentPage
 
             return;
         }
+
+        txtServidor.Text =
+            servidor;
+
+        txtToken.Text =
+            token;
 
 
         try
@@ -156,45 +142,64 @@ public partial class PrimeraConfiguracionPage : ContentPage
                         ? 25
                         : 8);
 
-            cliente.DefaultRequestHeaders.Add(
-                "X-Remo-Token",
+            AppConfig.AgregarTokenHeaders(
+                cliente,
                 token);
 
 
-            using HttpResponseMessage respuesta =
+            HttpResponseMessage respuesta =
                 await cliente.GetAsync(
                     servidor +
                     "/status");
 
-
-            if (respuesta.IsSuccessStatusCode)
-            {
-                lblEstado.Text =
-                    "● Conexión correcta";
-
-                lblEstado.TextColor =
-                    Colors.LimeGreen;
-            }
-            else if (
+            if (
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Unauthorized
                 ||
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Forbidden)
             {
-                lblEstado.Text =
-                    "● Token incorrecto";
+                respuesta.Dispose();
 
-                lblEstado.TextColor =
-                    Colors.Red;
+                respuesta =
+                    await cliente.GetAsync(
+                        AppConfig.AnexarTokenAUrl(
+                            servidor +
+                            "/status",
+                            token));
             }
-            else
-            {
-                lblEstado.Text =
-                    "● El servidor respondió pero rechazó la solicitud";
 
-                lblEstado.TextColor =
-                    Colors.Red;
+            using (respuesta)
+            {
+                if (respuesta.IsSuccessStatusCode)
+                {
+                    lblEstado.Text =
+                        "● Conexión correcta";
+
+                    lblEstado.TextColor =
+                        Colors.LimeGreen;
+                }
+                else if (
+                    respuesta.StatusCode ==
+                    System.Net.HttpStatusCode.Unauthorized
+                    ||
+                    respuesta.StatusCode ==
+                    System.Net.HttpStatusCode.Forbidden)
+                {
+                    lblEstado.Text =
+                        "● Token incorrecto";
+
+                    lblEstado.TextColor =
+                        Colors.Red;
+                }
+                else
+                {
+                    lblEstado.Text =
+                        "● El servidor respondió pero rechazó la solicitud";
+
+                    lblEstado.TextColor =
+                        Colors.Red;
+                }
             }
         }
         catch (TaskCanceledException)
@@ -211,7 +216,7 @@ public partial class PrimeraConfiguracionPage : ContentPage
         {
             lblEstado.Text =
                 EsTailscale(uriServidor)
-                    ? "● iPhone no llegó a la PC por Tailscale"
+                    ? "● La app no pudo abrir Tailscale"
                     : "● No se pudo alcanzar la PC";
 
             lblEstado.TextColor =
@@ -250,12 +255,12 @@ public partial class PrimeraConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            txtServidor.Text?.Trim() ??
-            "";
+            AppConfig.NormalizarServidor(
+                txtServidor.Text);
 
         string token =
-            txtToken.Text?.Trim() ??
-            "";
+            AppConfig.LimpiarToken(
+                txtToken.Text);
 
 
         if (string.IsNullOrWhiteSpace(
@@ -270,11 +275,6 @@ public partial class PrimeraConfiguracionPage : ContentPage
         }
 
 
-        servidor =
-            NormalizarServidor(
-                servidor);
-
-
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
@@ -287,6 +287,12 @@ public partial class PrimeraConfiguracionPage : ContentPage
 
             return;
         }
+
+        txtServidor.Text =
+            servidor;
+
+        txtToken.Text =
+            token;
 
 
         if (string.IsNullOrWhiteSpace(
@@ -340,7 +346,7 @@ public partial class PrimeraConfiguracionPage : ContentPage
 
 
         await DisplayAlertAsync(
-            "RemoControl",
+            "MSI Center",
             "Configuración terminada. Ya puedes controlar tu PC.",
             "Comenzar");
 

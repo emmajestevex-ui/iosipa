@@ -20,9 +20,9 @@
 
     <ApplicationId>com.remocontrol.mobile</ApplicationId>
 
-    <ApplicationDisplayVersion>1.5.0</ApplicationDisplayVersion>
+    <ApplicationDisplayVersion>1.5.2</ApplicationDisplayVersion>
 
-    <ApplicationVersion>6</ApplicationVersion>
+    <ApplicationVersion>8</ApplicationVersion>
    
     <!-- Android mínimo -->
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>

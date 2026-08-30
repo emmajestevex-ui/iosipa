@@ -20,7 +20,7 @@ public partial class IntercomPage : ContentPage
     }
 
     private string Url(string path) =>
-        AppConfig.Servidor.TrimEnd('/') + path;
+        AppConfig.Url(path);
 
     private async void BtnPermisosCamara_Clicked(object sender, EventArgs e)
     {
@@ -62,7 +62,10 @@ public partial class IntercomPage : ContentPage
             content.Headers.ContentType = new MediaTypeHeaderValue("audio/wav");
 
             using HttpResponseMessage response =
-                await http.PostAsync(Url("/audio/play"), content);
+                await http.PostAsync(
+                    AppConfig.UrlConToken(
+                        "/audio/play"),
+                    content);
 
             string body = await response.Content.ReadAsStringAsync();
 
@@ -171,7 +174,8 @@ public partial class IntercomPage : ContentPage
     {
         using HttpClient http = AppConfig.CrearCliente(segundos + 12);
         using HttpResponseMessage response = await http.GetAsync(
-            Url("/audio/environment?seconds=" + segundos),
+            AppConfig.UrlConToken(
+                "/audio/environment?seconds=" + segundos),
             HttpCompletionOption.ResponseContentRead,
             token);
 
@@ -202,7 +206,8 @@ public partial class IntercomPage : ContentPage
     private async Task<byte[]> ObtenerFrameCamaraAsync(HttpClient http, CancellationToken token)
     {
         using HttpResponseMessage response = await http.GetAsync(
-            Url("/camera/frame?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()),
+            AppConfig.UrlConToken(
+                "/camera/frame?t=" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()),
             HttpCompletionOption.ResponseContentRead,
             token);
 
@@ -419,7 +424,9 @@ public partial class IntercomPage : ContentPage
             try
             {
                 using HttpResponseMessage response =
-                    await http.PostAsync(Url(ruta), null);
+                    await AppConfig.PostAsyncConToken(
+                        http,
+                        ruta);
 
                 string body =
                     await response.Content.ReadAsStringAsync();

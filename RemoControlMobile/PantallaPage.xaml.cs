@@ -69,8 +69,8 @@ public partial class PantallaPage : ContentPage
         try
         {
             using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    AppConfig.Servidor +
+                await AppConfig.GetAsyncConToken(
+                    cliente,
                     "/info");
 
             if (!respuesta.IsSuccessStatusCode)
@@ -170,15 +170,12 @@ public partial class PantallaPage : ContentPage
     {
         try
         {
-            string url =
-                AppConfig.Servidor +
-                "/screen?quality=95&t=" +
-                DateTimeOffset.UtcNow
-                    .ToUnixTimeMilliseconds();
-
             using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    url);
+                await AppConfig.GetAsyncConToken(
+                    cliente,
+                    "/screen?quality=95&t=" +
+                    DateTimeOffset.UtcNow
+                        .ToUnixTimeMilliseconds());
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -318,15 +315,12 @@ public partial class PantallaPage : ContentPage
     {
         try
         {
-            string url =
-                AppConfig.Servidor +
-                "/screen?t=" +
-                DateTimeOffset.UtcNow
-                    .ToUnixTimeMilliseconds();
-
             using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    url,
+                await AppConfig.GetAsyncConToken(
+                    cliente,
+                    "/screen?t=" +
+                    DateTimeOffset.UtcNow
+                        .ToUnixTimeMilliseconds(),
                     token);
 
             if (!respuesta.IsSuccessStatusCode)
@@ -374,10 +368,9 @@ public partial class PantallaPage : ContentPage
         try
         {
             using HttpResponseMessage respuesta =
-                await cliente.PostAsync(
-                    AppConfig.Servidor +
-                    endpoint,
-                    null);
+                await AppConfig.PostAsyncConToken(
+                    cliente,
+                    endpoint);
 
             return respuesta.IsSuccessStatusCode;
         }

@@ -31,12 +31,21 @@ public partial class AccesoRemotoPage : ContentPage
             using HttpClient cliente =
                 AppConfig.CrearCliente(8);
 
+            using HttpResponseMessage respuesta =
+                await AppConfig.GetAsyncConToken(
+                    cliente,
+                    "/remote-access/status");
+
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                MostrarError();
+
+                return;
+            }
+
             RemoteAccessStatus? info =
-                await cliente
-                    .GetFromJsonAsync
-                    <RemoteAccessStatus>(
-                        AppConfig.Servidor +
-                        "/remote-access/status");
+                await respuesta.Content
+                    .ReadFromJsonAsync<RemoteAccessStatus>();
 
             if (
                 info == null ||
@@ -103,10 +112,9 @@ public partial class AccesoRemotoPage : ContentPage
                 AppConfig.CrearCliente(10);
 
             using HttpResponseMessage respuesta =
-                await cliente.PostAsync(
-                    AppConfig.Servidor +
-                    "/remote-access/request",
-                    null);
+                await AppConfig.PostAsyncConToken(
+                    cliente,
+                    "/remote-access/request");
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -161,18 +169,14 @@ public partial class AccesoRemotoPage : ContentPage
             using HttpClient cliente =
                 AppConfig.CrearCliente(10);
 
-            string url =
-                AppConfig.Servidor +
-                "/remote-access/verify?code=" +
-                Uri.EscapeDataString(
-                    codigo) +
-                "&minutes=" +
-                minutos;
-
             using HttpResponseMessage respuesta =
-                await cliente.PostAsync(
-                    url,
-                    null);
+                await AppConfig.PostAsyncConToken(
+                    cliente,
+                    "/remote-access/verify?code=" +
+                    Uri.EscapeDataString(
+                        codigo) +
+                    "&minutes=" +
+                    minutos);
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -245,10 +249,9 @@ public partial class AccesoRemotoPage : ContentPage
             using HttpClient cliente =
                 AppConfig.CrearCliente(8);
 
-            await cliente.PostAsync(
-                AppConfig.Servidor +
-                "/remote-access/revoke",
-                null);
+            await AppConfig.PostAsyncConToken(
+                cliente,
+                "/remote-access/revoke");
 
             await CargarEstado();
         }

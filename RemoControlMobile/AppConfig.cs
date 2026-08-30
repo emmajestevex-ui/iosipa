@@ -1,10 +1,12 @@
+using System.Globalization;
+
 namespace RemoControlMobile;
 
 public static class AppConfig
 {
     static AppConfig()
     {
-        const string migrationKey = "config_general_v5";
+        const string migrationKey = "config_general_v5_2";
 
         if (!Preferences.Default.Get(migrationKey, false))
         {
@@ -52,16 +54,30 @@ public static class AppConfig
     {
         get
         {
-            return Preferences.Default.Get(
+            string guardado =
+                Preferences.Default.Get(
                 "servidor_activo",
                 "");
+
+            string limpio =
+                NormalizarServidor(
+                    guardado);
+
+            if (guardado != limpio)
+            {
+                Preferences.Default.Set(
+                    "servidor_activo",
+                    limpio);
+            }
+
+            return limpio;
         }
 
         set
         {
             Preferences.Default.Set(
                 "servidor_activo",
-                value?.Trim() ?? "");
+                NormalizarServidor(value));
         }
     }
 
@@ -70,16 +86,30 @@ public static class AppConfig
     {
         get
         {
-            return Preferences.Default.Get(
+            string guardado =
+                Preferences.Default.Get(
                 "token",
                 "");
+
+            string limpio =
+                LimpiarToken(
+                    guardado);
+
+            if (guardado != limpio)
+            {
+                Preferences.Default.Set(
+                    "token",
+                    limpio);
+            }
+
+            return limpio;
         }
 
         set
         {
             Preferences.Default.Set(
                 "token",
-                value?.Trim() ?? "");
+                LimpiarToken(value));
         }
     }
 
@@ -154,6 +184,18 @@ public static class AppConfig
     public static HttpClient CrearCliente(
         int timeoutSegundos = 10)
     {
+        string servidor =
+            Servidor;
+
+        if (
+            EsServidorTailscale(
+                servidor) &&
+            timeoutSegundos < 25)
+        {
+            timeoutSegundos =
+                25;
+        }
+
         HttpClient cliente =
             new HttpClient();
 
@@ -161,14 +203,350 @@ public static class AppConfig
             TimeSpan.FromSeconds(
                 timeoutSegundos);
 
-        if (!string.IsNullOrWhiteSpace(Token))
-        {
-            cliente.DefaultRequestHeaders.Add(
-                "X-Remo-Token",
-                Token);
-        }
+        AgregarTokenHeaders(
+            cliente,
+            Token);
 
         return cliente;
+    }
+
+
+    public static void AgregarTokenHeaders(
+        HttpClient cliente,
+        string? token)
+    {
+        token =
+            LimpiarToken(
+                token);
+
+        if (string.IsNullOrWhiteSpace(
+            token))
+        {
+            return;
+        }
+
+        cliente.DefaultRequestHeaders.Remove(
+            "X-Remo-Token");
+
+        cliente.DefaultRequestHeaders.Remove(
+            "X-RemoControl-Token");
+
+        cliente.DefaultRequestHeaders.Remove(
+            "X-API-Key");
+
+        cliente.DefaultRequestHeaders.Add(
+            "X-Remo-Token",
+            token);
+
+        cliente.DefaultRequestHeaders.Add(
+            "X-RemoControl-Token",
+            token);
+
+        cliente.DefaultRequestHeaders.Add(
+            "X-API-Key",
+            token);
+
+        try
+        {
+            cliente.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer",
+                    token);
+        }
+        catch
+        {
+            // Si el token contiene un caracter no permitido para Bearer,
+            // las cabeceras X-Remo-Token siguen funcionando.
+        }
+    }
+
+
+    public static string Url(
+        string endpoint)
+    {
+        string servidor =
+            Servidor;
+
+        if (string.IsNullOrWhiteSpace(
+            servidor))
+        {
+            throw new InvalidOperationException(
+                "Primero conecta una PC autorizada.");
+        }
+
+        if (string.IsNullOrWhiteSpace(
+            endpoint))
+        {
+            endpoint =
+                "/";
+        }
+
+        if (!endpoint.StartsWith(
+            "/",
+            StringComparison.Ordinal))
+        {
+            endpoint =
+                "/" +
+                endpoint;
+        }
+
+        return servidor.TrimEnd('/') +
+            endpoint;
+    }
+
+
+    public static string UrlConToken(
+        string endpoint,
+        string? token = null)
+    {
+        string url =
+            Url(
+                endpoint);
+
+        token =
+            LimpiarToken(
+                token ?? Token);
+
+        if (string.IsNullOrWhiteSpace(
+            token))
+        {
+            return url;
+        }
+
+        return AnexarTokenAUrl(
+            url,
+            token);
+    }
+
+
+    public static string AnexarTokenAUrl(
+        string url,
+        string? token)
+    {
+        token =
+            LimpiarToken(
+                token);
+
+        if (string.IsNullOrWhiteSpace(
+            token))
+        {
+            return url;
+        }
+
+        string separador =
+            url.Contains(
+                '?')
+                ? "&"
+                : "?";
+
+        return url +
+            separador +
+            "token=" +
+            Uri.EscapeDataString(
+                token) +
+            "&remoToken=" +
+            Uri.EscapeDataString(
+                token) +
+            "&api_key=" +
+            Uri.EscapeDataString(
+                token);
+    }
+
+
+    public static async Task<HttpResponseMessage> GetAsyncConToken(
+        HttpClient cliente,
+        string endpoint,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage respuesta =
+            await cliente.GetAsync(
+                Url(
+                    endpoint),
+                cancellationToken);
+
+        if (
+            DebeReintentarConTokenEnUrl(
+                respuesta))
+        {
+            respuesta.Dispose();
+
+            respuesta =
+                await cliente.GetAsync(
+                    UrlConToken(
+                        endpoint),
+                    cancellationToken);
+        }
+
+        return respuesta;
+    }
+
+
+    public static async Task<HttpResponseMessage> PostAsyncConToken(
+        HttpClient cliente,
+        string endpoint,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage respuesta =
+            await cliente.PostAsync(
+                Url(
+                    endpoint),
+                null,
+                cancellationToken);
+
+        if (
+            DebeReintentarConTokenEnUrl(
+                respuesta))
+        {
+            respuesta.Dispose();
+
+            respuesta =
+                await cliente.PostAsync(
+                    UrlConToken(
+                        endpoint),
+                    null,
+                    cancellationToken);
+        }
+
+        return respuesta;
+    }
+
+
+    private static bool DebeReintentarConTokenEnUrl(
+        HttpResponseMessage respuesta)
+    {
+        return
+            !string.IsNullOrWhiteSpace(
+                Token)
+            &&
+            (
+                respuesta.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
+                respuesta.StatusCode == System.Net.HttpStatusCode.Forbidden
+            );
+    }
+
+
+    public static bool EsServidorTailscale(
+        string? servidor)
+    {
+        servidor =
+            NormalizarServidor(
+                servidor);
+
+        return
+            Uri.TryCreate(
+                servidor,
+                UriKind.Absolute,
+                out Uri? uri)
+            &&
+            uri.Host.StartsWith(
+                "100.",
+                StringComparison.OrdinalIgnoreCase);
+    }
+
+
+    public static string NormalizarServidor(
+        string? servidor)
+    {
+        servidor =
+            LimpiarTextoPegado(
+                servidor,
+                true);
+
+        if (string.IsNullOrWhiteSpace(
+            servidor))
+        {
+            return "";
+        }
+
+        if (!servidor.StartsWith(
+            "http://",
+            StringComparison.OrdinalIgnoreCase)
+            &&
+            !servidor.StartsWith(
+                "https://",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            servidor =
+                "http://" +
+                servidor;
+        }
+
+        if (!Uri.TryCreate(
+            servidor,
+            UriKind.Absolute,
+            out Uri? uri))
+        {
+            return servidor.TrimEnd('/');
+        }
+
+        UriBuilder limpio =
+            new UriBuilder(uri)
+            {
+                Path = "",
+                Query = "",
+                Fragment = ""
+            };
+
+        return limpio
+            .Uri
+            .ToString()
+            .TrimEnd('/');
+    }
+
+
+    public static string LimpiarToken(
+        string? token)
+    {
+        return LimpiarTextoPegado(
+            token,
+            true);
+    }
+
+
+    public static string LimpiarTextoPegado(
+        string? texto,
+        bool quitarEspaciosInternos)
+    {
+        if (string.IsNullOrWhiteSpace(
+            texto))
+        {
+            return "";
+        }
+
+        System.Text.StringBuilder limpio =
+            new System.Text.StringBuilder(
+                texto.Length);
+
+        foreach (char caracter in texto)
+        {
+            UnicodeCategory categoria =
+                char.GetUnicodeCategory(
+                    caracter);
+
+            if (
+                caracter == '\0' ||
+                caracter == '\uFEFF' ||
+                categoria == UnicodeCategory.Control ||
+                categoria == UnicodeCategory.Format)
+            {
+                continue;
+            }
+
+            if (
+                quitarEspaciosInternos &&
+                char.IsWhiteSpace(
+                    caracter))
+            {
+                continue;
+            }
+
+            limpio.Append(
+                caracter);
+        }
+
+        return limpio
+            .ToString()
+            .Trim();
     }
 
 
@@ -196,6 +574,16 @@ public static class AppConfig
     {
         try
         {
+            servidor =
+                NormalizarServidor(
+                    servidor);
+
+            if (string.IsNullOrWhiteSpace(
+                servidor))
+            {
+                return false;
+            }
+
             int timeout =
                 Uri.TryCreate(
                     servidor,
@@ -212,8 +600,8 @@ public static class AppConfig
                 CrearCliente(timeout);
 
             using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    servidor.TrimEnd('/') +
+                await GetAsyncConToken(
+                    cliente,
                     "/status");
 
             return respuesta.IsSuccessStatusCode;

@@ -390,7 +390,7 @@
                             TextColor="#4DB8FF" />
 
                         <Label
-                            Text="En tu caso la IP Tailscale de la PC es 100.84.101.10. No uses 100.93.173.59 porque esa es la IP del iPhone."
+                            Text="Si la IP de Tailscale cambia, ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat en la laptop. Ese archivo muestra la dirección actual que debes escribir aquí."
                             FontSize="12"
                             TextColor="#FFB45B" />
 

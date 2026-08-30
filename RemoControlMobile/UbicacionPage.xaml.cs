@@ -31,8 +31,8 @@ public partial class UbicacionPage : ContentPage
                 Colors.Orange;
 
             using HttpResponseMessage respuesta =
-                await cliente.GetAsync(
-                    AppConfig.Servidor +
+                await AppConfig.GetAsyncConToken(
+                    cliente,
                     "/location");
 
             if (!respuesta.IsSuccessStatusCode)

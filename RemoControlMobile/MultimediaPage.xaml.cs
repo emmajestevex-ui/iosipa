@@ -28,16 +28,12 @@ public partial class MultimediaPage : ContentPage
                 AppConfig.CrearCliente(
                     8);
 
-            string url =
-                AppConfig.Servidor +
-                "/media?action=" +
-                Uri.EscapeDataString(
-                    comando);
-
             using HttpResponseMessage respuesta =
-                await cliente.PostAsync(
-                    url,
-                    null);
+                await AppConfig.PostAsyncConToken(
+                    cliente,
+                    "/media?action=" +
+                    Uri.EscapeDataString(
+                        comando));
 
             if (!respuesta.IsSuccessStatusCode)
             {

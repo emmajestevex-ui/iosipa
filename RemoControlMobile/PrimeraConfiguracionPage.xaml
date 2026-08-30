@@ -18,7 +18,7 @@
                 Margin="0,10,0,5">
 
                 <Label
-                    Text="Bienvenido a RemoControl"
+                    Text="Bienvenido a MSI Center"
                     FontSize="28"
                     FontAttributes="Bold"
                     TextColor="White" />
@@ -103,7 +103,7 @@
                         PlaceholderColor="#657181" />
 
                     <Label
-                        Text="Escribe exactamente la DIRECCIÓN PARA EL TELÉFONO que aparece en RemoControl de tu PC."
+                        Text="Escribe la dirección de la PC sin /status. Para Tailscale usa la IP de la laptop, no la del iPhone."
                         FontSize="11"
                         TextColor="#8794A5" />
 
@@ -212,7 +212,7 @@
                         TextColor="#FFB45B" />
 
                     <Label
-                        Text="Primero conecta y prueba por el mismo Wi-Fi. Para usar RemoControl desde otra red, instala Tailscale en la PC y el teléfono y usa la dirección de Tailscale de esa PC."
+                        Text="Para otra red usa Tailscale en la PC y el teléfono. En la laptop ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat para ver la dirección actual. /status solo se usa en Safari para probar."
                         FontSize="12"
                         TextColor="#AEB8C5" />
 

@@ -9,10 +9,8 @@ public partial class TecladoPage : ContentPage
 
     private string U(string endpoint)
     {
-        if (string.IsNullOrWhiteSpace(AppConfig.Servidor))
-            throw new InvalidOperationException("Primero conecta una PC autorizada.");
-
-        return AppConfig.Servidor.TrimEnd('/') + endpoint;
+        return AppConfig.Url(
+            endpoint);
     }
 
     // ============================================================
@@ -28,9 +26,9 @@ public partial class TecladoPage : ContentPage
                 AppConfig.CrearCliente(8);
 
             using HttpResponseMessage respuesta =
-                await cliente.PostAsync(
-                    U(endpoint),
-                    null);
+                await AppConfig.PostAsyncConToken(
+                    cliente,
+                    endpoint);
 
             if (respuesta.IsSuccessStatusCode)
             {
@@ -110,13 +108,8 @@ public partial class TecladoPage : ContentPage
 
         if (string.IsNullOrWhiteSpace(texto))
         {
-            lblEstado.Text =
-                "Escribe el texto del macro";
-
-            lblEstado.TextColor =
-                Colors.Orange;
-
-            return;
+            texto =
+                "Emmanuel";
         }
 
         lblEstado.Text =
