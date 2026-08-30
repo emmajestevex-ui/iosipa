@@ -3,15 +3,16 @@ name: Validate RemoControl iOS
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
-    paths:
-      - 'RemoControlMobile/**'
-      - '.github/workflows/validate-ios.yml'
+    branches:
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   validate-ios:
     runs-on: macos-15
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - name: Descargar proyecto
@@ -28,14 +29,16 @@ jobs:
       - name: Instalar workload MAUI iOS
         run: dotnet workload install maui-ios
 
-      - name: Restaurar
-        run: dotnet restore RemoControlMobile/RemoControlMobile.csproj
+      - name: Restaurar solamente iOS
+        run: |
+          dotnet restore RemoControlMobile/RemoControlMobile.csproj \
+            -p:TargetFrameworks=net10.0-ios
 
-      - name: Compilar para simulador iOS
-        run: >-
-          dotnet build RemoControlMobile/RemoControlMobile.csproj
-          -f net10.0-ios
-          -c Release
-          -p:RuntimeIdentifier=iossimulator-arm64
-          -p:CodesignKey=""
-          -p:CodesignProvision=""
+      - name: Compilar iOS Simulator
+        run: |
+          dotnet build RemoControlMobile/RemoControlMobile.csproj \
+            -f net10.0-ios \
+            -c Release \
+            -r iossimulator-arm64 \
+            --no-restore \
+            -p:TargetFrameworks=net10.0-ios
