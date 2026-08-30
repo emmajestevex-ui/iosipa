@@ -8,99 +8,339 @@ permissions:
 
 jobs:
   build-ios:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
 
     steps:
+      # ============================================================
+      # 1. DESCARGAR PROYECTO
+      # ============================================================
+
       - name: Descargar proyecto
         uses: actions/checkout@v4
+
+
+      # ============================================================
+      # 2. INSTALAR .NET 10
+      # ============================================================
 
       - name: Instalar .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
 
-      - name: Mostrar Xcode
-        run: xcodebuild -version
+
+      # ============================================================
+      # 3. USAR XCODE 26.6
+      # ============================================================
+
+      - name: Seleccionar Xcode 26.6
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sudo xcode-select -s /Applications/Xcode_26.6.app
+
+          echo "========================================"
+          echo "XCODE INSTALADO"
+          echo "========================================"
+
+          xcodebuild -version
+
+
+      # ============================================================
+      # 4. INSTALAR SOLAMENTE MAUI IOS
+      # ============================================================
 
       - name: Instalar workload MAUI iOS
-        run: dotnet workload install maui-ios
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Restaurar proyecto
-        run: dotnet restore RemoControlMobile/RemoControlMobile.csproj
+          dotnet workload install maui-ios
 
-      - name: Verificar secretos de firma
+
+      # ============================================================
+      # 5. COMPROBAR SECRETS
+      # ============================================================
+
+      - name: Verificar secrets de firma
+        shell: bash
         env:
           IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
           IOS_CODESIGN_KEY: ${{ secrets.IOS_CODESIGN_KEY }}
+
         run: |
-          test -n "$IOS_CERTIFICATE_P12_BASE64" || (echo "Falta el secret IOS_CERTIFICATE_P12_BASE64" && exit 1)
-          test -n "$IOS_CERTIFICATE_PASSWORD" || (echo "Falta el secret IOS_CERTIFICATE_PASSWORD" && exit 1)
-          test -n "$IOS_PROVISION_PROFILE_BASE64" || (echo "Falta el secret IOS_PROVISION_PROFILE_BASE64" && exit 1)
-          test -n "$IOS_CODESIGN_KEY" || (echo "Falta el secret IOS_CODESIGN_KEY" && exit 1)
+          set -euo pipefail
+
+          if [ -z "$IOS_CERTIFICATE_P12_BASE64" ]; then
+            echo "ERROR: falta IOS_CERTIFICATE_P12_BASE64"
+            exit 1
+          fi
+
+          if [ -z "$IOS_CERTIFICATE_PASSWORD" ]; then
+            echo "ERROR: falta IOS_CERTIFICATE_PASSWORD"
+            exit 1
+          fi
+
+          if [ -z "$IOS_PROVISION_PROFILE_BASE64" ]; then
+            echo "ERROR: falta IOS_PROVISION_PROFILE_BASE64"
+            exit 1
+          fi
+
+          if [ -z "$IOS_CODESIGN_KEY" ]; then
+            echo "ERROR: falta IOS_CODESIGN_KEY"
+            exit 1
+          fi
+
+          echo "Los 4 secrets de firma están configurados."
+
+
+      # ============================================================
+      # 6. INSTALAR CERTIFICADO Y PROVISIONING PROFILE
+      # ============================================================
 
       - name: Instalar certificado y provisioning profile
         id: signing
+        shell: bash
+
         env:
           IOS_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CERTIFICATE_P12_BASE64 }}
           IOS_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
           IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+          IOS_CODESIGN_KEY: ${{ secrets.IOS_CODESIGN_KEY }}
+
         run: |
           set -euo pipefail
 
           CERT_PATH="$RUNNER_TEMP/remocontrol-signing.p12"
           PROFILE_PATH="$RUNNER_TEMP/remocontrol.mobileprovision"
+          PROFILE_PLIST="$RUNNER_TEMP/profile.plist"
+
           KEYCHAIN_PATH="$RUNNER_TEMP/remocontrol-build.keychain-db"
-          KEYCHAIN_PASSWORD="remocontrol-ci-${GITHUB_RUN_ID}"
+          KEYCHAIN_PASSWORD="remocontrol-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
 
-          echo "$IOS_CERTIFICATE_P12_BASE64" | base64 --decode > "$CERT_PATH"
-          echo "$IOS_PROVISION_PROFILE_BASE64" | base64 --decode > "$PROFILE_PATH"
+          echo "$IOS_CERTIFICATE_P12_BASE64" \
+            | base64 --decode > "$CERT_PATH"
 
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security import "$CERT_PATH" -P "$IOS_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+          echo "$IOS_PROVISION_PROFILE_BASE64" \
+            | base64 --decode > "$PROFILE_PATH"
 
-          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-          security cms -D -i "$PROFILE_PATH" > "$RUNNER_TEMP/profile.plist"
-          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' "$RUNNER_TEMP/profile.plist")
-          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c 'Print :Name' "$RUNNER_TEMP/profile.plist")
-          cp "$PROFILE_PATH" "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+
+          # --------------------------------------------------------
+          # Crear keychain temporal
+          # --------------------------------------------------------
+
+          security create-keychain \
+            -p "$KEYCHAIN_PASSWORD" \
+            "$KEYCHAIN_PATH"
+
+          security set-keychain-settings \
+            -lut 21600 \
+            "$KEYCHAIN_PATH"
+
+          security unlock-keychain \
+            -p "$KEYCHAIN_PASSWORD" \
+            "$KEYCHAIN_PATH"
+
+
+          # --------------------------------------------------------
+          # Importar certificado
+          # --------------------------------------------------------
+
+          security import "$CERT_PATH" \
+            -P "$IOS_CERTIFICATE_PASSWORD" \
+            -A \
+            -t cert \
+            -f pkcs12 \
+            -k "$KEYCHAIN_PATH"
+
+          security set-key-partition-list \
+            -S apple-tool:,apple:,codesign: \
+            -s \
+            -k "$KEYCHAIN_PASSWORD" \
+            "$KEYCHAIN_PATH"
+
+
+          # --------------------------------------------------------
+          # Agregar keychain temporal a la lista activa
+          # --------------------------------------------------------
+
+          security list-keychains \
+            -d user \
+            -s "$KEYCHAIN_PATH" login.keychain-db
+
+
+          # --------------------------------------------------------
+          # Leer datos del provisioning profile
+          # --------------------------------------------------------
+
+          security cms \
+            -D \
+            -i "$PROFILE_PATH" > "$PROFILE_PLIST"
+
+          PROFILE_UUID=$(
+            /usr/libexec/PlistBuddy \
+              -c "Print :UUID" \
+              "$PROFILE_PLIST"
+          )
+
+          PROFILE_NAME=$(
+            /usr/libexec/PlistBuddy \
+              -c "Print :Name" \
+              "$PROFILE_PLIST"
+          )
+
+
+          # --------------------------------------------------------
+          # Instalar provisioning profile
+          # --------------------------------------------------------
+
+          mkdir -p \
+            "$HOME/Library/MobileDevice/Provisioning Profiles"
+
+          cp "$PROFILE_PATH" \
+            "$HOME/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+
+
+          # --------------------------------------------------------
+          # Mostrar datos no sensibles
+          # --------------------------------------------------------
+
+          echo "Provisioning profile: $PROFILE_NAME"
+          echo "Provisioning UUID: $PROFILE_UUID"
+          echo "Codesign key configurada."
+
+
+          # --------------------------------------------------------
+          # Variables para los siguientes pasos
+          # --------------------------------------------------------
 
           echo "profile_uuid=$PROFILE_UUID" >> "$GITHUB_OUTPUT"
-          echo "Provisioning profile: $PROFILE_NAME ($PROFILE_UUID)"
+          echo "profile_name=$PROFILE_NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Publicar IPA firmado
+
+      # ============================================================
+      # 7. MOSTRAR IDENTIDADES DISPONIBLES
+      # ============================================================
+
+      - name: Comprobar identidad de firma
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "IDENTIDADES DISPONIBLES"
+          echo "========================================"
+
+          security find-identity \
+            -v \
+            -p codesigning
+
+
+      # ============================================================
+      # 8. RESTAURAR SOLAMENTE IOS
+      # ============================================================
+
+      - name: Restaurar solamente iOS
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dotnet restore \
+            RemoControlMobile/RemoControlMobile.csproj \
+            -p:TargetFrameworks=net10.0-ios
+
+
+      # ============================================================
+      # 9. PUBLICAR IPA IOS ARM64
+      # ============================================================
+
+      - name: Compilar y firmar IPA
+        shell: bash
+
         env:
           IOS_CODESIGN_KEY: ${{ secrets.IOS_CODESIGN_KEY }}
           PROFILE_UUID: ${{ steps.signing.outputs.profile_uuid }}
-        run: >-
-          dotnet publish RemoControlMobile/RemoControlMobile.csproj
-          -f net10.0-ios
-          -c Release
-          -p:RuntimeIdentifier=ios-arm64
-          -p:ArchiveOnBuild=true
-          -p:CodesignKey="$IOS_CODESIGN_KEY"
-          -p:CodesignProvision="$PROFILE_UUID"
 
-      - name: Localizar IPA
+        run: |
+          set -euo pipefail
+
+          echo "========================================"
+          echo "PUBLICANDO REMOCONTROL PARA IPHONE"
+          echo "========================================"
+
+          dotnet publish \
+            RemoControlMobile/RemoControlMobile.csproj \
+            -f net10.0-ios \
+            -c Release \
+            -r ios-arm64 \
+            --no-restore \
+            -p:TargetFrameworks=net10.0-ios \
+            -p:RuntimeIdentifier=ios-arm64 \
+            -p:ArchiveOnBuild=true \
+            -p:BuildIpa=true \
+            -p:CodesignKey="$IOS_CODESIGN_KEY" \
+            -p:CodesignProvision="$PROFILE_UUID"
+
+
+      # ============================================================
+      # 10. BUSCAR IPA
+      # ============================================================
+
+      - name: Buscar IPA generado
         id: ipa
         shell: bash
         run: |
           set -euo pipefail
-          IPA=$(find RemoControlMobile/bin/Release/net10.0-ios/ios-arm64 -type f -name '*.ipa' | head -n 1)
+
+          echo "========================================"
+          echo "BUSCANDO IPA"
+          echo "========================================"
+
+          find \
+            RemoControlMobile/bin/Release/net10.0-ios \
+            -type f \
+            -name "*.ipa" \
+            -print || true
+
+          IPA=$(
+            find \
+              RemoControlMobile/bin/Release/net10.0-ios \
+              -type f \
+              -name "*.ipa" \
+              | head -n 1
+          )
+
           if [ -z "$IPA" ]; then
-            echo "No se encontró ningún IPA."
-            find RemoControlMobile/bin/Release/net10.0-ios/ios-arm64 -maxdepth 4 -type f || true
+            echo "ERROR: no se encontró ningún archivo IPA."
+
+            echo "Contenido de bin/Release:"
+            find RemoControlMobile/bin/Release \
+              -maxdepth 6 \
+              -type f \
+              -print || true
+
             exit 1
           fi
+
+          echo "IPA encontrada:"
+          echo "$IPA"
+
           mkdir -p artifacts
-          cp "$IPA" artifacts/RemoControlMobile.ipa
-          echo "path=artifacts/RemoControlMobile.ipa" >> "$GITHUB_OUTPUT"
+
+          cp "$IPA" \
+            artifacts/RemoControlMobile.ipa
+
+          echo "path=artifacts/RemoControlMobile.ipa" \
+            >> "$GITHUB_OUTPUT"
+
+
+      # ============================================================
+      # 11. SUBIR IPA COMO ARTIFACT
+      # ============================================================
 
       - name: Subir IPA
         uses: actions/upload-artifact@v4
