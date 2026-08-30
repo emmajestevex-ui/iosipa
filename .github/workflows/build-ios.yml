@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   build-ios:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
 
     steps:
@@ -20,10 +20,11 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Mostrar Xcode
+      - name: Seleccionar Xcode 26.6
         shell: bash
         run: |
           set -euo pipefail
+          sudo xcode-select -s /Applications/Xcode_26.6.app
           xcodebuild -version
 
       - name: Instalar workload MAUI iOS
@@ -40,7 +41,7 @@ jobs:
             -p:TargetFrameworks=net10.0-ios \
             -p:RuntimeIdentifier=ios-arm64
 
-      - name: Compilar aplicación iOS sin firma
+      - name: Compilar aplicacion iOS sin firma
         shell: bash
         run: |
           set -euo pipefail
@@ -55,7 +56,7 @@ jobs:
             -p:CodesignProvision="" \
             -p:EnableCodeSigning=false
 
-      - name: Buscar aplicación compilada
+      - name: Buscar aplicacion compilada
         id: app
         shell: bash
         run: |
@@ -68,13 +69,15 @@ jobs:
           )"
 
           if [ -z "$APP_PATH" ]; then
-            echo "ERROR: no se encontró ningún archivo .app"
+            echo "ERROR: no se encontro ningun archivo .app"
+            echo "Contenido generado:"
             find RemoControlMobile/bin/Release -maxdepth 8 -print || true
             exit 1
           fi
 
+          echo "Aplicacion encontrada:"
+          echo "$APP_PATH"
           echo "app_path=$APP_PATH" >> "$GITHUB_OUTPUT"
-          echo "Aplicación encontrada: $APP_PATH"
 
       - name: Crear IPA para ESign
         shell: bash
@@ -84,10 +87,18 @@ jobs:
           set -euo pipefail
           rm -rf Payload
           rm -f MSICenter_iOS_ESign.ipa
+
           mkdir -p Payload
           cp -R "$APP_PATH" Payload/
+
           zip -qry MSICenter_iOS_ESign.ipa Payload
-          test -f MSICenter_iOS_ESign.ipa
+
+          if [ ! -f MSICenter_iOS_ESign.ipa ]; then
+            echo "ERROR: no se pudo crear el IPA."
+            exit 1
+          fi
+
+          echo "IPA creado correctamente:"
           ls -lh MSICenter_iOS_ESign.ipa
 
       - name: Subir IPA

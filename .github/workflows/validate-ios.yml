@@ -3,15 +3,19 @@ name: Validate MSI Center iOS
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
     paths:
       - 'RemoControlMobile/**'
       - '.github/workflows/validate-ios.yml'
 
+permissions:
+  contents: read
+
 jobs:
   validate-ios:
-    runs-on: macos-15
-    timeout-minutes: 45
+    runs-on: macos-26
+    timeout-minutes: 60
 
     steps:
       - name: Descargar proyecto
@@ -22,23 +26,37 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Mostrar Xcode
-        run: xcodebuild -version
+      - name: Seleccionar Xcode 26.6
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo xcode-select -s /Applications/Xcode_26.6.app
+          xcodebuild -version
 
       - name: Instalar workload MAUI iOS
-        run: dotnet workload install maui-ios
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet workload install maui-ios
 
-      - name: Restaurar
-        run: >-
-          dotnet restore RemoControlMobile/RemoControlMobile.csproj
-          -p:TargetFrameworks=net10.0-ios
-          -p:RuntimeIdentifier=iossimulator-arm64
+      - name: Restaurar simulador iOS ARM64
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet restore RemoControlMobile/RemoControlMobile.csproj \
+            -p:TargetFrameworks=net10.0-ios \
+            -p:RuntimeIdentifier=iossimulator-arm64
 
-      - name: Compilar para simulador iOS
-        run: >-
-          dotnet build RemoControlMobile/RemoControlMobile.csproj
-          -f net10.0-ios
-          -c Release
-          -p:RuntimeIdentifier=iossimulator-arm64
-          -p:CodesignKey=""
-          -p:CodesignProvision=""
+      - name: Compilar iOS Simulator
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet build RemoControlMobile/RemoControlMobile.csproj \
+            -f net10.0-ios \
+            -c Release \
+            -r iossimulator-arm64 \
+            --no-restore \
+            -p:TargetFrameworks=net10.0-ios \
+            -p:RuntimeIdentifier=iossimulator-arm64 \
+            -p:CodesignKey="" \
+            -p:CodesignProvision=""
