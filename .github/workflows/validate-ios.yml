@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   validate-ios:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
 
     steps:
@@ -23,8 +23,10 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Mostrar Xcode
-        run: xcodebuild -version
+      - name: Seleccionar Xcode 26.6
+        run: |
+          sudo xcode-select -s /Applications/Xcode_26.6.app
+          xcodebuild -version
 
       - name: Instalar workload MAUI iOS
         run: dotnet workload install maui-ios
