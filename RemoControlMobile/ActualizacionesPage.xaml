@@ -38,7 +38,7 @@
                     TextColor="White" />
 
                 <Label
-                    Text="MSI Center"
+                    Text="RemoControl Mobile"
                     FontSize="12"
                     TextColor="#8794A5" />
 
@@ -214,7 +214,7 @@
                     x:Name="btnActualizar"
                     Text="⬆ Actualizar ahora"
                     HeightRequest="58"
-                    BackgroundColor="#E31B2F"
+                    BackgroundColor="#087BDB"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="14"

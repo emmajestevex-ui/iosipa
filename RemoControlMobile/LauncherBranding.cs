@@ -18,7 +18,7 @@ public static class LauncherBranding
             if (manager == null || !manager.IsRequestPinShortcutSupported)
                 return Task.FromResult(false);
 
-            string etiqueta = string.IsNullOrWhiteSpace(nombre) ? "MSI Center" : nombre.Trim();
+            string etiqueta = string.IsNullOrWhiteSpace(nombre) ? "RemoControl" : nombre.Trim();
             Android.Graphics.Drawables.Icon icon;
 
             if (!string.IsNullOrWhiteSpace(logoPath) && File.Exists(logoPath))

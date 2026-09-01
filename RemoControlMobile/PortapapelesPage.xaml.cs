@@ -27,8 +27,8 @@ public partial class PortapapelesPage : ContentPage
                 AppConfig.CrearCliente(10);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
+                await cliente.GetAsync(
+                    AppConfig.Servidor +
                     "/clipboard");
 
             if (!respuesta.IsSuccessStatusCode)
@@ -127,8 +127,8 @@ public partial class PortapapelesPage : ContentPage
 
             using HttpResponseMessage respuesta =
                 await cliente.PostAsync(
-                    AppConfig.UrlConToken(
-                        "/clipboard"),
+                    AppConfig.Servidor +
+                    "/clipboard",
                     contenido);
 
             if (!respuesta.IsSuccessStatusCode)
@@ -205,8 +205,8 @@ public partial class PortapapelesPage : ContentPage
 
             using HttpResponseMessage copiar =
                 await cliente.PostAsync(
-                    AppConfig.UrlConToken(
-                        "/clipboard"),
+                    AppConfig.Servidor +
+                    "/clipboard",
                     contenido);
 
             if (!copiar.IsSuccessStatusCode)
@@ -222,9 +222,10 @@ public partial class PortapapelesPage : ContentPage
 
             // Después ejecuta Ctrl+V en Windows.
             using HttpResponseMessage pegar =
-                await AppConfig.PostAsyncConToken(
-                    cliente,
-                    "/clipboard/paste");
+                await cliente.PostAsync(
+                    AppConfig.Servidor +
+                    "/clipboard/paste",
+                    null);
 
             if (!pegar.IsSuccessStatusCode)
             {

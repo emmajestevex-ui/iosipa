@@ -35,8 +35,8 @@ public partial class SeguridadPage : ContentPage
                 AppConfig.CrearCliente(8);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
+                await cliente.GetAsync(
+                    AppConfig.Servidor +
                     "/info");
 
             if (!respuesta.IsSuccessStatusCode)

@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.AccionesPage"
-    BackgroundColor="#161C25"
+    BackgroundColor="#050B12"
     Title="Acciones">
 
     <Grid RowDefinitions="Auto,*">
@@ -19,7 +19,7 @@
                 Text="←"
                 WidthRequest="50"
                 HeightRequest="45"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White"
                 Clicked="BtnVolver_Clicked" />
 
@@ -48,28 +48,28 @@
                 <Button
                     Text="🔒 Bloquear"
                     HeightRequest="70"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="White"
                     Clicked="BtnBloquear_Clicked" />
 
                 <Button
                     Text="🌙 Suspender"
                     HeightRequest="70"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="White"
                     Clicked="BtnSuspender_Clicked" />
 
                 <Button
                     Text="↻ Reiniciar"
                     HeightRequest="70"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="White"
                     Clicked="BtnReiniciar_Clicked" />
 
                 <Button
                     Text="⏻ Apagar"
                     HeightRequest="70"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="#FF7777"
                     Clicked="BtnApagar_Clicked" />
 

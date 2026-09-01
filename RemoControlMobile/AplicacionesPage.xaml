@@ -4,8 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.AplicacionesPage"
-    BackgroundColor="#0B1119"
-    Shell.NavBarIsVisible="False"
+    BackgroundColor="#161C25"
     Title="Aplicaciones">
 
     <Grid RowDefinitions="Auto,Auto,*,Auto">
@@ -75,7 +74,7 @@
             <Button
                 Grid.Column="1"
                 Text="+ Agregar"
-                BackgroundColor="#E31B2F"
+                BackgroundColor="#087BDB"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="12"

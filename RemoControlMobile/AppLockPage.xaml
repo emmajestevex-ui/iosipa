@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="RemoControlMobile.AppLockPage"
+    BackgroundColor="#050B12"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid Padding="28" RowDefinitions="*,Auto,*">
+        <VerticalStackLayout Grid.Row="1" Spacing="18" VerticalOptions="Center">
+            <Label Text="RemoControl"
+                   HorizontalTextAlignment="Center"
+                   FontSize="34"
+                   FontAttributes="Bold,Italic"
+                   TextColor="#1688FF" />
+
+            <Label Text="App bloqueada"
+                   HorizontalTextAlignment="Center"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White" />
+
+            <Label Text="Introduce tu contraseña o usa la biometría del dispositivo."
+                   HorizontalTextAlignment="Center"
+                   FontSize="14"
+                   TextColor="#8794A5" />
+
+            <Border Padding="16" BackgroundColor="#0D1722" Stroke="#183149">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="16" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Entry x:Name="txtPassword"
+                           Placeholder="Contraseña"
+                           IsPassword="True"
+                           ReturnType="Done"
+                           Completed="TxtPassword_Completed"
+                           BackgroundColor="#08111B"
+                           TextColor="White"
+                           PlaceholderColor="#657181" />
+
+                    <Button Text="Desbloquear"
+                            HeightRequest="52"
+                            BackgroundColor="#0B6EDB"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="14"
+                            Clicked="BtnUnlock_Clicked" />
+
+                    <Button x:Name="btnBiometric"
+                            Text="Usar huella / Face ID"
+                            HeightRequest="50"
+                            BackgroundColor="#13263A"
+                            TextColor="#49A3FF"
+                            FontAttributes="Bold"
+                            CornerRadius="14"
+                            IsVisible="False"
+                            Clicked="BtnBiometric_Clicked" />
+
+                    <Label x:Name="lblError"
+                           Text=""
+                           HorizontalTextAlignment="Center"
+                           FontSize="12"
+                           TextColor="#FF6868" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

@@ -42,11 +42,11 @@ public partial class DiagnosticoPage : ContentPage
                 Stopwatch.StartNew();
 
             using HttpClient cliente =
-                AppConfig.CrearCliente(12);
+                AppConfig.CrearCliente(10);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
+                await cliente.GetAsync(
+                    AppConfig.Servidor +
                     "/status");
 
             reloj.Stop();
@@ -60,22 +60,6 @@ public partial class DiagnosticoPage : ContentPage
 
             if (!respuesta.IsSuccessStatusCode)
             {
-                if (
-                    respuesta.StatusCode == System.Net.HttpStatusCode.Unauthorized ||
-                    respuesta.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    lblEstado.Text =
-                        "Token incorrecto";
-
-                    lblEstado.TextColor =
-                        Colors.Red;
-
-                    lblResultado.Text =
-                        "La PC sí respondió, pero rechazó el token. Copia el token completo desde RemoControl PC.";
-
-                    return;
-                }
-
                 lblEstado.Text =
                     "Error";
 

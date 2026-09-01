@@ -4,255 +4,143 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.MainPage"
     x:Name="paginaPrincipal"
-    BackgroundColor="#0B1119"
+    BackgroundColor="#050B12"
     Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*">
 
-        <Grid Grid.Row="0" Padding="22,20,22,14" ColumnDefinitions="Auto,*,Auto" BackgroundColor="#0F1722">
-            <Border WidthRequest="58" HeightRequest="58" Stroke="#3B2028" BackgroundColor="#141E2A" Padding="6">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="16" />
-                </Border.StrokeShape>
-                <Image x:Name="imgBrandLogo" Source="msi_shield.png" Aspect="AspectFit" />
-            </Border>
+        <!-- ENCABEZADO -->
+        <Grid Grid.Row="0" Padding="18,16,18,12" ColumnDefinitions="Auto,*,Auto" BackgroundColor="#07101A">
+            <HorizontalStackLayout Grid.Column="1" Margin="0" VerticalOptions="Center" Spacing="0">
+                <Label x:Name="lblBrandName" Text="RemoControl" IsVisible="False" />
+                <Label Text="Remo" TextColor="White" FontSize="22" FontAttributes="Bold, Italic" />
+                <Label Text="Control" TextColor="#1687FF" FontSize="22" FontAttributes="Bold, Italic" />
+            </HorizontalStackLayout>
 
-            <VerticalStackLayout Grid.Column="1" Margin="14,0,0,0" VerticalOptions="Center" Spacing="1">
-                <Label x:Name="lblBrandName" Text="MSI Center" TextColor="White" FontSize="25" FontAttributes="Bold" />
-                <Label Text="Control remoto seguro" TextColor="#8896AA" FontSize="13" />
-            </VerticalStackLayout>
-
-            <Button
-                Grid.Column="2"
-                Text="Configurar"
-                BackgroundColor="#182535"
-                TextColor="#DDE9F7"
-                FontSize="12"
-                Padding="14,8"
-                CornerRadius="12"
-                Clicked="BtnConfiguracion_Clicked" />
+            <Button Grid.Column="2" Text="⋮" FontSize="25" WidthRequest="44" HeightRequest="44"
+                    BackgroundColor="Transparent" TextColor="White" Clicked="BtnConfiguracion_Clicked" />
         </Grid>
 
         <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20,18,20,24" Spacing="22">
+            <VerticalStackLayout Padding="18,8,18,24" Spacing="20">
 
-                <Border BackgroundColor="#111A24" Stroke="#243449" StrokeThickness="1" Padding="20">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="22" />
-                    </Border.StrokeShape>
+                <!-- ESTADO -->
+                <Border BackgroundColor="#0D1722" Stroke="#162536" Padding="18">
+                    <Border.StrokeShape><RoundRectangle CornerRadius="20" /></Border.StrokeShape>
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <HorizontalStackLayout Spacing="7">
+                            <Label Text="●" TextColor="#25E36A" FontSize="15" VerticalTextAlignment="Center" />
+                            <Label x:Name="lblEstado" Text="CONECTANDO..." TextColor="#25E36A" FontSize="12" FontAttributes="Bold" CharacterSpacing="1" />
+                        </HorizontalStackLayout>
 
-                    <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="13">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <Label
-                                Text="PC CONECTADA"
-                                TextColor="#7D8EA3"
-                                FontSize="12"
-                                FontAttributes="Bold"
-                                CharacterSpacing="2" />
+                        <Border Grid.Column="1" Grid.RowSpan="3" WidthRequest="58" HeightRequest="58" BackgroundColor="#0A1C30" Stroke="#116ED0" Padding="12" VerticalOptions="Center">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="14" /></Border.StrokeShape>
+                            <Image Source="ic_monitor.svg" />
+                        </Border>
 
-                            <Border Grid.Column="1" BackgroundColor="#10291C" Stroke="#1C5A37" Padding="10,5">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="12" />
-                                </Border.StrokeShape>
-                                <Label x:Name="lblEstado" Text="● Conectando..." TextColor="#78D99A" FontSize="12" FontAttributes="Bold" />
-                            </Border>
-                        </Grid>
-
-                        <Grid Grid.Row="1" ColumnDefinitions="66,*" ColumnSpacing="15">
-                            <Border WidthRequest="56" HeightRequest="56" BackgroundColor="#1B2531" Stroke="#23344A" Padding="12" VerticalOptions="Start">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="16" />
-                                </Border.StrokeShape>
-                                <Image Source="ic_monitor.png" Aspect="AspectFit" />
-                            </Border>
-
-                            <VerticalStackLayout Grid.Column="1" Spacing="4">
-                                <Label x:Name="lblPc" Text="Buscando tu PC..." TextColor="White" FontSize="30" FontAttributes="Bold" />
-                                <Label x:Name="lblUsuario" TextColor="#B4C0CF" FontSize="14" />
-                                <Label x:Name="lblWindows" TextColor="#7C8BA0" FontSize="13" />
-                                <Label x:Name="lblServidor" Text="Servidor: no configurado" TextColor="#7C8BA0" FontSize="12" LineBreakMode="TailTruncation" />
-                            </VerticalStackLayout>
-                        </Grid>
-
-                        <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="10">
-                            <Button Text="Actualizar" BackgroundColor="#E31B2F" TextColor="White" CornerRadius="13" HeightRequest="48" Clicked="BtnActualizar_Clicked" />
-                            <Button Grid.Column="1" Text="Conexión" BackgroundColor="#1A2634" TextColor="#E9F1FA" CornerRadius="13" HeightRequest="48" Clicked="BtnConfigurarConexion_Clicked" />
-                        </Grid>
+                        <Label Grid.Row="1" x:Name="lblPc" Text="Buscando tu PC..." TextColor="White" FontSize="21" FontAttributes="Bold" />
+                        <Label Grid.Row="2" x:Name="lblUsuario" TextColor="#AAB8C8" FontSize="12" />
+                        <Label Grid.Row="3" x:Name="lblWindows" TextColor="#6E7E91" FontSize="11" />
+                        <Label Grid.Row="4" x:Name="lblServidor" Text="Servidor: no configurado" IsVisible="False" />
                     </Grid>
                 </Border>
 
-                <VerticalStackLayout Spacing="11">
-                    <Label Text="Control" TextColor="White" FontSize="22" FontAttributes="Bold" />
-                    <Label Text="Accede a las funciones principales sin menús duplicados." TextColor="#7E8CA0" FontSize="12" />
+                <!-- ACCIONES RÁPIDAS -->
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Acciones rápidas" TextColor="White" FontSize="19" FontAttributes="Bold" />
+                        <Button Grid.Column="1" Text="Actualizar" FontSize="11" Padding="12,5" HeightRequest="34"
+                                BackgroundColor="#0D1B29" TextColor="#7CBFFF" CornerRadius="10" Clicked="BtnActualizar_Clicked" />
+                    </Grid>
 
-                    <Border StyleClass="ToolCard">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CardPantalla_Tapped" />
-                        </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="54,*,Auto" Padding="16,14" ColumnSpacing="12">
-                            <Border WidthRequest="42" HeightRequest="42" BackgroundColor="#1A2531" Stroke="#213349" Padding="8" VerticalOptions="Center">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="12" />
-                                </Border.StrokeShape>
-                                <Image Source="ic_monitor.png" Aspect="AspectFit" />
-                            </Border>
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="Pantalla remota" TextColor="White" FontSize="17" FontAttributes="Bold" />
-                                <Label Text="Ver y controlar el escritorio completo" TextColor="#8B99AA" FontSize="12" LineBreakMode="TailTruncation" />
-                            </VerticalStackLayout>
-                            <Label Grid.Column="2" Text="›" TextColor="#748295" FontSize="32" VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-
-                    <Border StyleClass="ToolCard">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CardTouchpad_Tapped" />
-                        </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="54,*,Auto" Padding="16,14" ColumnSpacing="12">
-                            <Border WidthRequest="42" HeightRequest="42" BackgroundColor="#1A2531" Stroke="#213349" Padding="8" VerticalOptions="Center">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="12" />
-                                </Border.StrokeShape>
-                                <Image Source="ic_mouse.png" Aspect="AspectFit" />
-                            </Border>
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="Touchpad" TextColor="White" FontSize="17" FontAttributes="Bold" />
-                                <Label Text="Mouse, clics y desplazamiento" TextColor="#8B99AA" FontSize="12" />
-                            </VerticalStackLayout>
-                            <Label Grid.Column="2" Text="›" TextColor="#748295" FontSize="32" VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-
-                    <Border StyleClass="ToolCard">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CardTeclado_Tapped" />
-                        </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="54,*,Auto" Padding="16,14" ColumnSpacing="12">
-                            <Border WidthRequest="42" HeightRequest="42" BackgroundColor="#1A2531" Stroke="#213349" Padding="8" VerticalOptions="Center">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="12" />
-                                </Border.StrokeShape>
-                                <Image Source="ic_keyboard.png" Aspect="AspectFit" />
-                            </Border>
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="Teclado remoto" TextColor="White" FontSize="17" FontAttributes="Bold" />
-                                <Label Text="Escribe y usa combinaciones de teclas" TextColor="#8B99AA" FontSize="12" LineBreakMode="TailTruncation" />
-                            </VerticalStackLayout>
-                            <Label Grid.Column="2" Text="›" TextColor="#748295" FontSize="32" VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-
-                    <Border StyleClass="ToolCard">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="CardIntercom_Tapped" />
-                        </Border.GestureRecognizers>
-                        <Grid ColumnDefinitions="54,*,Auto" Padding="16,14" ColumnSpacing="12">
-                            <Border WidthRequest="42" HeightRequest="42" BackgroundColor="#1A2531" Stroke="#213349" Padding="8" VerticalOptions="Center">
-                                <Border.StrokeShape>
-                                    <RoundRectangle CornerRadius="12" />
-                                </Border.StrokeShape>
-                                <Image Source="ic_audio.png" Aspect="AspectFit" />
-                            </Border>
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                                <Label Text="Intercomunicador" TextColor="White" FontSize="17" FontAttributes="Bold" />
-                                <Label Text="Hablar a la PC o escuchar su micrófono" TextColor="#8B99AA" FontSize="12" LineBreakMode="TailTruncation" />
-                            </VerticalStackLayout>
-                            <Label Grid.Column="2" Text="›" TextColor="#748295" FontSize="32" VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-                </VerticalStackLayout>
-
-                <VerticalStackLayout Spacing="11">
-                    <Label Text="Contenido" TextColor="White" FontSize="22" FontAttributes="Bold" />
-
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10" RowDefinitions="Auto,Auto" RowSpacing="10">
-                        <Border StyleClass="SquareCard">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="NavArchivos_Tapped" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout Padding="16" Spacing="10">
-                                <Image Source="ic_folder.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Start" />
-                                <Label Text="Archivos" TextColor="White" FontSize="15" FontAttributes="Bold" />
-                                <Label Text="Gestionar" TextColor="#F04A55" FontSize="12" FontAttributes="Bold" />
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="125,125" ColumnSpacing="12" RowSpacing="12">
+                        <Border BackgroundColor="#0D1722" Stroke="#182838" Padding="14">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="BtnBloquearRapido_Clicked" /></Border.GestureRecognizers>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                                <Label Text="▣" TextColor="#1687FF" FontSize="38" HorizontalTextAlignment="Center" />
+                                <Label Text="Bloquear" TextColor="White" FontSize="15" HorizontalTextAlignment="Center" />
+                                
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Column="1" StyleClass="SquareCard">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="CardAplicaciones_Tapped" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout Padding="16" Spacing="10">
-                                <Image Source="ic_apps.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Start" />
-                                <Label Text="Aplicaciones" TextColor="White" FontSize="15" FontAttributes="Bold" />
-                                <Label Text="Gestionar" TextColor="#F04A55" FontSize="12" FontAttributes="Bold" />
+                        <Border Grid.Column="1" BackgroundColor="#0D1722" Stroke="#182838" Padding="14">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="BtnSuspenderRapido_Clicked" /></Border.GestureRecognizers>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                                <Label Text="◐" TextColor="#1687FF" FontSize="42" HorizontalTextAlignment="Center" />
+                                <Label Text="Suspender" TextColor="White" FontSize="15" HorizontalTextAlignment="Center" />
+                                
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Row="1" StyleClass="SquareCard">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="CardEstadoPc_Tapped" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout Padding="16" Spacing="10">
-                                <Image Source="ic_system.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Start" />
-                                <Label Text="Estado de la PC" TextColor="White" FontSize="15" FontAttributes="Bold" />
-                                <Label Text="Ver estado" TextColor="#F04A55" FontSize="12" FontAttributes="Bold" />
+                        <Border Grid.Row="1" BackgroundColor="#0D1722" Stroke="#182838" Padding="14">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="BtnReiniciarRapido_Clicked" /></Border.GestureRecognizers>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                                <Label Text="↻" TextColor="#1687FF" FontSize="45" HorizontalTextAlignment="Center" />
+                                <Label Text="Reiniciar" TextColor="White" FontSize="15" HorizontalTextAlignment="Center" />
+                                
                             </VerticalStackLayout>
                         </Border>
 
-                        <Border Grid.Row="1" Grid.Column="1" StyleClass="SquareCard">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="NavHerramientas_Tapped" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout Padding="16" Spacing="10">
-                                <Image Source="ic_more.png" WidthRequest="30" HeightRequest="30" HorizontalOptions="Start" />
-                                <Label Text="Herramientas" TextColor="White" FontSize="15" FontAttributes="Bold" />
-                                <Label Text="Ver todas" TextColor="#F04A55" FontSize="12" FontAttributes="Bold" />
+                        <Border Grid.Row="1" Grid.Column="1" BackgroundColor="#0D1722" Stroke="#3C2022" Padding="14">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="BtnApagarRapido_Clicked" /></Border.GestureRecognizers>
+                            <Border.StrokeShape><RoundRectangle CornerRadius="18" /></Border.StrokeShape>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+                                <Label Text="⏻" TextColor="#FF4949" FontSize="43" HorizontalTextAlignment="Center" />
+                                <Label Text="Apagar" TextColor="White" FontSize="15" HorizontalTextAlignment="Center" />
+                                
                             </VerticalStackLayout>
                         </Border>
                     </Grid>
                 </VerticalStackLayout>
 
-                <Button
-                    Text="Ayuda para conectar"
-                    BackgroundColor="#111B27"
-                    TextColor="#95A5B7"
-                    BorderColor="#203047"
-                    BorderWidth="1"
-                    CornerRadius="12"
-                    Clicked="BtnAyuda_Clicked" />
+                <!-- HERRAMIENTAS -->
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Herramientas" TextColor="White" FontSize="19" FontAttributes="Bold" />
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                        <Border BackgroundColor="#0D1722" Stroke="#182838" Padding="12">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Image Source="ic_monitor.svg" WidthRequest="34" HeightRequest="34" />
+                                <Label Text="Pantalla" TextColor="White" FontSize="12" />
+                                <Button Text="Abrir" FontSize="10" Padding="12,5" BackgroundColor="#10263E" TextColor="#49A3FF" CornerRadius="9" Clicked="BtnPantalla_Clicked" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="1" BackgroundColor="#0D1722" Stroke="#182838" Padding="12">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Image Source="ic_keyboard.svg" WidthRequest="34" HeightRequest="34" />
+                                <Label Text="Teclado" TextColor="White" FontSize="12" />
+                                <Button Text="Abrir" FontSize="10" Padding="12,5" BackgroundColor="#10263E" TextColor="#49A3FF" CornerRadius="9" Clicked="BtnTeclado_Clicked" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border Grid.Column="2" BackgroundColor="#0D1722" Stroke="#182838" Padding="12">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
+                            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                <Image Source="ic_mouse.svg" WidthRequest="34" HeightRequest="34" />
+                                <Label Text="Ratón" TextColor="White" FontSize="12" />
+                                <Button Text="Abrir" FontSize="10" Padding="12,5" BackgroundColor="#10263E" TextColor="#49A3FF" CornerRadius="9" Clicked="BtnTouchpad_Clicked" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- MÁS -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Más funciones" TextColor="White" FontSize="19" FontAttributes="Bold" />
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="10" RowSpacing="10">
+                        <Button Text="📁  Archivos" BackgroundColor="#0D1722" BorderColor="#182838" BorderWidth="1" TextColor="White" HeightRequest="54" CornerRadius="14" Clicked="BtnArchivos_Clicked" />
+                        <Button Grid.Column="1" Text="▦  Aplicaciones" BackgroundColor="#0D1722" BorderColor="#182838" BorderWidth="1" TextColor="White" HeightRequest="54" CornerRadius="14" Clicked="BtnAplicaciones_Clicked" />
+                        <Button Grid.Row="1" Text="▣  Estado PC" BackgroundColor="#0D1722" BorderColor="#182838" BorderWidth="1" TextColor="White" HeightRequest="54" CornerRadius="14" Clicked="BtnEstadoPc_Clicked" />
+                        <Button Grid.Row="1" Grid.Column="1" Text="⚙  Herramientas" BackgroundColor="#0D1722" BorderColor="#182838" BorderWidth="1" TextColor="White" HeightRequest="54" CornerRadius="14" Clicked="BtnHerramientas_Clicked" />
+                    </Grid>
+                </VerticalStackLayout>
+
+                <Button Text="Configurar conexión" BackgroundColor="#0B6EDB" TextColor="White" HeightRequest="50" CornerRadius="14" FontAttributes="Bold" Clicked="BtnConfigurarConexion_Clicked" />
             </VerticalStackLayout>
         </ScrollView>
 
-        <Border Grid.Row="2" BackgroundColor="#101822" Stroke="#202E40" StrokeThickness="1" Padding="16,8,16,10">
-            <Border.StrokeShape>
-                <RoundRectangle CornerRadius="18" />
-            </Border.StrokeShape>
-
-            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="4">
-                <VerticalStackLayout Spacing="3" HorizontalOptions="Center">
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="NavInicio_Tapped" />
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Image Source="nav_home_active.png" WidthRequest="23" HeightRequest="23" HorizontalOptions="Center" />
-                    <Label Text="Inicio" TextColor="#E31B2F" FontSize="11" FontAttributes="Bold" />
-                </VerticalStackLayout>
-
-                <VerticalStackLayout Grid.Column="1" Spacing="3" HorizontalOptions="Center">
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="NavArchivos_Tapped" />
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Image Source="nav_folder.png" WidthRequest="23" HeightRequest="23" HorizontalOptions="Center" />
-                    <Label Text="Archivos" TextColor="#8B98A9" FontSize="11" />
-                </VerticalStackLayout>
-
-                <VerticalStackLayout Grid.Column="2" Spacing="3" HorizontalOptions="Center">
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="NavAjustes_Tapped" />
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Image Source="nav_settings.png" WidthRequest="23" HeightRequest="23" HorizontalOptions="Center" />
-                    <Label Text="Ajustes" TextColor="#8B98A9" FontSize="11" />
-                </VerticalStackLayout>
-            </Grid>
-        </Border>
     </Grid>
 </ContentPage>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
@@ -12,18 +12,12 @@ namespace RemoControlMobile;
 
 public partial class AplicacionesPage : ContentPage
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     private List<AplicacionRemota> aplicaciones =
         new();
 
     public AplicacionesPage()
     {
         InitializeComponent();
-        Shell.SetNavBarIsVisible(this, false);
     }
 
     protected override async void OnAppearing()
@@ -31,12 +25,6 @@ public partial class AplicacionesPage : ContentPage
         base.OnAppearing();
 
         await CargarAplicaciones();
-    }
-
-    private string U(string path)
-    {
-        return AppConfig.Url(
-            path);
     }
 
     // ============================================================
@@ -57,11 +45,16 @@ public partial class AplicacionesPage : ContentPage
                 AppConfig.CrearCliente(
                     20);
 
-            aplicaciones = await ObtenerListaAsync<AplicacionRemota>(
-                cliente,
-                "/apps",
-                "/applications",
-                "/pro/apps");
+            AplicacionesRespuesta? datos =
+                await cliente
+                    .GetFromJsonAsync
+                    <AplicacionesRespuesta>(
+                        AppConfig.Servidor +
+                        "/apps");
+
+            aplicaciones =
+                datos?.items ??
+                new List<AplicacionRemota>();
 
             PrepararIconos(
                 aplicaciones);
@@ -77,10 +70,10 @@ public partial class AplicacionesPage : ContentPage
             lblEstado.TextColor =
                 Colors.LimeGreen;
         }
-        catch (Exception ex)
+        catch
         {
             lblEstado.Text =
-                "● " + Recortar(ex.Message, 70);
+                "● Sin conexión";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -128,17 +121,6 @@ public partial class AplicacionesPage : ContentPage
 
         try
         {
-            base64 =
-                base64
-                    .Replace("\0", "")
-                    .Trim();
-
-            int comma =
-                base64.IndexOf(',');
-
-            if (base64.StartsWith("data:image", StringComparison.OrdinalIgnoreCase) && comma >= 0)
-                base64 = base64[(comma + 1)..];
-
             byte[] bytes =
                 Convert.FromBase64String(
                     base64);
@@ -184,16 +166,16 @@ public partial class AplicacionesPage : ContentPage
                 AppConfig.CrearCliente(
                     30);
 
-            List<AppDisponible> items = await ObtenerListaAsync<AppDisponible>(
-                cliente,
-                "/apps/discover",
-                "/apps/installed",
-                "/applications/discover",
-                "/applications/installed",
-                "/pro/apps/discover",
-                "/pro/apps/installed");
+            AppsDisponiblesRespuesta? datos =
+                await cliente
+                    .GetFromJsonAsync
+                    <AppsDisponiblesRespuesta>(
+                        AppConfig.Servidor +
+                        "/apps/discover");
 
-            if (items.Count == 0)
+            if (
+                datos?.items == null ||
+                datos.items.Count == 0)
             {
                 await DisplayAlertAsync(
                     "Aplicaciones",
@@ -207,7 +189,7 @@ public partial class AplicacionesPage : ContentPage
             }
 
             List<AppDisponible> disponibles =
-                items
+                datos.items
                     .Where(
                         x => !x.added)
                     .OrderBy(
@@ -238,16 +220,15 @@ public partial class AplicacionesPage : ContentPage
                     disponibles,
                     AplicacionesAgregadasDesdeSelector));
         }
-        catch (Exception ex)
+        catch
         {
             await DisplayAlertAsync(
                 "Aplicaciones",
-                "No se pudo obtener la lista de aplicaciones de la PC.\n\n" +
-                Recortar(ex.Message, 450),
+                "No se pudo obtener la lista de aplicaciones de la PC.",
                 "Aceptar");
 
             lblEstado.Text =
-                "● Error al buscar aplicaciones";
+                "● Sin conexión";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -334,12 +315,38 @@ public partial class AplicacionesPage : ContentPage
                 AppConfig.CrearCliente(
                     10);
 
-            string id = Uri.EscapeDataString(app.id ?? "");
-            await PostFirstAsync(
-                cliente,
-                "/apps/open?id=" + id,
-                "/applications/open?id=" + id,
-                "/pro/apps/open?id=" + id);
+            string url =
+                AppConfig.Servidor +
+                "/apps/open?id=" +
+                Uri.EscapeDataString(
+                    app.id ??
+                    "");
+
+            using HttpResponseMessage respuesta =
+                await cliente.PostAsync(
+                    url,
+                    null);
+
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                string detalle =
+                    await respuesta.Content
+                        .ReadAsStringAsync();
+
+                await DisplayAlertAsync(
+                    "Aplicaciones",
+                    "No se pudo abrir la aplicación.\n\n" +
+                    detalle,
+                    "Aceptar");
+
+                lblEstado.Text =
+                    "● Error al abrir";
+
+                lblEstado.TextColor =
+                    Colors.Red;
+
+                return;
+            }
 
             lblEstado.Text =
                 "● " +
@@ -352,16 +359,15 @@ public partial class AplicacionesPage : ContentPage
             lblEstado.TextColor =
                 Colors.LimeGreen;
         }
-        catch (Exception ex)
+        catch
         {
             await DisplayAlertAsync(
                 "Aplicaciones",
-                "No se pudo abrir la aplicación.\n\n" +
-                Recortar(ex.Message, 450),
+                "Sin conexión con la PC.",
                 "Aceptar");
 
             lblEstado.Text =
-                "● Error al abrir";
+                "● Sin conexión";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -381,19 +387,27 @@ public partial class AplicacionesPage : ContentPage
                 AppConfig.CrearCliente(
                     10);
 
-            string id = Uri.EscapeDataString(app.id ?? "");
-            await PostFirstAsync(
-                cliente,
-                "/apps/favorite?id=" + id,
-                "/applications/favorite?id=" + id,
-                "/pro/apps/favorite?id=" + id);
+            string url =
+                AppConfig.Servidor +
+                "/apps/favorite?id=" +
+                Uri.EscapeDataString(
+                    app.id ??
+                    "");
 
-            await CargarAplicaciones();
+            using HttpResponseMessage respuesta =
+                await cliente.PostAsync(
+                    url,
+                    null);
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                await CargarAplicaciones();
+            }
         }
-        catch (Exception ex)
+        catch
         {
             lblEstado.Text =
-                "● " + Recortar(ex.Message, 70);
+                "● Sin conexión";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -428,19 +442,27 @@ public partial class AplicacionesPage : ContentPage
                 AppConfig.CrearCliente(
                     10);
 
-            string id = Uri.EscapeDataString(app.id ?? "");
-            await PostFirstAsync(
-                cliente,
-                "/apps/remove?id=" + id,
-                "/applications/remove?id=" + id,
-                "/pro/apps/remove?id=" + id);
+            string url =
+                AppConfig.Servidor +
+                "/apps/remove?id=" +
+                Uri.EscapeDataString(
+                    app.id ??
+                    "");
 
-            await CargarAplicaciones();
+            using HttpResponseMessage respuesta =
+                await cliente.PostAsync(
+                    url,
+                    null);
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                await CargarAplicaciones();
+            }
         }
-        catch (Exception ex)
+        catch
         {
             lblEstado.Text =
-                "● " + Recortar(ex.Message, 70);
+                "● Sin conexión";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -510,190 +532,6 @@ public partial class AplicacionesPage : ContentPage
         EventArgs e)
     {
         await CargarAplicaciones();
-    }
-
-    private async Task<List<T>> ObtenerListaAsync<T>(
-        HttpClient cliente,
-        params string[] rutas)
-    {
-        string json = await GetJsonFirstAsync(
-            cliente,
-            rutas);
-
-        return LeerItems<T>(
-            json);
-    }
-
-    private async Task<string> GetJsonFirstAsync(
-        HttpClient cliente,
-        params string[] rutas)
-    {
-        string ultimoError =
-            "La PC no respondió.";
-
-        foreach (string ruta in rutas.Distinct())
-        {
-            try
-            {
-                using HttpResponseMessage response =
-                    await AppConfig.GetAsyncConToken(
-                        cliente,
-                        ruta);
-
-                string body =
-                    LimpiarJson(
-                        await response.Content.ReadAsStringAsync());
-
-                if (response.IsSuccessStatusCode)
-                    return body;
-
-                ultimoError =
-                    ExtraerError(body);
-            }
-            catch (Exception ex)
-            {
-                ultimoError =
-                    ex.Message;
-            }
-        }
-
-        throw new InvalidOperationException(
-            ultimoError);
-    }
-
-    private async Task PostFirstAsync(
-        HttpClient cliente,
-        params string[] rutas)
-    {
-        string ultimoError =
-            "La PC no respondió.";
-
-        foreach (string ruta in rutas.Distinct())
-        {
-            try
-            {
-                using HttpResponseMessage response =
-                    await AppConfig.PostAsyncConToken(
-                        cliente,
-                        ruta);
-
-                string body =
-                    LimpiarJson(
-                        await response.Content.ReadAsStringAsync());
-
-                if (response.IsSuccessStatusCode)
-                    return;
-
-                ultimoError =
-                    ExtraerError(body);
-            }
-            catch (Exception ex)
-            {
-                ultimoError =
-                    ex.Message;
-            }
-        }
-
-        throw new InvalidOperationException(
-            ultimoError);
-    }
-
-    private static List<T> LeerItems<T>(
-        string json)
-    {
-        json =
-            LimpiarJson(json);
-
-        using JsonDocument doc =
-            JsonDocument.Parse(json);
-
-        JsonElement root =
-            doc.RootElement;
-
-        if (root.ValueKind == JsonValueKind.Object)
-        {
-            if (TryGetPropertyAny(root, out JsonElement ok, "ok") &&
-                ok.ValueKind == JsonValueKind.False)
-            {
-                throw new InvalidOperationException(
-                    ExtraerError(json));
-            }
-
-            if (TryGetPropertyAny(root, out JsonElement items, "items", "apps", "applications", "aplicaciones"))
-                root = items;
-        }
-
-        if (root.ValueKind != JsonValueKind.Array)
-            throw new InvalidOperationException("La PC respondió, pero la lista no tiene formato válido.");
-
-        return JsonSerializer.Deserialize<List<T>>(
-                   root.GetRawText(),
-                   JsonOptions) ??
-               new List<T>();
-    }
-
-    private static bool TryGetPropertyAny(
-        JsonElement root,
-        out JsonElement value,
-        params string[] names)
-    {
-        foreach (JsonProperty property in root.EnumerateObject())
-        {
-            if (names.Any(name => property.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
-            {
-                value = property.Value;
-                return true;
-            }
-        }
-
-        value = default;
-        return false;
-    }
-
-    private static string ExtraerError(
-        string body)
-    {
-        body =
-            LimpiarJson(body);
-
-        if (string.IsNullOrWhiteSpace(body))
-            return "La PC no respondió con detalle.";
-
-        try
-        {
-            using JsonDocument doc =
-                JsonDocument.Parse(body);
-
-            if (doc.RootElement.ValueKind == JsonValueKind.Object)
-            {
-                if (TryGetPropertyAny(doc.RootElement, out JsonElement error, "error", "message", "detail"))
-                    return error.GetString() ?? body;
-            }
-        }
-        catch
-        {
-        }
-
-        return Recortar(body.Trim(), 500);
-    }
-
-    private static string LimpiarJson(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return "";
-
-        return text
-            .Replace("\0", "")
-            .Trim('\uFEFF', '\u200B', ' ', '\r', '\n', '\t');
-    }
-
-    private static string Recortar(string text, int max)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return "Sin detalle.";
-
-        text = text.Trim();
-        return text.Length <= max ? text : text[..max];
     }
 
     // ============================================================

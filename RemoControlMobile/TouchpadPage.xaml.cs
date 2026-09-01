@@ -29,9 +29,10 @@ public partial class TouchpadPage : ContentPage
                 AppConfig.CrearCliente(8);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.PostAsyncConToken(
-                    cliente,
-                    endpoint);
+                await cliente.PostAsync(
+                    AppConfig.Servidor +
+                    endpoint,
+                    null);
 
             lblEstado.Text =
                 respuesta.IsSuccessStatusCode

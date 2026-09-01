@@ -31,21 +31,11 @@ public partial class RendimientoPage : ContentPage
             using HttpClient cliente =
                 AppConfig.CrearCliente(10);
 
-            using HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
-                    "/performance");
-
-            if (!respuesta.IsSuccessStatusCode)
-            {
-                MostrarError();
-
-                return;
-            }
-
             RendimientoRespuesta? info =
-                await respuesta.Content
-                    .ReadFromJsonAsync<RendimientoRespuesta>();
+                await cliente.GetFromJsonAsync
+                <RendimientoRespuesta>(
+                    AppConfig.Servidor +
+                    "/performance");
 
             if (
                 info == null ||
@@ -89,11 +79,12 @@ public partial class RendimientoPage : ContentPage
                 AppConfig.CrearCliente(12);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.PostAsyncConToken(
-                    cliente,
+                await cliente.PostAsync(
+                    AppConfig.Servidor +
                     "/performance?mode=" +
                     Uri.EscapeDataString(
-                        modo));
+                        modo),
+                    null);
 
             if (!respuesta.IsSuccessStatusCode)
             {

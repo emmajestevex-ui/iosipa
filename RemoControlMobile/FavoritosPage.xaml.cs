@@ -75,9 +75,10 @@ public partial class FavoritosPage : ContentPage
                 AppConfig.CrearCliente(8);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.PostAsyncConToken(
-                    cliente,
-                    "/action/lock");
+                await cliente.PostAsync(
+                    AppConfig.Servidor +
+                    "/action/lock",
+                    null);
 
             if (!respuesta.IsSuccessStatusCode)
             {

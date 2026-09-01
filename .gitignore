@@ -1,23 +1,9 @@
-# Visual Studio / .NET
+**/bin/
+**/obj/
 .vs/
-bin/
-obj/
+.idea/
 *.user
 *.suo
-*.userosscache
-*.sln.docstates
-
-# macOS
-.DS_Store
-
-# Signing material - NEVER commit
-*.p12
-*.pfx
-*.cer
-*.mobileprovision
-*.provisionprofile
-
-# Build artifacts
-artifacts/
 *.ipa
-*.xcarchive
+*.app/
+*.dSYM/

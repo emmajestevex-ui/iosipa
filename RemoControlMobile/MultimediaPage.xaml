@@ -110,7 +110,7 @@
                         Text="⏯"
                         HeightRequest="75"
                         FontSize="30"
-                        BackgroundColor="#E31B2F"
+                        BackgroundColor="#087BDB"
                         TextColor="White"
                         CornerRadius="16"
                         Clicked="BtnPlayPause_Clicked" />
@@ -211,7 +211,7 @@
         <!-- PIE -->
         <Label
             Grid.Row="2"
-            Text="MSI Center"
+            Text="RemoControl Mobile"
             HorizontalTextAlignment="Center"
             FontSize="11"
             TextColor="#657181"

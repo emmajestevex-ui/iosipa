@@ -98,7 +98,7 @@
                             Text="Actualizar ubicación"
                             Margin="0,8,0,0"
                             HeightRequest="48"
-                            BackgroundColor="#E31B2F"
+                            BackgroundColor="#087BDB"
                             TextColor="White"
                             CornerRadius="12"
                             Clicked="BtnActualizar_Clicked" />

@@ -22,10 +22,11 @@ public partial class AccionesPage : ContentPage
                 Colors.Orange;
 
             using HttpResponseMessage respuesta =
-                await AppConfig.PostAsyncConToken(
-                    cliente,
+                await cliente.PostAsync(
+                    AppConfig.Servidor +
                     "/action/" +
-                    accion);
+                    accion,
+                    null);
 
             lblEstado.Text =
                 respuesta.IsSuccessStatusCode

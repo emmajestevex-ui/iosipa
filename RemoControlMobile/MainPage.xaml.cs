@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 
 namespace RemoControlMobile;
@@ -81,25 +81,11 @@ public partial class MainPage : ContentPage
     {
         lblBrandName.Text = AppConfig.NombrePersonalizado;
 
-        string logo = AppConfig.LogoPersonalizado;
+        // El encabezado muestra solamente el nombre RemoControl.
+        // No se muestra ninguna foto o logo personal dentro de la pantalla principal.
 
-        if (!string.IsNullOrWhiteSpace(logo) && File.Exists(logo))
-        {
-            imgBrandLogo.Source = ImageSource.FromFile(logo);
-        }
-        else
-        {
-            imgBrandLogo.Source = "msi_shield.png";
-        }
-
-        try
-        {
-            paginaPrincipal.BackgroundColor = Color.FromArgb(AppConfig.ColorFondo);
-        }
-        catch
-        {
-            paginaPrincipal.BackgroundColor = Color.FromArgb("#0B1119");
-        }
+        // La interfaz V6 usa una paleta fija oscura/azul para mantener el diseño RemoControl.
+        paginaPrincipal.BackgroundColor = Color.FromArgb("#050B12");
     }
 
 
@@ -164,94 +150,65 @@ public partial class MainPage : ContentPage
             lblWindows.Text = "";
 
             using HttpClient cliente =
-                AppConfig.CrearCliente(10);
+                AppConfig.CrearCliente(8);
 
-            bool respuestaEsInfo =
-                true;
-
-            HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
+            using HttpResponseMessage respuesta =
+                await cliente.GetAsync(
+                    AppConfig.Servidor.TrimEnd('/') +
                     "/info");
 
             if (
-                respuesta.StatusCode == HttpStatusCode.NotFound ||
-                respuesta.StatusCode == HttpStatusCode.MethodNotAllowed)
+                respuesta.StatusCode == HttpStatusCode.Unauthorized ||
+                respuesta.StatusCode == HttpStatusCode.Forbidden)
             {
-                respuesta.Dispose();
-                respuestaEsInfo =
-                    false;
-
-                respuesta =
-                    await AppConfig.GetAsyncConToken(
-                        cliente,
-                        "/status");
-            }
-
-            using (respuesta)
-            {
-                if (
-                    respuesta.StatusCode == HttpStatusCode.Unauthorized ||
-                    respuesta.StatusCode == HttpStatusCode.Forbidden)
-                {
-                    lblPc.Text = "PC encontrada";
-                    lblEstado.Text = "● Token incorrecto";
-                    lblEstado.TextColor = Colors.Red;
-                    lblUsuario.Text =
-                        "La PC respondió, pero el token no coincide. Copia de nuevo el TOKEN DE SEGURIDAD que muestra esa PC.";
-                    lblWindows.Text = "";
-                    return;
-                }
-
-                if (!respuesta.IsSuccessStatusCode)
-                {
-                    lblPc.Text = "PC encontrada";
-                    lblEstado.Text = "● Error del servidor";
-                    lblEstado.TextColor = Colors.Red;
-                    lblUsuario.Text =
-                        "RemoControl en la PC respondió con un error. Revisa Configuración en la PC.";
-                    lblWindows.Text = "";
-                    return;
-                }
-
-                if (!respuestaEsInfo)
-                {
-                    lblPc.Text = "PC";
-                    lblUsuario.Text = "";
-                    lblWindows.Text = "";
-                    lblEstado.Text = "● En línea";
-                    lblEstado.TextColor = Colors.LimeGreen;
-                    return;
-                }
-
-                InfoPc? info =
-                    await respuesta.Content
-                        .ReadFromJsonAsync<InfoPc>();
-
-                if (info == null)
-                {
-                    lblPc.Text = "PC encontrada";
-                    lblEstado.Text = "● En línea";
-                    lblEstado.TextColor = Colors.LimeGreen;
-                    lblUsuario.Text = "";
-                    lblWindows.Text = "";
-                    return;
-                }
-
-                lblPc.Text =
-                    info.pc ?? "PC";
-
+                lblPc.Text = "PC encontrada";
+                lblEstado.Text = "● Token incorrecto";
+                lblEstado.TextColor = Colors.Red;
                 lblUsuario.Text =
-                    string.IsNullOrWhiteSpace(info.user)
-                        ? ""
-                        : "Usuario: " + info.user;
-
-                lblWindows.Text =
-                    info.windows ?? "";
-
-                lblEstado.Text = "● En línea";
-                lblEstado.TextColor = Colors.LimeGreen;
+                    "La PC respondió, pero el token no coincide. Copia de nuevo el TOKEN DE SEGURIDAD que muestra esa PC.";
+                lblWindows.Text = "";
+                return;
             }
+
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                lblPc.Text = "PC encontrada";
+                lblEstado.Text = "● Error del servidor";
+                lblEstado.TextColor = Colors.Red;
+                lblUsuario.Text =
+                    "RemoControl en la PC respondió con un error. Revisa Configuración en la PC.";
+                lblWindows.Text = "";
+                return;
+            }
+
+            InfoPc? info =
+                await respuesta.Content
+                    .ReadFromJsonAsync<InfoPc>();
+
+            if (info == null)
+            {
+                lblPc.Text = "PC encontrada";
+                lblEstado.Text = "● Respuesta inválida";
+                lblEstado.TextColor = Colors.Red;
+                lblUsuario.Text =
+                    "La respuesta del servidor no es válida.";
+                lblWindows.Text = "";
+                return;
+            }
+
+            lblPc.Text =
+                info.pc ?? "PC";
+
+            lblUsuario.Text =
+                string.IsNullOrWhiteSpace(info.user)
+                    ? ""
+                    : "Usuario: " + info.user;
+
+            lblWindows.Text =
+                info.windows ?? "";
+
+            lblEstado.Text = "● En línea";
+            lblEstado.TextColor = Colors.LimeGreen;
         }
         catch (TaskCanceledException)
         {
@@ -259,9 +216,7 @@ public partial class MainPage : ContentPage
             lblEstado.Text = "● Tiempo agotado";
             lblEstado.TextColor = Colors.Red;
             lblUsuario.Text =
-                AppConfig.EsServidorTailscale(AppConfig.Servidor)
-                    ? "Tailscale respondió lento. Abre Safari y prueba la dirección terminada en /status; si sale No autorizado, instala el IPA nuevo y revisa el token."
-                    : "Revisa que la dirección sea la de TU PC, que RemoControl esté abierto y que ambos estén en la misma red.";
+                "Revisa que la dirección sea la de TU PC, que RemoControl esté abierto y que ambos estén en la misma red.";
             lblWindows.Text = "";
         }
         catch (HttpRequestException)
@@ -270,9 +225,7 @@ public partial class MainPage : ContentPage
             lblEstado.Text = "● Sin conexión";
             lblEstado.TextColor = Colors.Red;
             lblUsuario.Text =
-                AppConfig.EsServidorTailscale(AppConfig.Servidor)
-                    ? "La app no pudo abrir la dirección Tailscale. Usa la IP de la laptop, no la del iPhone, y prueba primero en Safari con /status."
-                    : "No se pudo alcanzar esa dirección. Revisa la IP, el puerto 5050 y el permiso de Windows en RemoControl PC.";
+                "No se pudo alcanzar esa dirección. Revisa la IP, el puerto 5050 y el permiso de Windows en RemoControl PC.";
             lblWindows.Text = "";
         }
         catch (Exception ex)
@@ -464,6 +417,75 @@ public partial class MainPage : ContentPage
     {
         await Navigation.PushAsync(
             new MultimediaPage());
+    }
+
+
+    // ============================================================
+    // ACCIONES RÁPIDAS DE ENERGÍA Y SISTEMA
+    // ============================================================
+
+    private async Task EjecutarAccionRapida(string accion)
+    {
+        try
+        {
+            if (!AppConfig.HayConfiguracion)
+            {
+                await DisplayAlertAsync(
+                    "Sin configurar",
+                    "Primero configura la conexión con tu PC.",
+                    "Aceptar");
+                return;
+            }
+
+            using HttpClient cliente = AppConfig.CrearCliente(8);
+            using HttpResponseMessage respuesta = await cliente.PostAsync(
+                AppConfig.Servidor.TrimEnd('/') + "/action/" + accion,
+                null);
+
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                await DisplayAlertAsync(
+                    "No se pudo ejecutar",
+                    "La PC respondió con un error. Revisa que RemoControl PC esté abierto y conectado.",
+                    "Aceptar");
+            }
+        }
+        catch
+        {
+            await DisplayAlertAsync(
+                "Sin conexión",
+                "No se pudo contactar la PC.",
+                "Aceptar");
+        }
+    }
+
+    private async void BtnBloquearRapido_Clicked(object sender, EventArgs e)
+    {
+        await EjecutarAccionRapida("lock");
+    }
+
+    private async void BtnSuspenderRapido_Clicked(object sender, EventArgs e)
+    {
+        if (await DisplayAlertAsync("Suspender", "¿Suspender la PC?", "Sí", "Cancelar"))
+        {
+            await EjecutarAccionRapida("sleep");
+        }
+    }
+
+    private async void BtnReiniciarRapido_Clicked(object sender, EventArgs e)
+    {
+        if (await DisplayAlertAsync("Reiniciar", "¿Reiniciar la PC?", "Sí", "Cancelar"))
+        {
+            await EjecutarAccionRapida("restart");
+        }
+    }
+
+    private async void BtnApagarRapido_Clicked(object sender, EventArgs e)
+    {
+        if (await DisplayAlertAsync("Apagar", "¿Apagar la PC?", "Sí", "Cancelar"))
+        {
+            await EjecutarAccionRapida("shutdown");
+        }
     }
 
 
@@ -680,98 +702,6 @@ public partial class MainPage : ContentPage
     private async void BtnHerramientas_Clicked(object sender, EventArgs e)
     {
         await Navigation.PushAsync(new HerramientasProPage());
-    }
-
-
-    // ============================================================
-    // TARJETAS Y NAVEGACIÓN INFERIOR
-    // ============================================================
-
-    private void NavInicio_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-    }
-
-
-    private async void CardPantalla_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new PantallaPage());
-    }
-
-
-    private async void CardTouchpad_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new TouchpadPage());
-    }
-
-
-    private async void CardTeclado_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new TecladoPage());
-    }
-
-
-    private async void CardIntercom_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new IntercomPage());
-    }
-
-
-    private async void CardAplicaciones_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new AplicacionesPage());
-    }
-
-
-    private async void CardEstadoPc_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new EstadoPcPage());
-    }
-
-
-    private async void NavArchivos_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new ArchivosPage());
-    }
-
-
-    private async void NavHerramientas_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new HerramientasProPage());
-    }
-
-
-    private async void NavAjustes_Tapped(
-        object? sender,
-        TappedEventArgs e)
-    {
-        await Navigation.PushAsync(
-            new ConfiguracionPage());
     }
 
 }

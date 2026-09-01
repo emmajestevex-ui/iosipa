@@ -36,8 +36,8 @@ public partial class ActividadPage : ContentPage
                 AppConfig.CrearCliente(10);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
+                await cliente.GetAsync(
+                    AppConfig.Servidor +
                     "/history");
 
             if (!respuesta.IsSuccessStatusCode)

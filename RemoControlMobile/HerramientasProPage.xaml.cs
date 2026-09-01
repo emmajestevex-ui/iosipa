@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -12,27 +10,19 @@ public partial class HerramientasProPage : ContentPage
     public HerramientasProPage()
     {
         InitializeComponent();
-        Shell.SetNavBarIsVisible(this, false);
     }
 
-    private string U(string p)
-    {
-        return AppConfig.Url(
-            p);
-    }
+    private string U(string p) => AppConfig.Servidor.TrimEnd('/') + p;
 
     private async Task<bool> Call(string p)
     {
         try
         {
-            using var r =
-                await AppConfig.PostAsyncConToken(
-                    http,
-                    p);
+            using var r = await http.PostAsync(U(p), null);
             string t = await r.Content.ReadAsStringAsync();
             if (!r.IsSuccessStatusCode)
             {
-                await DisplayAlertAsync("MSI Center", ExtraerError(t), "Aceptar");
+                await DisplayAlertAsync("RemoControl", ExtraerError(t), "Aceptar");
                 return false;
             }
             return true;
@@ -53,140 +43,6 @@ public partial class HerramientasProPage : ContentPage
     private async void BtnApagar_Clicked(object s, EventArgs e) => await Schedule("shutdown", "apagar");
     private async void BtnSuspender_Clicked(object s, EventArgs e) => await Schedule("sleep", "suspender");
 
-    private async void BtnApagarAhora_Clicked(object s, EventArgs e)
-    {
-        if (!await DisplayAlertAsync("Apagar laptop", "¿Apagar la laptop ahora?", "Apagar", "Cancelar"))
-            return;
-
-        await Power("shutdown", "apagado");
-    }
-
-    private async void BtnSuspenderAhora_Clicked(object s, EventArgs e)
-    {
-        if (!await DisplayAlertAsync("Suspender laptop", "¿Suspender la laptop ahora?", "Suspender", "Cancelar"))
-            return;
-
-        await Power("sleep", "suspendida");
-    }
-
-    private async void BtnBloquear_Clicked(object s, EventArgs e)
-    {
-        if (!await DisplayAlertAsync("Bloquear laptop", "¿Bloquear la laptop ahora?", "Bloquear", "Cancelar"))
-            return;
-
-        await Power("lock", "bloqueada");
-    }
-
-    private async void BtnDesbloquear_Clicked(object s, EventArgs e)
-    {
-        bool continuar = await DisplayAlertAsync(
-            "Desbloquear laptop",
-            "Por seguridad no se guarda ni se manda tu contraseña. Puedo pedirle a la PC que despierte o muestre la pantalla de inicio de sesión; el PIN, contraseña o Windows Hello se usa en la laptop.",
-            "Preparar",
-            "Cancelar");
-
-        if (!continuar)
-            return;
-
-        await Power("wake", "lista para iniciar sesión");
-    }
-
-    private async Task Power(string accion, string estado)
-    {
-        lblEstado.Text = "Enviando orden a la PC...";
-
-        string[] rutas = accion switch
-        {
-            "shutdown" => new[]
-            {
-                "/pro/power?action=shutdown",
-                "/power?action=shutdown",
-                "/system/power?action=shutdown",
-                "/pro/shutdown",
-                "/shutdown",
-                "/pro/schedule?action=shutdown&minutes=1"
-            },
-            "sleep" => new[]
-            {
-                "/pro/power?action=sleep",
-                "/power?action=sleep",
-                "/system/power?action=sleep",
-                "/pro/sleep",
-                "/sleep",
-                "/pro/schedule?action=sleep&minutes=1"
-            },
-            "lock" => new[]
-            {
-                "/pro/power?action=lock",
-                "/power?action=lock",
-                "/system/power?action=lock",
-                "/system/lock",
-                "/pro/lock",
-                "/lock"
-            },
-            "wake" => new[]
-            {
-                "/pro/power?action=wake",
-                "/power?action=wake",
-                "/system/power?action=wake",
-                "/system/wake",
-                "/pro/wake",
-                "/wake",
-                "/pro/unlock-request"
-            },
-            _ => new[]
-            {
-                "/pro/power?action=" + Uri.EscapeDataString(accion)
-            }
-        };
-
-        if (await CallFirst(rutas))
-            lblEstado.Text = "Orden enviada a la PC.";
-    }
-
-    private async Task<bool> CallFirst(params string[] rutas)
-    {
-        string ultimoError = "La PC no respondió.";
-        bool soloRutasNoEncontradas = false;
-
-        foreach (string ruta in rutas)
-        {
-            try
-            {
-                using HttpResponseMessage response =
-                    await AppConfig.PostAsyncConToken(
-                        http,
-                        ruta);
-                string body = await response.Content.ReadAsStringAsync();
-                if (response.IsSuccessStatusCode)
-                    return true;
-
-                string error = ExtraerError(body);
-                if (!EsRutaNoEncontrada(error))
-                {
-                    ultimoError = error;
-                    soloRutasNoEncontradas = false;
-                }
-                else if (ultimoError == "La PC no respondió.")
-                {
-                    soloRutasNoEncontradas = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                ultimoError = ex.Message;
-                soloRutasNoEncontradas = false;
-            }
-        }
-
-        if (soloRutasNoEncontradas)
-            ultimoError = "Ese comando no existe en el programa de PC instalado.";
-
-        lblEstado.Text = "No se pudo completar la orden.";
-        await DisplayAlertAsync("MSI Center", ultimoError, "Aceptar");
-        return false;
-    }
-
     private async Task Schedule(string accion, string nombre)
     {
         if (!int.TryParse(txtMinutos.Text, out int m) || m < 1)
@@ -205,91 +61,16 @@ public partial class HerramientasProPage : ContentPage
 
     private async void BtnRing_Clicked(object s, EventArgs e)
     {
-        string mensaje = string.IsNullOrWhiteSpace(txtMensaje.Text) ? "MSI Center" : txtMensaje.Text.Trim();
-        lblEstado.Text = "Enviando timbre a la PC...";
-
-        if (await RingPcAsync(mensaje))
-        {
-            lblEstado.Text = "Timbre enviado a la PC.";
-            try { await TextToSpeech.Default.SpeakAsync(mensaje); } catch { }
-        }
-    }
-
-    private async Task<bool> RingPcAsync(string mensaje)
-    {
-        string encoded = Uri.EscapeDataString(mensaje);
-        string path = "/pro/ring?message=" + encoded + "&sound=1&speak=1";
-        var payload = new
-        {
-            message = mensaje,
-            mensaje,
-            playSound = true,
-            sound = true,
-            speak = true,
-            readMessage = true
-        };
-
-        try
-        {
-            using JsonContent content = JsonContent.Create(payload);
-            using HttpResponseMessage response =
-                await http.PostAsync(
-                    AppConfig.UrlConToken(
-                        path),
-                    content);
-            string body = await response.Content.ReadAsStringAsync();
-            if (response.IsSuccessStatusCode)
-                return true;
-
-            if (response.StatusCode is HttpStatusCode.BadRequest or
-                HttpStatusCode.UnsupportedMediaType or
-                HttpStatusCode.MethodNotAllowed)
-            {
-                using HttpResponseMessage fallback =
-                    await AppConfig.PostAsyncConToken(
-                        http,
-                        "/pro/ring?message=" + encoded);
-                string fallbackBody = await fallback.Content.ReadAsStringAsync();
-                if (fallback.IsSuccessStatusCode)
-                    return true;
-
-                body = string.IsNullOrWhiteSpace(fallbackBody) ? body : fallbackBody;
-            }
-
-            lblEstado.Text = "No se pudo enviar el timbre.";
-            await DisplayAlertAsync("Timbre", ExtraerError(body), "Aceptar");
-            return false;
-        }
-        catch (Exception ex)
-        {
-            lblEstado.Text = "Sin conexión con la PC.";
-            await DisplayAlertAsync("Sin conexión", ex.Message, "Aceptar");
-            return false;
-        }
+        string mensaje = string.IsNullOrWhiteSpace(txtMensaje.Text) ? "RemoControl" : txtMensaje.Text.Trim();
+        try { await TextToSpeech.Default.SpeakAsync(mensaje); } catch { }
+        await Call("/pro/ring?message=" + Uri.EscapeDataString(mensaje));
     }
 
     private async Task<string> Get(string p)
     {
         try
         {
-            using HttpResponseMessage response =
-                await AppConfig.GetAsyncConToken(
-                    http,
-                    p);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                string body =
-                    await response.Content.ReadAsStringAsync();
-
-                lblEstado.Text =
-                    ExtraerError(
-                        body);
-
-                return "";
-            }
-
-            return await response.Content.ReadAsStringAsync();
+            return await http.GetStringAsync(U(p));
         }
         catch (Exception ex)
         {
@@ -448,11 +229,6 @@ public partial class HerramientasProPage : ContentPage
 
     private static string ExtraerError(string body)
     {
-        body = LimpiarTexto(body);
-
-        if (string.IsNullOrWhiteSpace(body))
-            return "La PC no respondió con detalle.";
-
         try
         {
             using JsonDocument doc = JsonDocument.Parse(body);
@@ -460,23 +236,6 @@ public partial class HerramientasProPage : ContentPage
         }
         catch { }
         return body;
-    }
-
-    private static bool EsRutaNoEncontrada(string text)
-    {
-        return text.Contains("ruta no encontrada", StringComparison.OrdinalIgnoreCase) ||
-               text.Contains("not found", StringComparison.OrdinalIgnoreCase) ||
-               text.Contains("404", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static string LimpiarTexto(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-            return "";
-
-        return text
-            .Replace("\0", "")
-            .Trim('\uFEFF', '\u200B', ' ', '\r', '\n', '\t');
     }
 
     private async void BtnVolver_Clicked(object sender, EventArgs e) => await Navigation.PopAsync();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,9 +12,12 @@ public partial class ConfiguracionPage : ContentPage
     public ConfiguracionPage()
     {
         InitializeComponent();
-        Shell.SetNavBarIsVisible(this, false);
         txtNombreApp.Text = AppConfig.NombrePersonalizado;
         swBloqueo.IsToggled = AppConfig.BloqueoApp;
+        swBiometria.IsToggled = LockSecurityService.BiometricsEnabled;
+        lblSeguridadApp.Text = LockSecurityService.IsPasswordConfigured
+            ? "Contraseña configurada. Puedes activar el bloqueo y la biometría."
+            : "Configura una contraseña para activar el bloqueo.";
         lblLogo.Text = string.IsNullOrWhiteSpace(AppConfig.LogoPersonalizado) ? "Logo predeterminado" : Path.GetFileName(AppConfig.LogoPersonalizado);
         txtColorFondo.Text = AppConfig.ColorFondo;
         pickerHablar.SelectedIndex = AppConfig.DuracionHablarSegundos switch { 2 => 0, 4 => 1, 6 => 2, 10 => 3, _ => 4 };
@@ -25,20 +28,6 @@ public partial class ConfiguracionPage : ContentPage
         lblVersion.Text =
             "Versión " +
             AppInfo.Current.VersionString;
-    }
-
-    private async void BtnAyudaTailscale_Clicked(
-        object sender,
-        EventArgs e)
-    {
-        await DisplayAlertAsync(
-            "Tailscale",
-            "Usa la DIRECCIÓN TAILSCALE de la PC, no la IP del iPhone.\n\n" +
-            "En Tailscale ambos deben aparecer conectados.\n\n" +
-            "Prueba rápida: abre Safari en el iPhone y entra a la dirección Tailscale de la PC terminando en /status.\n\n" +
-            "Si Safari muestra 401 o Unauthorized, Tailscale sí llega a la PC y debes revisar el token o instalar el IPA nuevo.\n\n" +
-            "Si Safari no abre la página, ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador y revisa que Tailscale siga conectado.",
-            "Aceptar");
     }
 
 
@@ -223,13 +212,17 @@ public partial class ConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            AppConfig.NormalizarServidor(
-                txtServidor.Text);
+            txtServidor.Text?
+                .Trim()
+            ??
+            "";
 
 
         string token =
-            AppConfig.LimpiarToken(
-                txtToken.Text);
+            txtToken.Text?
+                .Trim()
+            ??
+            "";
 
 
         if (string.IsNullOrWhiteSpace(
@@ -245,10 +238,24 @@ public partial class ConfiguracionPage : ContentPage
         }
 
 
+        if (!servidor.StartsWith(
+            "http://",
+            StringComparison.OrdinalIgnoreCase)
+            &&
+            !servidor.StartsWith(
+                "https://",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            servidor =
+                "http://" +
+                servidor;
+        }
+
+
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
-            out Uri? uriServidor))
+            out _))
         {
             lblPrueba.Text =
                 "● La dirección no es válida";
@@ -258,12 +265,6 @@ public partial class ConfiguracionPage : ContentPage
 
             return;
         }
-
-        txtServidor.Text =
-            servidor;
-
-        txtToken.Text =
-            token;
 
 
         if (string.IsNullOrWhiteSpace(
@@ -292,116 +293,82 @@ public partial class ConfiguracionPage : ContentPage
                 Colors.Orange;
 
 
+            servidor =
+                servidor.TrimEnd('/');
+
+
             using HttpClient cliente =
                 new HttpClient();
 
 
             cliente.Timeout =
-                TimeSpan.FromSeconds(
-                    EsTailscale(uriServidor)
-                        ? 25
-                        : 8);
+                TimeSpan.FromSeconds(8);
 
 
-            AppConfig.AgregarTokenHeaders(
-                cliente,
+            cliente.DefaultRequestHeaders.Add(
+                "X-Remo-Token",
                 token);
 
 
-            HttpResponseMessage respuesta =
+            using HttpResponseMessage respuesta =
                 await cliente.GetAsync(
                     servidor +
                     "/status");
 
-            if (
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                lblPrueba.Text =
+                    "● Conexión correcta";
+
+                lblPrueba.TextColor =
+                    Colors.LimeGreen;
+            }
+            else if (
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Unauthorized
                 ||
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Forbidden)
             {
-                respuesta.Dispose();
+                lblPrueba.Text =
+                    "● Token incorrecto";
 
-                respuesta =
-                    await cliente.GetAsync(
-                        AppConfig.AnexarTokenAUrl(
-                            servidor +
-                            "/status",
-                            token));
+                lblPrueba.TextColor =
+                    Colors.Red;
             }
-
-            using (respuesta)
+            else
             {
-                if (respuesta.IsSuccessStatusCode)
-                {
-                    lblPrueba.Text =
-                        "● Conexión correcta";
+                lblPrueba.Text =
+                    "● La PC respondió, pero rechazó la conexión";
 
-                    lblPrueba.TextColor =
-                        Colors.LimeGreen;
-                }
-                else if (
-                    respuesta.StatusCode ==
-                    System.Net.HttpStatusCode.Unauthorized
-                    ||
-                    respuesta.StatusCode ==
-                    System.Net.HttpStatusCode.Forbidden)
-                {
-                    lblPrueba.Text =
-                        "● Token incorrecto";
-
-                    lblPrueba.TextColor =
-                        Colors.Red;
-                }
-                else
-                {
-                    lblPrueba.Text =
-                        "● La PC respondió, pero rechazó la conexión";
-
-                    lblPrueba.TextColor =
-                        Colors.Red;
-                }
+                lblPrueba.TextColor =
+                    Colors.Red;
             }
         }
         catch (TaskCanceledException)
         {
             lblPrueba.Text =
-                EsTailscale(uriServidor)
-                    ? "● Tailscale tardó demasiado"
-                    : "● Tiempo agotado. Revisa la IP y la conexión.";
+                "● Tiempo agotado. Revisa la IP y la conexión.";
 
             lblPrueba.TextColor =
                 Colors.Red;
-
-            await MostrarAyudaConexionFallida(
-                servidor,
-                "Tiempo agotado.");
         }
-        catch (HttpRequestException ex)
+        catch (HttpRequestException)
         {
             lblPrueba.Text =
-                EsTailscale(uriServidor)
-                    ? "● La app no pudo abrir Tailscale"
-                    : "● No se encontró la PC";
+                "● No se encontró la PC";
 
             lblPrueba.TextColor =
                 Colors.Red;
-
-            await MostrarAyudaConexionFallida(
-                servidor,
-                ex.Message);
         }
-        catch (Exception ex)
+        catch
         {
             lblPrueba.Text =
                 "● No se pudo conectar";
 
             lblPrueba.TextColor =
                 Colors.Red;
-
-            await MostrarAyudaConexionFallida(
-                servidor,
-                ex.Message);
         }
         finally
         {
@@ -420,13 +387,17 @@ public partial class ConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            AppConfig.NormalizarServidor(
-                txtServidor.Text);
+            txtServidor.Text?
+                .Trim()
+            ??
+            "";
 
 
         string token =
-            AppConfig.LimpiarToken(
-                txtToken.Text);
+            txtToken.Text?
+                .Trim()
+            ??
+            "";
 
 
         if (string.IsNullOrWhiteSpace(
@@ -438,6 +409,20 @@ public partial class ConfiguracionPage : ContentPage
                 "Aceptar");
 
             return;
+        }
+
+
+        if (!servidor.StartsWith(
+            "http://",
+            StringComparison.OrdinalIgnoreCase)
+            &&
+            !servidor.StartsWith(
+                "https://",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            servidor =
+                "http://" +
+                servidor;
         }
 
 
@@ -454,12 +439,6 @@ public partial class ConfiguracionPage : ContentPage
             return;
         }
 
-        txtServidor.Text =
-            servidor;
-
-        txtToken.Text =
-            token;
-
 
         if (string.IsNullOrWhiteSpace(
             token))
@@ -471,6 +450,10 @@ public partial class ConfiguracionPage : ContentPage
 
             return;
         }
+
+
+        servidor =
+            servidor.TrimEnd('/');
 
 
         AppConfig.Servidor =
@@ -518,49 +501,12 @@ public partial class ConfiguracionPage : ContentPage
 
 
         await DisplayAlertAsync(
-            "MSI Center",
+            "RemoControl",
             "Configuración guardada correctamente.\n\nYa puedes controlar esta PC desde el teléfono.",
             "Aceptar");
 
 
         await Navigation.PopAsync();
-    }
-
-    private async Task MostrarAyudaConexionFallida(
-        string servidor,
-        string detalle)
-    {
-        if (!Uri.TryCreate(
-                servidor,
-                UriKind.Absolute,
-                out Uri? uri))
-        {
-            return;
-        }
-
-        if (!EsTailscale(uri))
-            return;
-
-        await DisplayAlertAsync(
-            "Tailscale",
-            "No se pudo llegar a la PC por Tailscale.\n\n" +
-            "Revisa esto:\n" +
-            "1. La dirección debe ser la de la PC, no la del iPhone.\n" +
-            "2. Tailscale debe estar conectado en ambos dispositivos.\n" +
-            "3. RemoControl debe estar abierto en Windows.\n" +
-            "4. En Safari del iPhone prueba esta dirección: " + servidor.TrimEnd('/') + "/status\n" +
-            "5. Si Safari muestra 401 o Unauthorized, la conexión funciona y debes revisar el token o instalar el IPA nuevo.\n" +
-            "6. Si Safari no abre, ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat como administrador.\n\n" +
-            "Detalle: " + Recortar(detalle, 220),
-            "Aceptar");
-    }
-
-    private static bool EsTailscale(
-        Uri uri)
-    {
-        return uri.Host.StartsWith(
-            "100.",
-            StringComparison.OrdinalIgnoreCase);
     }
 
 
@@ -665,13 +611,55 @@ public partial class ConfiguracionPage : ContentPage
     }
     private async void BtnGuardarPersonalizacion_Clicked(object sender, EventArgs e)
     {
-        AppConfig.NombrePersonalizado = txtNombreApp.Text ?? "MSI Center";
+        AppConfig.NombrePersonalizado = txtNombreApp.Text ?? "RemoControl";
+        if (swBloqueo.IsToggled && !LockSecurityService.IsPasswordConfigured)
+        {
+            await DisplayAlertAsync("Seguridad", "Primero crea una contraseña para poder activar el bloqueo de la app.", "Aceptar");
+            swBloqueo.IsToggled = false;
+            return;
+        }
+
         AppConfig.BloqueoApp = swBloqueo.IsToggled;
+        LockSecurityService.BiometricsEnabled = swBloqueo.IsToggled && swBiometria.IsToggled;
         AppConfig.ColorFondo = string.IsNullOrWhiteSpace(txtColorFondo.Text) ? "#0B1119" : txtColorFondo.Text.Trim();
         int[] hablar = { 2, 4, 6, 10, 15 };
         AppConfig.DuracionHablarSegundos = hablar[Math.Clamp(pickerHablar.SelectedIndex, 0, hablar.Length - 1)];
         AppConfig.AudioLiveSegundos = Math.Clamp(pickerAudioLive.SelectedIndex + 1, 1, 3);
         await DisplayAlertAsync("Guardado","Personalización y tiempos del intercomunicador guardados.","Aceptar");
+    }
+
+
+    private async void BtnGuardarClave_Clicked(object sender, EventArgs e)
+    {
+        string clave = txtClaveApp.Text ?? string.Empty;
+        string confirmar = txtClaveAppConfirmar.Text ?? string.Empty;
+
+        if (clave.Length < 4)
+        {
+            await DisplayAlertAsync("Seguridad", "La contraseña debe tener al menos 4 caracteres.", "Aceptar");
+            return;
+        }
+
+        if (!string.Equals(clave, confirmar, StringComparison.Ordinal))
+        {
+            await DisplayAlertAsync("Seguridad", "Las contraseñas no coinciden.", "Aceptar");
+            return;
+        }
+
+        try
+        {
+            await LockSecurityService.SetPasswordAsync(clave);
+            AppConfig.BloqueoApp = true;
+            swBloqueo.IsToggled = true;
+            lblSeguridadApp.Text = "Contraseña configurada. El bloqueo está activado.";
+            txtClaveApp.Text = string.Empty;
+            txtClaveAppConfirmar.Text = string.Empty;
+            await DisplayAlertAsync("Seguridad", "Contraseña guardada. Al volver a abrir RemoControl se pedirá la contraseña o biometría.", "Aceptar");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlertAsync("Seguridad", "No se pudo guardar la contraseña.\n\n" + ex.Message, "Aceptar");
+        }
     }
 
     private async void BtnCrearAcceso_Clicked(object sender, EventArgs e)
@@ -694,12 +682,4 @@ public partial class ConfiguracionPage : ContentPage
         }
     }
 
-    private static string Recortar(string text, int max)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return "Sin detalle.";
-
-        text = text.Trim();
-        return text.Length <= max ? text : text[..max];
-    }
 }

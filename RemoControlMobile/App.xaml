@@ -8,14 +8,14 @@
             <Style TargetType="Label"><Setter Property="FontFamily" Value="OpenSansRegular" /></Style>
             <Style TargetType="Button"><Setter Property="FontFamily" Value="OpenSansSemibold" /><Setter Property="FontSize" Value="13" /></Style>
             <Style TargetType="Border" Class="ToolCard">
-                <Setter Property="BackgroundColor" Value="#111A24" />
-                <Setter Property="Stroke" Value="#202E40" />
+                <Setter Property="BackgroundColor" Value="#111B27" />
+                <Setter Property="Stroke" Value="#203047" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="StrokeShape"><Setter.Value><RoundRectangle CornerRadius="16" /></Setter.Value></Setter>
             </Style>
             <Style TargetType="Border" Class="SquareCard">
-                <Setter Property="BackgroundColor" Value="#111A24" />
-                <Setter Property="Stroke" Value="#202E40" />
+                <Setter Property="BackgroundColor" Value="#111B27" />
+                <Setter Property="Stroke" Value="#203047" />
                 <Setter Property="StrokeThickness" Value="1" />
                 <Setter Property="StrokeShape"><Setter.Value><RoundRectangle CornerRadius="16" /></Setter.Value></Setter>
             </Style>

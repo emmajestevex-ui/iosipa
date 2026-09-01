@@ -16,13 +16,13 @@
             Grid.Row="0"
             Padding="12"
             ColumnDefinitions="Auto,*,Auto"
-            BackgroundColor="#101720">
+            BackgroundColor="#07101A">
 
             <Button
                 Text="←"
                 WidthRequest="45"
                 HeightRequest="43"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White"
                 CornerRadius="10"
                 Clicked="BtnVolver_Clicked" />
@@ -41,7 +41,7 @@
                 Text="⛶"
                 WidthRequest="45"
                 HeightRequest="43"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White"
                 CornerRadius="10"
                 Clicked="BtnPantallaCompleta_Clicked" />
@@ -57,14 +57,14 @@
             Padding="10"
             ColumnDefinitions="*,Auto"
             ColumnSpacing="10"
-            BackgroundColor="#151B23">
+            BackgroundColor="#08111B">
 
             <Picker
                 x:Name="pickerCalidad"
                 Grid.Column="0"
                 Title="Calidad"
                 SelectedIndexChanged="PickerCalidad_SelectedIndexChanged"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White">
 
                 <Picker.Items>
@@ -81,7 +81,7 @@
             <Button
                 Grid.Column="1"
                 Text="📸 Captura"
-                BackgroundColor="#E31B2F"
+                BackgroundColor="#0B6EDB"
                 TextColor="White"
                 CornerRadius="10"
                 Clicked="BtnCaptura_Clicked" />
@@ -128,7 +128,7 @@
                     IsRunning="True"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    Color="#3096FF" />
+                    Color="#1687FF" />
 
             </Grid>
 

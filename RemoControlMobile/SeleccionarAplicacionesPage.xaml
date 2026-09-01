@@ -161,7 +161,7 @@
                             <CheckBox
                                 Grid.Column="2"
                                 IsChecked="{Binding selected}"
-                                Color="#E31B2F"
+                                Color="#087BDB"
                                 VerticalOptions="Center"
                                 CheckedChanged="CheckApp_CheckedChanged" />
 
@@ -194,7 +194,7 @@
                 Grid.Column="1"
                 x:Name="btnAgregar"
                 Text="Agregar"
-                BackgroundColor="#E31B2F"
+                BackgroundColor="#087BDB"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="12"

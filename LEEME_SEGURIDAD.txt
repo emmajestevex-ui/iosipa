@@ -1,0 +1,20 @@
+RemoControlMobile - Android + iOS
+
+ABRIR EN VISUAL STUDIO:
+  RemoControlMobile.sln
+
+SEGURIDAD AÑADIDA:
+- Contraseña local de mínimo 4 caracteres.
+- La contraseña no se guarda en texto plano: se almacena derivada con PBKDF2 y salt en SecureStorage.
+- Bloqueo al abrir la app.
+- Huella/biometría en Android 9 (API 28) o superior cuando el dispositivo la tenga configurada.
+- Touch ID / Face ID en iOS cuando esté disponible.
+- Contraseña de respaldo si la biometría no funciona.
+
+PARA ACTIVARLO:
+Configuración > Personalización, audio y privacidad > Seguridad de la app.
+Crea la contraseña, activa Bloquear app al abrir y opcionalmente Usar huella / Face ID.
+
+IMPORTANTE:
+Para crear APK/IPA debes compilar en un equipo con la carga de trabajo .NET MAUI instalada.
+Para iOS, la compilación/firma final requiere las herramientas de Apple correspondientes.

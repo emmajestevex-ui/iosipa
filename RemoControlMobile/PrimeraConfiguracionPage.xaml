@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 
 <ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -18,7 +18,7 @@
                 Margin="0,10,0,5">
 
                 <Label
-                    Text="Bienvenido a MSI Center"
+                    Text="Bienvenido a RemoControl"
                     FontSize="28"
                     FontAttributes="Bold"
                     TextColor="White" />
@@ -103,7 +103,7 @@
                         PlaceholderColor="#657181" />
 
                     <Label
-                        Text="Escribe la dirección de la PC sin /status. Para Tailscale usa la IP de la laptop, no la del iPhone."
+                        Text="Escribe exactamente la DIRECCIÓN PARA EL TELÉFONO que aparece en RemoControl de tu PC."
                         FontSize="11"
                         TextColor="#8794A5" />
 
@@ -212,7 +212,7 @@
                         TextColor="#FFB45B" />
 
                     <Label
-                        Text="Para otra red usa Tailscale en la PC y el teléfono. En la laptop ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat para ver la dirección actual. /status solo se usa en Safari para probar."
+                        Text="Primero conecta y prueba por el mismo Wi-Fi. Para usar RemoControl desde otra red, instala Tailscale en la PC y el teléfono y usa la dirección de Tailscale de esa PC."
                         FontSize="12"
                         TextColor="#AEB8C5" />
 
@@ -225,7 +225,7 @@
                 x:Name="btnFinalizar"
                 Text="Guardar y comenzar"
                 HeightRequest="56"
-                BackgroundColor="#E31B2F"
+                BackgroundColor="#087BDB"
                 TextColor="White"
                 FontAttributes="Bold"
                 CornerRadius="14"

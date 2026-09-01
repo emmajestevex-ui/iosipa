@@ -1,4 +1,4 @@
-﻿namespace RemoControlMobile;
+namespace RemoControlMobile;
 
 public partial class App : Application
 {
@@ -12,7 +12,9 @@ public partial class App : Application
     {
         NavigationPage navigation =
             new NavigationPage(
-                new MainPage());
+                (AppConfig.BloqueoApp && LockSecurityService.IsPasswordConfigured)
+                    ? new AppLockPage()
+                    : new MainPage());
 
         navigation.BarBackgroundColor =
             Color.FromArgb("#101720");

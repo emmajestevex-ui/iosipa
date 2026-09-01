@@ -4,8 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.ConfiguracionPage"
-    BackgroundColor="#0B1119"
-    Shell.NavBarIsVisible="False"
+    BackgroundColor="#050B12"
     Title="Configuración">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -22,7 +21,7 @@
                 Text="←"
                 WidthRequest="50"
                 HeightRequest="45"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White"
                 CornerRadius="12"
                 Clicked="BtnVolver_Clicked" />
@@ -67,8 +66,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -80,7 +79,7 @@
                             Text="Cómo conectar este teléfono"
                             FontSize="16"
                             FontAttributes="Bold"
-                            TextColor="#4DB8FF" />
+                            TextColor="#49A3FF" />
 
                         <Label
                             Text="1. Conecta este teléfono y la computadora al mismo Wi-Fi."
@@ -157,8 +156,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -206,8 +205,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -224,7 +223,7 @@
                         <Entry
                             x:Name="txtServidor"
                             Placeholder="Ejemplo: http://192.168.1.25:5050"
-                            BackgroundColor="#151B23"
+                            BackgroundColor="#08111B"
                             TextColor="White"
                             PlaceholderColor="#657181" />
 
@@ -232,10 +231,10 @@
                             Text="¿Qué pongo aquí?"
                             FontSize="12"
                             FontAttributes="Bold"
-                            TextColor="#4DB8FF" />
+                            TextColor="#49A3FF" />
 
                         <Label
-                            Text="En el mismo Wi-Fi usa DIRECCIÓN PARA EL TELÉFONO. Desde otra red usa DIRECCIÓN TAILSCALE de la PC."
+                            Text="Escribe exactamente la DIRECCIÓN PARA EL TELÉFONO que aparece en RemoControl de la computadora."
                             FontSize="12"
                             TextColor="#8794A5" />
 
@@ -245,7 +244,7 @@
                             TextColor="#657181" />
 
                         <Label
-                            Text="No uses la IP del iPhone en Tailscale. Usa la IP de la PC, normalmente empieza por 100."
+                            Text="No uses el ejemplo. Cada computadora puede tener una IP diferente."
                             FontSize="11"
                             TextColor="#FFB45B" />
 
@@ -266,7 +265,7 @@
                                 x:Name="txtToken"
                                 Placeholder="Escribe el token de la PC"
                                 IsPassword="True"
-                                BackgroundColor="#151B23"
+                                BackgroundColor="#08111B"
                                 TextColor="White"
                                 PlaceholderColor="#657181" />
 
@@ -275,7 +274,7 @@
                                 x:Name="btnMostrarToken"
                                 Text="Ver"
                                 Margin="8,0,0,0"
-                                BackgroundColor="#293545"
+                                BackgroundColor="#182838"
                                 TextColor="White"
                                 CornerRadius="10"
                                 Clicked="BtnMostrarToken_Clicked" />
@@ -286,7 +285,7 @@
                             Text="¿Dónde encuentro el token?"
                             FontSize="12"
                             FontAttributes="Bold"
-                            TextColor="#4DB8FF" />
+                            TextColor="#49A3FF" />
 
                         <Label
                             Text="En la computadora abre RemoControl → Configuración → TOKEN DE SEGURIDAD. Copia exactamente ese código aquí."
@@ -334,8 +333,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -370,12 +369,12 @@
                             TextColor="#AEB8C5" />
 
                         <Label
-                            Text="4. Busca en RemoControl de la PC la DIRECCIÓN TAILSCALE (PARA OTRA RED)."
+                            Text="4. Busca en la PC la dirección de Tailscale, que normalmente empieza por 100."
                             FontSize="12"
                             TextColor="#AEB8C5" />
 
                         <Label
-                            Text="5. Utiliza esa dirección con el puerto 5050 en Servidor / IP. No copies la IP del iPhone."
+                            Text="5. Utiliza esa dirección con el puerto 5050 en Servidor / IP."
                             FontSize="12"
                             TextColor="#AEB8C5" />
 
@@ -383,24 +382,6 @@
                             Text="6. Mantén el mismo token de seguridad y pulsa Probar conexión."
                             FontSize="12"
                             TextColor="#AEB8C5" />
-
-                        <Label
-                            Text="Prueba rápida: abre Safari en el iPhone y entra a http://IP_TAILSCALE_DE_LA_PC:5050/status. Si sale 401 o Unauthorized, Tailscale ya está llegando a la PC."
-                            FontSize="12"
-                            TextColor="#4DB8FF" />
-
-                        <Label
-                            Text="Si la IP de Tailscale cambia, ejecuta REPARAR_TODO_REMOCONTROL_ADMIN.bat en la laptop. Ese archivo muestra la dirección actual que debes escribir aquí."
-                            FontSize="12"
-                            TextColor="#FFB45B" />
-
-                        <Button
-                            Text="Ayuda con Tailscale"
-                            HeightRequest="48"
-                            BackgroundColor="#182535"
-                            TextColor="#AFC7E2"
-                            CornerRadius="12"
-                            Clicked="BtnAyudaTailscale_Clicked" />
 
                     </VerticalStackLayout>
 
@@ -417,8 +398,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -435,7 +416,7 @@
                             x:Name="pickerVelocidad"
                             Title="Velocidad"
                             TextColor="White"
-                            BackgroundColor="#151B23">
+                            BackgroundColor="#08111B">
 
                             <Picker.Items>
                                 <x:String>Alta</x:String>
@@ -475,8 +456,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -544,8 +525,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -557,7 +538,7 @@
                             Text="Telegram se configura en la PC"
                             FontSize="14"
                             FontAttributes="Bold"
-                            TextColor="#4DB8FF" />
+                            TextColor="#49A3FF" />
 
                         <Label
                             Text="1. Abre RemoControl en la computadora y entra a Configuración."
@@ -599,8 +580,8 @@
 
                 <Border
                     Padding="18"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="16" />
@@ -609,7 +590,7 @@
                     <VerticalStackLayout Spacing="8">
 
                         <Label
-                            Text="MSI Center"
+                            Text="RemoControl Mobile"
                             FontAttributes="Bold"
                             TextColor="White" />
 
@@ -644,11 +625,11 @@
                     Clicked="BtnRestaurar_Clicked" />
 
                 <Label Text="Personalización, audio y privacidad" FontSize="18" FontAttributes="Bold" TextColor="White" />
-                <Border Padding="18" BackgroundColor="#1E2631" Stroke="#293545">
+                <Border Padding="18" BackgroundColor="#0D1722" Stroke="#182838">
                     <Border.StrokeShape><RoundRectangle CornerRadius="16" /></Border.StrokeShape>
                     <VerticalStackLayout Spacing="12">
                         <Label Text="Nombre personalizado" TextColor="#AEB8C5"/>
-                        <Entry x:Name="txtNombreApp" Placeholder="MSI Center" TextColor="White"/>
+                        <Entry x:Name="txtNombreApp" Placeholder="RemoControl" TextColor="White"/>
 
                         <Label Text="Logo" TextColor="#AEB8C5"/>
                         <Button Text="Elegir logo personal" Clicked="BtnElegirLogo_Clicked"/>
@@ -667,10 +648,24 @@
                             <Picker.Items><x:String>1 segundo</x:String><x:String>2 segundos</x:String><x:String>3 segundos</x:String></Picker.Items>
                         </Picker>
 
+                        <Label Text="Seguridad de la app" TextColor="#49A3FF" FontSize="16" FontAttributes="Bold" Margin="0,8,0,0"/>
+
                         <HorizontalStackLayout Spacing="10">
                             <Label Text="Bloquear app al abrir" TextColor="White" VerticalOptions="Center"/>
                             <Switch x:Name="swBloqueo"/>
                         </HorizontalStackLayout>
+
+                        <Entry x:Name="txtClaveApp" Placeholder="Nueva contraseña (mínimo 4 caracteres)" IsPassword="True" TextColor="White" BackgroundColor="#08111B"/>
+                        <Entry x:Name="txtClaveAppConfirmar" Placeholder="Confirmar contraseña" IsPassword="True" TextColor="White" BackgroundColor="#08111B"/>
+                        <Button Text="Crear / cambiar contraseña" BackgroundColor="#13263A" TextColor="#49A3FF" Clicked="BtnGuardarClave_Clicked"/>
+
+                        <HorizontalStackLayout Spacing="10">
+                            <Label Text="Usar huella / Face ID" TextColor="White" VerticalOptions="Center"/>
+                            <Switch x:Name="swBiometria"/>
+                        </HorizontalStackLayout>
+                        <Label x:Name="lblSeguridadApp" Text="Configura una contraseña para activar el bloqueo." FontSize="11" TextColor="#8794A5"/>
+
+                        <Label Text="En Android usa la biometría disponible del teléfono; en iPhone puede usar Touch ID o Face ID. La contraseña queda como respaldo." FontSize="11" TextColor="#8794A5"/>
 
                         <Label Text="Android no permite que una app cambie su icono/nombre original del launcher en tiempo real. RemoControl puede crear un acceso personalizado en la pantalla de inicio con tu nombre y logo cuando el launcher lo permita." FontSize="11" TextColor="#8794A5"/>
                         <Button Text="Crear acceso personalizado en Inicio" Clicked="BtnCrearAcceso_Clicked"/>
@@ -689,7 +684,7 @@
             Text="Guardar cambios"
             Margin="20,10,20,20"
             HeightRequest="55"
-            BackgroundColor="#E31B2F"
+            BackgroundColor="#0B6EDB"
             TextColor="White"
             FontAttributes="Bold"
             CornerRadius="14"

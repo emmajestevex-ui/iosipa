@@ -92,7 +92,7 @@
                 <Button
                     Text="📤 Enviar texto a la PC"
                     HeightRequest="55"
-                    BackgroundColor="#E31B2F"
+                    BackgroundColor="#087BDB"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="14"
@@ -100,7 +100,7 @@
                 <Button
     Text="📌 Pegar en la ventana activa"
     HeightRequest="55"
-    BackgroundColor="#E31B2F"
+    BackgroundColor="#087BDB"
     TextColor="White"
     FontAttributes="Bold"
     CornerRadius="14"
@@ -127,7 +127,7 @@
 
         <Label
             Grid.Row="2"
-            Text="MSI Center"
+            Text="RemoControl Mobile"
             HorizontalTextAlignment="Center"
             FontSize="11"
             TextColor="#657181"

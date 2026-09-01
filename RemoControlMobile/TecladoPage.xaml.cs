@@ -7,17 +7,12 @@ public partial class TecladoPage : ContentPage
         InitializeComponent();
     }
 
-    private string U(string endpoint)
-    {
-        return AppConfig.Url(
-            endpoint);
-    }
 
     // ============================================================
     // ENVIAR PETICIÓN
     // ============================================================
 
-    private async Task<bool> Post(
+    private async Task Post(
         string endpoint)
     {
         try
@@ -26,9 +21,10 @@ public partial class TecladoPage : ContentPage
                 AppConfig.CrearCliente(8);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.PostAsyncConToken(
-                    cliente,
-                    endpoint);
+                await cliente.PostAsync(
+                    AppConfig.Servidor +
+                    endpoint,
+                    null);
 
             if (respuesta.IsSuccessStatusCode)
             {
@@ -37,34 +33,23 @@ public partial class TecladoPage : ContentPage
 
                 lblEstado.TextColor =
                     Colors.LimeGreen;
-
-                return true;
             }
             else
             {
-                string detalle =
-                    await respuesta.Content.ReadAsStringAsync();
-
                 lblEstado.Text =
-                    string.IsNullOrWhiteSpace(detalle)
-                        ? "● Error"
-                        : "● " + Recortar(detalle, 80);
+                    "● Error";
 
                 lblEstado.TextColor =
                     Colors.Red;
-
-                return false;
             }
         }
-        catch (Exception ex)
+        catch
         {
             lblEstado.Text =
-                "● " + Recortar(ex.Message, 80);
+                "● Sin conexión";
 
             lblEstado.TextColor =
                 Colors.Red;
-
-            return false;
         }
     }
 
@@ -98,57 +83,12 @@ public partial class TecladoPage : ContentPage
                 texto));
     }
 
-    private async void BtnMacroJuego_Clicked(
-        object sender,
-        EventArgs e)
-    {
-        string texto =
-            txtMacroJuego.Text?.Trim() ??
-            "";
-
-        if (string.IsNullOrWhiteSpace(texto))
-        {
-            texto =
-                "Emmanuel";
-        }
-
-        lblEstado.Text =
-            "● Ejecutando macro...";
-
-        lblEstado.TextColor =
-            Colors.Orange;
-
-        if (!await Tecla("enter"))
-            return;
-
-        await Task.Delay(120);
-
-        if (!await Post(
-                "/input/text?text=" +
-                Uri.EscapeDataString(
-                    texto)))
-        {
-            return;
-        }
-
-        await Task.Delay(120);
-
-        if (await Tecla("enter"))
-        {
-            lblEstado.Text =
-                "● Macro ejecutada";
-
-            lblEstado.TextColor =
-                Colors.LimeGreen;
-        }
-    }
-
 
     // ============================================================
     // TECLAS
     // ============================================================
 
-    private Task<bool> Tecla(
+    private Task Tecla(
         string tecla)
     {
         return Post(
@@ -234,7 +174,7 @@ public partial class TecladoPage : ContentPage
     // ATAJOS
     // ============================================================
 
-    private Task<bool> Hotkey(
+    private Task Hotkey(
         string accion)
     {
         return Post(
@@ -293,14 +233,5 @@ public partial class TecladoPage : ContentPage
         EventArgs e)
     {
         await Navigation.PopAsync();
-    }
-
-    private static string Recortar(string text, int max)
-    {
-        if (string.IsNullOrWhiteSpace(text))
-            return "Sin detalle.";
-
-        text = text.Trim();
-        return text.Length <= max ? text : text[..max];
     }
 }

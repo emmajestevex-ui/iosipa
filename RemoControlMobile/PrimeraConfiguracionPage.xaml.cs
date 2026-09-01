@@ -52,8 +52,23 @@ public partial class PrimeraConfiguracionPage : ContentPage
     private static string NormalizarServidor(
         string servidor)
     {
-        return AppConfig.NormalizarServidor(
-            servidor);
+        servidor =
+            servidor.Trim();
+
+        if (!servidor.StartsWith(
+            "http://",
+            StringComparison.OrdinalIgnoreCase)
+            &&
+            !servidor.StartsWith(
+            "https://",
+            StringComparison.OrdinalIgnoreCase))
+        {
+            servidor =
+                "http://" +
+                servidor;
+        }
+
+        return servidor.TrimEnd('/');
     }
 
 
@@ -66,12 +81,12 @@ public partial class PrimeraConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            AppConfig.NormalizarServidor(
-                txtServidor.Text);
+            txtServidor.Text?.Trim() ??
+            "";
 
         string token =
-            AppConfig.LimpiarToken(
-                txtToken.Text);
+            txtToken.Text?.Trim() ??
+            "";
 
 
         if (string.IsNullOrWhiteSpace(
@@ -100,10 +115,15 @@ public partial class PrimeraConfiguracionPage : ContentPage
         }
 
 
+        servidor =
+            NormalizarServidor(
+                servidor);
+
+
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
-            out Uri? uriServidor))
+            out _))
         {
             lblEstado.Text =
                 "● Dirección no válida";
@@ -113,12 +133,6 @@ public partial class PrimeraConfiguracionPage : ContentPage
 
             return;
         }
-
-        txtServidor.Text =
-            servidor;
-
-        txtToken.Text =
-            token;
 
 
         try
@@ -137,77 +151,53 @@ public partial class PrimeraConfiguracionPage : ContentPage
                 new HttpClient();
 
             cliente.Timeout =
-                TimeSpan.FromSeconds(
-                    EsTailscale(uriServidor)
-                        ? 25
-                        : 8);
+                TimeSpan.FromSeconds(8);
 
-            AppConfig.AgregarTokenHeaders(
-                cliente,
+            cliente.DefaultRequestHeaders.Add(
+                "X-Remo-Token",
                 token);
 
 
-            HttpResponseMessage respuesta =
+            using HttpResponseMessage respuesta =
                 await cliente.GetAsync(
                     servidor +
                     "/status");
 
-            if (
+
+            if (respuesta.IsSuccessStatusCode)
+            {
+                lblEstado.Text =
+                    "● Conexión correcta";
+
+                lblEstado.TextColor =
+                    Colors.LimeGreen;
+            }
+            else if (
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Unauthorized
                 ||
                 respuesta.StatusCode ==
                 System.Net.HttpStatusCode.Forbidden)
             {
-                respuesta.Dispose();
+                lblEstado.Text =
+                    "● Token incorrecto";
 
-                respuesta =
-                    await cliente.GetAsync(
-                        AppConfig.AnexarTokenAUrl(
-                            servidor +
-                            "/status",
-                            token));
+                lblEstado.TextColor =
+                    Colors.Red;
             }
-
-            using (respuesta)
+            else
             {
-                if (respuesta.IsSuccessStatusCode)
-                {
-                    lblEstado.Text =
-                        "● Conexión correcta";
+                lblEstado.Text =
+                    "● El servidor respondió pero rechazó la solicitud";
 
-                    lblEstado.TextColor =
-                        Colors.LimeGreen;
-                }
-                else if (
-                    respuesta.StatusCode ==
-                    System.Net.HttpStatusCode.Unauthorized
-                    ||
-                    respuesta.StatusCode ==
-                    System.Net.HttpStatusCode.Forbidden)
-                {
-                    lblEstado.Text =
-                        "● Token incorrecto";
-
-                    lblEstado.TextColor =
-                        Colors.Red;
-                }
-                else
-                {
-                    lblEstado.Text =
-                        "● El servidor respondió pero rechazó la solicitud";
-
-                    lblEstado.TextColor =
-                        Colors.Red;
-                }
+                lblEstado.TextColor =
+                    Colors.Red;
             }
         }
         catch (TaskCanceledException)
         {
             lblEstado.Text =
-                EsTailscale(uriServidor)
-                    ? "● Tailscale tardó demasiado"
-                    : "● La PC no respondió a tiempo";
+                "● La PC no respondió a tiempo";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -215,9 +205,7 @@ public partial class PrimeraConfiguracionPage : ContentPage
         catch (HttpRequestException)
         {
             lblEstado.Text =
-                EsTailscale(uriServidor)
-                    ? "● La app no pudo abrir Tailscale"
-                    : "● No se pudo alcanzar la PC";
+                "● No se pudo alcanzar la PC";
 
             lblEstado.TextColor =
                 Colors.Red;
@@ -237,14 +225,6 @@ public partial class PrimeraConfiguracionPage : ContentPage
         }
     }
 
-    private static bool EsTailscale(
-        Uri uri)
-    {
-        return uri.Host.StartsWith(
-            "100.",
-            StringComparison.OrdinalIgnoreCase);
-    }
-
 
     // ============================================================
     // FINALIZAR
@@ -255,12 +235,12 @@ public partial class PrimeraConfiguracionPage : ContentPage
         EventArgs e)
     {
         string servidor =
-            AppConfig.NormalizarServidor(
-                txtServidor.Text);
+            txtServidor.Text?.Trim() ??
+            "";
 
         string token =
-            AppConfig.LimpiarToken(
-                txtToken.Text);
+            txtToken.Text?.Trim() ??
+            "";
 
 
         if (string.IsNullOrWhiteSpace(
@@ -275,6 +255,11 @@ public partial class PrimeraConfiguracionPage : ContentPage
         }
 
 
+        servidor =
+            NormalizarServidor(
+                servidor);
+
+
         if (!Uri.TryCreate(
             servidor,
             UriKind.Absolute,
@@ -287,12 +272,6 @@ public partial class PrimeraConfiguracionPage : ContentPage
 
             return;
         }
-
-        txtServidor.Text =
-            servidor;
-
-        txtToken.Text =
-            token;
 
 
         if (string.IsNullOrWhiteSpace(
@@ -346,7 +325,7 @@ public partial class PrimeraConfiguracionPage : ContentPage
 
 
         await DisplayAlertAsync(
-            "MSI Center",
+            "RemoControl",
             "Configuración terminada. Ya puedes controlar tu PC.",
             "Comenzar");
 

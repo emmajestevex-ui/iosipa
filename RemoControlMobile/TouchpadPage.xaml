@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.TouchpadPage"
-    BackgroundColor="#161C25"
+    BackgroundColor="#050B12"
     Title="Touchpad">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -18,7 +18,7 @@
                 Text="←"
                 WidthRequest="50"
                 HeightRequest="45"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White"
                 CornerRadius="12"
                 Clicked="BtnVolver_Clicked" />
@@ -51,8 +51,8 @@
             <Border
                 x:Name="zonaTouchpad"
                 HeightRequest="390"
-                BackgroundColor="#1E2631"
-                Stroke="#293545">
+                BackgroundColor="#0D1722"
+                Stroke="#182838">
 
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="20" />
@@ -95,7 +95,7 @@
                     Grid.Column="0"
                     Text="Clic izquierdo"
                     HeightRequest="60"
-                    BackgroundColor="#E31B2F"
+                    BackgroundColor="#0B6EDB"
                     TextColor="White"
                     CornerRadius="14"
                     Clicked="BtnIzquierdo_Clicked" />
@@ -104,7 +104,7 @@
                     Grid.Column="1"
                     Text="Clic derecho"
                     HeightRequest="60"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="White"
                     CornerRadius="14"
                     Clicked="BtnDerecho_Clicked" />
@@ -120,7 +120,7 @@
                     Grid.Column="0"
                     Text="▲ Scroll"
                     HeightRequest="55"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="White"
                     CornerRadius="14"
                     Clicked="BtnScrollArriba_Clicked" />
@@ -129,7 +129,7 @@
                     Grid.Column="1"
                     Text="▼ Scroll"
                     HeightRequest="55"
-                    BackgroundColor="#1E2631"
+                    BackgroundColor="#0D1722"
                     TextColor="White"
                     CornerRadius="14"
                     Clicked="BtnScrollAbajo_Clicked" />

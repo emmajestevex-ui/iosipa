@@ -4,8 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="RemoControlMobile.TecladoPage"
-    BackgroundColor="#0B1119"
-    Shell.NavBarIsVisible="False"
+    BackgroundColor="#050B12"
     Title="Teclado">
 
     <Grid RowDefinitions="Auto,*,Auto">
@@ -22,7 +21,7 @@
                 Text="←"
                 WidthRequest="50"
                 HeightRequest="45"
-                BackgroundColor="#1E2631"
+                BackgroundColor="#0D1722"
                 TextColor="White"
                 CornerRadius="12"
                 Clicked="BtnVolver_Clicked" />
@@ -66,8 +65,8 @@
 
                 <Border
                     Padding="15"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
+                    BackgroundColor="#0D1722"
+                    Stroke="#182838">
 
                     <Border.StrokeShape>
                         <RoundRectangle
@@ -82,59 +81,18 @@
                             HeightRequest="130"
                             Placeholder="Escribe aquí..."
                             PlaceholderColor="#657181"
-                            BackgroundColor="#151B23"
+                            BackgroundColor="#08111B"
                             TextColor="White"
                             AutoSize="TextChanges" />
 
                         <Button
                             Text="⌨  Enviar texto"
                             HeightRequest="52"
-                            BackgroundColor="#E31B2F"
+                            BackgroundColor="#0B6EDB"
                             TextColor="White"
                             FontAttributes="Bold"
                             CornerRadius="12"
                             Clicked="BtnEnviarTexto_Clicked" />
-
-                    </VerticalStackLayout>
-
-                </Border>
-
-                <!-- MACRO JUEGO -->
-
-                <Label
-                    Text="Macro juego"
-                    FontSize="18"
-                    FontAttributes="Bold"
-                    TextColor="White" />
-
-                <Border
-                    Padding="15"
-                    BackgroundColor="#1E2631"
-                    Stroke="#293545">
-
-                    <Border.StrokeShape>
-                        <RoundRectangle
-                            CornerRadius="16" />
-                    </Border.StrokeShape>
-
-                    <VerticalStackLayout
-                        Spacing="12">
-
-                        <Entry
-                            x:Name="txtMacroJuego"
-                            Placeholder="Emmanuel"
-                            PlaceholderColor="#657181"
-                            BackgroundColor="#151B23"
-                            TextColor="White" />
-
-                        <Button
-                            Text="Enter + Emmanuel + Enter"
-                            HeightRequest="52"
-                            BackgroundColor="#E31B2F"
-                            TextColor="White"
-                            FontAttributes="Bold"
-                            CornerRadius="12"
-                            Clicked="BtnMacroJuego_Clicked" />
 
                     </VerticalStackLayout>
 
@@ -160,7 +118,7 @@
                         Grid.Column="0"
                         Text="Esc"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnEsc_Clicked" />
@@ -170,7 +128,7 @@
                         Grid.Column="1"
                         Text="↑"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnArriba_Clicked" />
@@ -180,7 +138,7 @@
                         Grid.Column="2"
                         Text="Delete"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnDelete_Clicked" />
@@ -191,7 +149,7 @@
                         Grid.Column="0"
                         Text="←"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnIzquierda_Clicked" />
@@ -201,7 +159,7 @@
                         Grid.Column="1"
                         Text="Enter"
                         HeightRequest="55"
-                        BackgroundColor="#E31B2F"
+                        BackgroundColor="#0B6EDB"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnEnter_Clicked" />
@@ -211,7 +169,7 @@
                         Grid.Column="2"
                         Text="→"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnDerecha_Clicked" />
@@ -222,7 +180,7 @@
                         Grid.Column="0"
                         Text="Tab"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnTab_Clicked" />
@@ -232,7 +190,7 @@
                         Grid.Column="1"
                         Text="↓"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnAbajo_Clicked" />
@@ -242,7 +200,7 @@
                         Grid.Column="2"
                         Text="⌫"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnBackspace_Clicked" />
@@ -269,7 +227,7 @@
                         Grid.Column="0"
                         Text="Ctrl+C"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnCopiar_Clicked" />
@@ -279,7 +237,7 @@
                         Grid.Column="1"
                         Text="Ctrl+V"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnPegar_Clicked" />
@@ -289,7 +247,7 @@
                         Grid.Column="2"
                         Text="Ctrl+A"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnSeleccionarTodo_Clicked" />
@@ -299,7 +257,7 @@
                         Grid.Column="0"
                         Text="Ctrl+X"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnCortar_Clicked" />
@@ -309,7 +267,7 @@
                         Grid.Column="1"
                         Text="Ctrl+Z"
                         HeightRequest="55"
-                        BackgroundColor="#1E2631"
+                        BackgroundColor="#0D1722"
                         TextColor="White"
                         CornerRadius="12"
                         Clicked="BtnDeshacer_Clicked" />

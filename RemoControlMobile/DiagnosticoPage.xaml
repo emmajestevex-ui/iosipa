@@ -184,7 +184,7 @@
             Text="🌐 Ejecutar diagnóstico"
             Margin="20,10,20,20"
             HeightRequest="55"
-            BackgroundColor="#E31B2F"
+            BackgroundColor="#087BDB"
             TextColor="White"
             FontAttributes="Bold"
             CornerRadius="14"

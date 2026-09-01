@@ -34,8 +34,8 @@ public partial class EstadoPcPage : ContentPage
                     10);
 
             using HttpResponseMessage respuesta =
-                await AppConfig.GetAsyncConToken(
-                    cliente,
+                await cliente.GetAsync(
+                    AppConfig.Servidor +
                     "/systemstatus");
 
             if (!respuesta.IsSuccessStatusCode)

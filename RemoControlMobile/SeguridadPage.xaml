@@ -211,7 +211,7 @@
                             FontSize="14" />
 
                         <Label
-                            Text="📱  Acceso desde MSI Center"
+                            Text="📱  Acceso desde RemoControl Mobile"
                             TextColor="White"
                             FontSize="14" />
 
@@ -225,7 +225,7 @@
                 <Button
                     Text="🔄  Comprobar conexión"
                     HeightRequest="55"
-                    BackgroundColor="#E31B2F"
+                    BackgroundColor="#087BDB"
                     TextColor="White"
                     FontAttributes="Bold"
                     CornerRadius="14"
