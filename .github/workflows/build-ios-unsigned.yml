@@ -10,11 +10,20 @@ on:
 jobs:
   build-ios:
     name: Compilar RemoControl iOS
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
       - name: Descargar proyecto
         uses: actions/checkout@v4
+
+      - name: Usar Xcode 26.6
+        run: |
+          if [ -d "/Applications/Xcode_26.6.app" ]; then
+            sudo xcode-select -s /Applications/Xcode_26.6.app/Contents/Developer
+          else
+            sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          fi
+          xcodebuild -version
 
       - name: Instalar .NET 10
         uses: actions/setup-dotnet@v4

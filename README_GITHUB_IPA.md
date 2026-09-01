@@ -2,6 +2,8 @@
 
 Este repositorio está preparado para compilar **RemoControl para iPhone/iPad** usando un runner macOS de GitHub Actions.
 
+El workflow usa `macos-26` porque esta version de .NET para iOS necesita Xcode 26.6. Si se usa `macos-15`, GitHub puede fallar porque trae Xcode 16.4.
+
 ## Importante
 
 El flujo **no usa tu certificado de Apple ni tu provisioning profile**. La compilación usa una firma ad-hoc temporal únicamente para que las herramientas de Apple generen el `.app`; después el workflow elimina firmas y perfiles antes de empaquetar `RemoControl-UNSIGNED.ipa`.
