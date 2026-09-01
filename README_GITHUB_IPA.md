@@ -21,17 +21,12 @@ Ese IPA está pensado para **volver a firmarlo tú** con ESign u otra herramient
 9. Dentro estará `RemoControl-UNSIGNED.ipa`.
 10. Firma ese IPA con ESign usando tu certificado/perfil.
 
-## App de PC
+## Solo iOS
 
-La versión de PC que acompaña a esta entrega está en:
-
-`PC/RemoControl_PC_BLUE_V6_MISMAS_FUNCIONES.zip`
-
-El workflow de GitHub solo compila la app iOS; no modifica la app de PC.
+Esta carpeta no incluye la app de PC. Es solamente para subir el proyecto móvil a GitHub y generar el IPA de iPhone/iPad.
 
 ## Archivos principales
 
 - `RemoControlMobile.sln` — solución.
 - `RemoControlMobile/` — proyecto MAUI Android + iOS.
 - `.github/workflows/build-ios-unsigned.yml` — compilación automática en macOS.
-- `PC/` — aplicación de PC.

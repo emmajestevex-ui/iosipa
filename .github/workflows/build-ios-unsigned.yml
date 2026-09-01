@@ -25,9 +25,11 @@ jobs:
         run: |
           dotnet workload install maui-ios
 
-      - name: Restaurar paquetes
+      - name: Restaurar paquetes solo iOS
         run: |
-          dotnet restore RemoControlMobile/RemoControlMobile.csproj
+          dotnet restore RemoControlMobile/RemoControlMobile.csproj \
+            -p:TargetFrameworks=net10.0-ios \
+            -p:RuntimeIdentifier=ios-arm64
 
       # Se usa firma ad-hoc solo para permitir que las herramientas de Apple
       # terminen la compilación del bundle de dispositivo. No se usa ningún
@@ -37,6 +39,8 @@ jobs:
           dotnet publish RemoControlMobile/RemoControlMobile.csproj \
             -f net10.0-ios \
             -c Release \
+            --no-restore \
+            -p:TargetFrameworks=net10.0-ios \
             -p:RuntimeIdentifier=ios-arm64 \
             -p:CodesignKey=- \
             -p:CodesignProvision= \
